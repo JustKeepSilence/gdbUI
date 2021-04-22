@@ -19,10 +19,10 @@ const { VueLoaderPlugin } = require('vue-loader')
  * that provide pure *.vue files that need compiling
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/webpack-configurations.html#white-listing-externals
  */
-let whiteListedModules = ['vue']
+let whiteListedModules = ['vue', 'element-ui']
 
 let rendererConfig = {
-  devtool: '#cheap-module-eval-source-map',
+  devtool: 'source-map',
   entry: {
     renderer: path.join(__dirname, '../src/renderer/main.js')
   },
@@ -31,17 +31,7 @@ let rendererConfig = {
   ],
   module: {
     rules: [
-      {
-        test: /\.(js|vue)$/,
-        enforce: 'pre',
-        exclude: /node_modules/,
-        use: {
-          loader: 'eslint-loader',
-          options: {
-            formatter: require('eslint-friendly-formatter')
-          }
-        }
-      },
+
       {
         test: /\.scss$/,
         use: ['vue-style-loader', 'css-loader', 'sass-loader']
@@ -87,6 +77,7 @@ let rendererConfig = {
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
+        exclude: [path.resolve(__dirname, '../src/renderer/icons')],
         use: {
           loader: 'url-loader',
           query: {
@@ -112,6 +103,14 @@ let rendererConfig = {
             name: 'fonts/[name]--[folder].[ext]'
           }
         }
+      },
+      {
+        test: /\.svg$/,
+        loader: 'svg-sprite-loader',
+        include: [path.resolve(__dirname, '../src/renderer/icons')],
+        options: {
+          symbolId: 'icon-[name]' // name代表图标的名字
+        }
       }
     ]
   },
@@ -119,9 +118,12 @@ let rendererConfig = {
     __dirname: process.env.NODE_ENV !== 'production',
     __filename: process.env.NODE_ENV !== 'production'
   },
+  stats: {
+    children: false
+  },
   plugins: [
     new VueLoaderPlugin(),
-    new MiniCssExtractPlugin({filename: 'styles.css'}),
+    new MiniCssExtractPlugin({ filename: 'styles.css' }),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: path.resolve(__dirname, '../src/index.ejs'),
@@ -142,10 +144,11 @@ let rendererConfig = {
           process,
         };
       },
-      nodeModules: process.env.NODE_ENV !== 'production'
-        ? path.resolve(__dirname, '../node_modules')
-        : false
- }),
+      nodeModules: path.resolve(__dirname, '../node_modules')
+      // nodeModules: process.env.NODE_ENV !== 'production'
+      //   ? path.resolve(__dirname, '../node_modules')
+      //   : false
+    }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin()
   ],
