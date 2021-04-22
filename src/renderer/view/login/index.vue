@@ -50,6 +50,7 @@
               <el-radio-group v-model="ruleForm.mode">
                 <el-radio label="http">http模式</el-radio>
                 <el-radio label="https">https模式</el-radio>
+                <el-radio label="gRPC">gRPC模式</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-form>
@@ -143,7 +144,7 @@ export default {
   z-index: 1;
   position: absolute;
   margin-top: 12%;
-  margin-left: 39%;
+  margin-left: 35%;
   background-color: rgba(200, 200, 200, 0);
   border: none;
 }
