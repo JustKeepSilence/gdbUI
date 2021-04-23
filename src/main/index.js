@@ -31,7 +31,9 @@ function createWindow () {
   // width 1000 height 600
 
   mainWindow.loadURL(winURL)
-  mainWindow.webContents.openDevTools()
+  // mainWindow.webContents.openDevTools()
+  //关闭开发者工具使用
+  mainWindow.webContents.closeDevTools();
 
   mainWindow.on('closed', () => {
     

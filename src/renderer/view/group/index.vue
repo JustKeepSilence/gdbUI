@@ -469,27 +469,9 @@
   </div>
 </template>
 <script>
-import {
-  getGroups,
-  addGroups,
-  getGroupColumns,
-  addItem,
-  deleteGroup,
-  getItems,
-  getRealTimeData,
-  addItemsByExcel,
-  getHistoryData,
-  updateColumnNames,
-  addColumns,
-  deleteColumns,
-  updateItems,
-  deleteItems,
-  cleanGroupItems,
-  checkItems,
-  importHistory,
-} from "@/api/group"; // 导入请求的接口
+import {post, uploadFile} from '@/api'
 import axios from "axios";
-import XLSX from 'xlsx' // 导入exceljs
+import XLSX from "xlsx"; // 导入exceljs
 import { saveAs } from "file-saver";
 import { getCookie } from "@/utils/cookie";
 import "element-ui/lib/theme-chalk/display.css";
@@ -657,13 +639,13 @@ export default {
       this.rowCount = 9;
     }
     this.initial(true);
-    getCookie("ip").then((ip)=>{
+    getCookie("ip").then((ip) => {
       this.actionUrl = "http://" + ip + "/page/uploadFile";
     });
   },
   methods: {
     initial(flag = false) {
-      getGroups().then(({ data }) => {
+      post('', '/group/getGroups').then(({ data }) => {
         this.groups = data.groupNames;
         if (flag) {
           this.selectedGroups = this.groups[0];
@@ -695,11 +677,11 @@ export default {
               d.push({ groupName: g[i], columnNames: c[i].split(",") });
             }
           }
-          addGroups(JSON.stringify({ groupInfos: d }))
+          post(JSON.stringify({ groupInfos: d }), '/group/addGroups')
             .then((r) => {
               this.$message.success("添加成功!");
               this.groupDialog = false;
-              getGroups().then(({ data }) => {
+              post('', '/group/getGroups').then(({ data }) => {
                 this.groups = data.groupNames;
                 this.selectedGroups = this.groups[0];
               });
@@ -734,27 +716,23 @@ export default {
         d[this.groupColumns[i]["label"]] = f[i].value;
       }
       values.push(d);
-      addItem(
+      post(
         JSON.stringify({
           groupName: this.selectedGroups,
           gdbItems: { itemValues: values },
-        })
+        }), '/item/addItems'
       )
         .then(() => {
           this.itemDialog = false;
           this.$message.success("添加成功!");
           this.render();
         })
-        .catch(
-          ({
-            message
-          }) => {
-            this.$notify.error({
-              title: "添加失败",
-              message,
-            });
-          }
-        );
+        .catch(({ message }) => {
+          this.$notify.error({
+            title: "添加失败",
+            message,
+          });
+        });
     },
     // 删除组
     handleGroup() {
@@ -764,28 +742,24 @@ export default {
         type: "warning",
       })
         .then(() => {
-          deleteGroup(
+          post(
             JSON.stringify({
               groupNames: [this.selectedGroups],
-            })
+            }), '/group/deleteGroups'
           ).then(() => {
-            getGroups()
+            post('', '/group/getGroups')
               .then(({ data }) => {
                 this.groups = data.groupNames;
                 this.selectedGroups = this.groups[0];
                 this.render();
                 this.$message.success("删除成功!");
               })
-              .catch(
-                ({
-                  message
-                }) => {
-                  this.$notify.error({
-                    title: "删除失败",
-                    message,
-                  });
-                }
-              );
+              .catch(({ message }) => {
+                this.$notify.error({
+                  title: "删除失败",
+                  message,
+                });
+              });
           });
         })
         .catch(() => {});
@@ -793,14 +767,14 @@ export default {
     // 显示对应组的item数据
     showItems(groupName) {
       this.tableLoading = true;
-      getItems(
+      post(
         JSON.stringify({
           groupName: this.selectedGroups,
           columnNames: "*",
           condition: this.searchCondition,
           startRow: this.startRow,
           rowCount: this.rowCount,
-        })
+        }), '/item/getItemsWithCount'
       )
         .then(({ data: { itemCount, itemValues } }) => {
           this.itemCount = itemCount;
@@ -811,11 +785,11 @@ export default {
               itemNames.push(itemValues[i].itemName);
             }
           }
-          getRealTimeData(
+          post(
             JSON.stringify({
               groupName,
               itemNames,
-            })
+            }), '/data/getRealTimeData'
           )
             .then(({ data: { realTimeData } }) => {
               const timeData = realTimeData;
@@ -828,39 +802,33 @@ export default {
                   itemValues[i]["index"] = (this.startRow + i).toString();
                 }
               }
-              this.itemData = itemValues === null? []: itemValues
+              this.itemData = itemValues === null ? [] : itemValues;
               this.tableLoading = false;
             })
-            .catch(
-              ({message}) => {
-                this.tableLoading = false;
-                this.$notify.error({
-                  title: "获取实时值失败",
-                  message,
-                });
-              }
-            );
-        })
-        .catch(
-          ({
-            message
-          }) => {
-            this.tableLoading = false;
-            this.$notify.error({
-              title: "获取Item失败",
-              message,
+            .catch(({ message }) => {
+              this.tableLoading = false;
+              this.$notify.error({
+                title: "获取实时值失败",
+                message,
+              });
             });
-          }
-        );
+        })
+        .catch(({ message }) => {
+          this.tableLoading = false;
+          this.$notify.error({
+            title: "获取Item失败",
+            message,
+          });
+        });
     },
     // 渲染表头和加点弹窗
     render() {
       // 根据组去获取对应的列名的信息
-      getGroupColumns(
+      post(
         JSON.stringify({
           groupName: this.selectedGroups,
           condition: "1=1",
-        })
+        }), '/group/getGroupProperty'
       )
         .then(({ data }) => {
           this.showItems(this.selectedGroups);
@@ -912,28 +880,14 @@ export default {
       const userToken = await getCookie("token");
       const userName = await getCookie("userName");
       const token = "Basic " + Base64.encode(`${userName}:${userToken}`);
-      axios({
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: token,
-        },
-        url: this.actionUrl,
-        data,
-        method: "post",
+      uploadFile(fileUps).then(()=>{
+        this.$message.success("上传成功");
+      }).catch(({message})=>{
+         this.$notify.error({
+           title: '上传失败',
+           message
+         })
       })
-        .then(() => {
-          this.$message.success("上传成功");
-        })
-        .catch(
-          ({
-            message
-          }) => {
-            this.$notify.error({
-              title: "上传失败",
-              message,
-            });
-          }
-        );
     },
     // 检查是否是excel
     isExcel(name) {
@@ -942,11 +896,11 @@ export default {
     // 点击确定开始加点
     handleAddItems() {
       this.addItemLoading = true;
-      addItemsByExcel(
+      post(
         JSON.stringify({
           fileName: this.fileContent.name,
           groupName: this.selectedGroups,
-        })
+        }), '/page/addItemsByExcel'
       )
         .then(() => {
           this.addItemLoading = false;
@@ -978,12 +932,12 @@ export default {
       this.searchCondition = `itemName like '%${this.searchKeyWord}%'`;
       this.showItems(this.selectedGroups);
     },
-    s2ab(s) { 
-                var buf = new ArrayBuffer(s.length); //convert s to arrayBuffer
-                var view = new Uint8Array(buf);  //create uint8array as viewer
-                for (var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF; //convert to octet
-                return buf;    
-},
+    s2ab(s) {
+      var buf = new ArrayBuffer(s.length); //convert s to arrayBuffer
+      var view = new Uint8Array(buf); //create uint8array as viewer
+      for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xff; //convert to octet
+      return buf;
+    },
     // 点表下载
     handleItemsDownload() {
       this.$confirm(`下载当前${this.itemCount}条数据?`, "提示", {
@@ -994,25 +948,25 @@ export default {
         .then(() => {
           this.tableLoadingText = "正在下载中...";
           this.tableLoading = true;
-          getGroupColumns(
+          post(
             JSON.stringify({
               groupName: this.selectedGroups,
               condition: "1=1",
-            })
+            }), '/group/getGroupProperty'
           ).then(({ data }) => {
             const headers = data.itemColumnNames;
-            getItems(
+            post(
               JSON.stringify({
                 groupName: this.selectedGroups,
                 columnNames: "*",
                 condition: this.searchCondition,
                 startRow: -1,
-              })
+              }), '/item/getItemsWithCount'
             )
               .then(({ data: { itemValues } }) => {
                 const wb = XLSX.utils.book_new(); // 创建工作簿
-                wb.SheetNames.push('Sheet1')
-                let wd = [headers]
+                wb.SheetNames.push("Sheet1");
+                let wd = [headers];
                 if (itemValues != null) {
                   itemValues.forEach((item) => {
                     let row = [];
@@ -1022,27 +976,25 @@ export default {
                     wd.push(row); // 将数据写入工作表
                   });
                 }
-                const ws = XLSX.utils.aoa_to_sheet(wd)
-                wb.Sheets['Sheet1'] = ws
-                const buf = this.s2ab(XLSX.write(wb, {bookType: 'xlsx', type: 'binary'}))
+                const ws = XLSX.utils.aoa_to_sheet(wd);
+                wb.Sheets["Sheet1"] = ws;
+                const buf = this.s2ab(
+                  XLSX.write(wb, { bookType: "xlsx", type: "binary" })
+                );
                 saveAs(
-                    new Blob([buf]),
-                    this.selectedGroups + "_" + new Date().getTime() + ".xlsx"
-                  ) // 将数据写入excel
+                  new Blob([buf]),
+                  this.selectedGroups + "_" + new Date().getTime() + ".xlsx"
+                ); // 将数据写入excel
                 this.$message.success("下载完成");
                 this.tableLoadingText = "表格数据加载中...";
                 this.tableLoading = false;
               })
-              .catch(
-                ({
-                  message
-                }) => {
-                  this.$notify.error({
-                    title: "数据下载失败",
-                    message,
-                  });
-                }
-              );
+              .catch(({ message }) => {
+                this.$notify.error({
+                  title: "数据下载失败",
+                  message,
+                });
+              });
           });
         })
         .catch(() => {});
@@ -1059,14 +1011,14 @@ export default {
         new Date(this.parseTime(this.st[0])).getTime() / 1000 + 8 * 3600;
       const e =
         new Date(this.parseTime(this.st[1])).getTime() / 1000 + 8 * 3600;
-      getHistoryData(
+      post(
         JSON.stringify({
           groupName: this.selectedGroups,
           itemNames: [this.selectedItem],
           startTimes: [s],
           endTimes: [e],
           intervals: [parseInt(this.interval)],
-        })
+        }), '/data/getHistoricalData'
       )
         .catch(({ message }) => {
           this.$notify.error({
@@ -1149,7 +1101,7 @@ export default {
     handleDownloadData() {
       this.chartLoading = true;
       let workBook = XLSX.utils.book_new(); // 创建工作簿
-      let wd = [["Time", "Data"]]
+      let wd = [["Time", "Data"]];
       if (this.chartItemValues !== null) {
         for (let i = 0; i < this.chartItemValues[0].length; i++) {
           let row = [];
@@ -1162,18 +1114,20 @@ export default {
           wd.push(row); // 将数据写入工作表
         }
       }
-      const ws = XLSX.utils.aoa_to_sheet(wd)
-      XLSX.utils.book_append_sheet(workBook, ws, 'Sheet1')
-      const buf = this.s2ab(XLSX.write(workBook, {bookType: 'xlsx', type: 'binary'}))
-        saveAs(
-          new Blob([buf]),
-          this.selectedGroups +
-            "_" +
-            this.selectedItem +
-            "_" +
-            new Date().getTime() +
-            ".xlsx"
-        ); // 将数据写入excel
+      const ws = XLSX.utils.aoa_to_sheet(wd);
+      XLSX.utils.book_append_sheet(workBook, ws, "Sheet1");
+      const buf = this.s2ab(
+        XLSX.write(workBook, { bookType: "xlsx", type: "binary" })
+      );
+      saveAs(
+        new Blob([buf]),
+        this.selectedGroups +
+          "_" +
+          this.selectedItem +
+          "_" +
+          new Date().getTime() +
+          ".xlsx"
+      ); // 将数据写入excel
       this.$message.success("下载完成");
       this.chartLoading = false;
     },
@@ -1204,12 +1158,12 @@ export default {
           type: "warning",
         })
           .then(() => {
-            updateColumnNames(
+            post(
               JSON.stringify({
                 groupName: this.selectedGroups,
                 oldColumnNames: [this.oldColumnName],
                 newColumnNames: [this.editedColumnName],
-              })
+              }), '/group/updateGroupColumnNames'
             )
               .then(({ data }) => {
                 this.groupTableData.map((item) => {
@@ -1220,17 +1174,13 @@ export default {
                 this.$message.success("更新成功!");
                 this.editColumnDialog = false;
               })
-              .catch(
-                ({
-                  message
-                }) => {
-                  this.$notify.error({
-                    title: "更新失败",
-                    message,
-                  });
-                  this.editColumnDialog = false;
-                }
-              );
+              .catch(({ message }) => {
+                this.$notify.error({
+                  title: "更新失败",
+                  message,
+                });
+                this.editColumnDialog = false;
+              });
           })
           .catch(() => {});
       } else {
@@ -1251,11 +1201,11 @@ export default {
         type: "warning",
       })
         .then(() => {
-          deleteColumns(
+          post(
             JSON.stringify({
               groupName: this.selectedGroups,
               columnNames: [columnName],
-            })
+            }), '/group/deleteGroupColumns'
           )
             .then(({ data }) => {
               this.groupTableData = this.groupTableData.filter((item) => {
@@ -1290,14 +1240,14 @@ export default {
         ) {
           this.$$message.warning("列名和默认值不一致");
         } else {
-          addColumns(
+          post(
             JSON.stringify({
               groupName: this.selectedGroups,
               columnNames: this.addedColumnName.split(",").map((item) => {
                 return item.trim();
               }),
               defaultValues: this.columnDefaultValues.split(","),
-            })
+            }), '/group/addGroupColumns'
           )
             .then(() => {
               this.$message.success(`增加列${this.addedColumnName}成功`);
@@ -1339,28 +1289,24 @@ export default {
       for (let i = 0; i < this.editItems.length; i++) {
         clause.push(`${this.editItems[i].label}='${this.editItems[i].value}'`);
       }
-      updateItems(
+      post(
         JSON.stringify({
           groupName: this.selectedGroups,
           clause: clause.join(","),
           condition,
-        })
+        }), '/item/updateItems'
       )
         .then(() => {
           this.$message.success("更新成功!");
           this.render();
           this.editItemDialog = false;
         })
-        .catch(
-          ({
-            message
-          }) => {
-            this.$notify.error({
-              title: "更新失败",
-              message,
-            });
-          }
-        );
+        .catch(({ message }) => {
+          this.$notify.error({
+            title: "更新失败",
+            message,
+          });
+        });
     },
     // 删除item
     deleteItem({ itemName }) {
@@ -1370,26 +1316,22 @@ export default {
         type: "warning",
       })
         .then(() => {
-          deleteItems(
+          post(
             JSON.stringify({
               groupName: this.selectedGroups,
               condition: "itemName='" + itemName + "'",
-            })
+            }), '/item/deleteItems'
           )
             .then(() => {
               this.$message.success("删除成功!");
               this.initial();
             })
-            .catch(
-              ({
-                message
-              }) => {
-                this.$notify.error({
-                  title: "删除失败",
-                  message,
-                });
-              }
-            );
+            .catch(({ message }) => {
+              this.$notify.error({
+                title: "删除失败",
+                message,
+              });
+            });
         })
         .catch(() => {});
     },
@@ -1444,10 +1386,10 @@ export default {
         type: "warning",
       })
         .then(() => {
-          cleanGroupItems(
+          post(
             JSON.stringify({
               groupNames: [this.selectedGroups],
-            })
+            }), '/group/cleanGroupItems'
           )
             .then(() => {
               this.$message.success(`清空表${this.selectedGroups}成功`);
@@ -1475,11 +1417,11 @@ export default {
       ) {
         this.$message.warning("itemName个sheetName个数不一致");
       } else {
-        checkItems(
+        post(
           JSON.stringify({
             groupName: this.selectedGroups,
             itemNames: this.historyItemNames.split(","),
-          })
+          }), '/item/checkItems'
         )
           .then(() => {
             // 所有点都存在
@@ -1500,12 +1442,12 @@ export default {
       const sheetNames = this.sheetNames.split(","); // sheetName
       const itemNames = this.historyItemNames.split(",");
       this.addItemLoading = true;
-      importHistory(
+      post(
         JSON.stringify({
           fileName,
           sheetNames,
           itemNames,
-        })
+        }), '/page/importHistoryByExcel'
       )
         .then(() => {
           this.addItemLoading = false;

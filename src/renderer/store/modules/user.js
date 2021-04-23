@@ -2,7 +2,7 @@
  * 和用户信息有关的vuex
  */
 
-import { getUserRole } from '@/api/login'
+import { post } from '@/api'
 import { setCookie, removeCookie, getCookie } from '@/utils/cookie'
 
 const state = {
@@ -61,7 +61,7 @@ const actions = {
         // 先根据token从数据库获取用户的role
         return new Promise(async (resolve, reject) => {
             const userName = await getCookie('userName')
-            getUserRole(JSON.stringify({"name": userName})).then(({ data }) => {
+            post(JSON.stringify({"name": userName}), '/page/getUserInfo').then(({ data }) => {
                 commit('setRole', data)
                 const {role} = data
                 resolve({ role})  // 返回role

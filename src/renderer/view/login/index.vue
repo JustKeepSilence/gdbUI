@@ -4,7 +4,12 @@
       <img :src="imgSrc" width="100%" height="100%" alt="" />
     </div>
     <div>
-      <el-card class="container" shadow="never"  v-loading="loading"  element-loading-text="读取用户信息中">
+      <el-card
+        class="container"
+        shadow="never"
+        v-loading="loading"
+        element-loading-text="读取用户信息中"
+      >
         <div slot="header" class="title">
           <span>GDB实时数据库</span>
         </div>
@@ -61,8 +66,8 @@
 </template>
 
 <script>
-import { userLogin, passWordValidator} from "@/api/login";
-import { setCookie, getCookie } from '@/utils/cookie'
+import { post, passWordValidator } from "@/api";
+import { setCookie, getCookie } from "@/utils/cookie";
 export default {
   name: "Login",
   data() {
@@ -72,7 +77,7 @@ export default {
         userName: "", // 用户名
         passWord: "", // 密码
         ip: "",
-        mode: 'http',
+        mode: "http",
       },
 
       rules: {
@@ -94,39 +99,43 @@ export default {
   },
   mounted() {
     // 获取用户名和密码等信息
-    this.loading = true
-    getCookie('userName').then(async (userName)=>{
-        this.ruleForm.userName = userName
-        this.ruleForm.ip = await getCookie('ip')
-        this.ruleForm.passWord = await getCookie('passWord')
-        this.loading = false
-    }).catch(()=>{
-       this.$message.warning('登陆信息已过期,请重新登陆!')
-       this.loading = false
-    })
+    this.loading = true;
+    getCookie("userName")
+      .then(async (userName) => {
+        this.ruleForm.userName = userName;
+        this.ruleForm.ip = await getCookie("ip");
+        this.ruleForm.passWord = await getCookie("passWord");
+        this.loading = false;
+      })
+      .catch(() => {
+        this.$message.warning("登陆信息已过期,请重新登陆!");
+        this.loading = false;
+      });
   },
   methods: {
     async submitForm() {
-       this.userName = this.ruleForm.userName
-       await setCookie({key: 'ip', value: this.ruleForm.ip})
-       await setCookie({key: 'mode', value: this.ruleForm.mode})
-       await setCookie({key: 'passWord', value: this.ruleForm.passWord})
-       if (this.ruleForm.mode == 'http'){
-            // http mode
-            userLogin(JSON.stringify({
-                userName: this.ruleForm.userName,
-                passWord: this.$md5(this.ruleForm.passWord + "@seu")
-            })).then(({data: {token}})=>{
-               const userName = this.ruleForm.userName
-               this.$store.dispatch('user/setToken', {userName, token}).then(()=>{
-                  this.$router.push('/index')
-               })
-            }).catch(err=>{
-               this.$message.error(err.message)
-            })
-       }else{
-
-       }
+      this.userName = this.ruleForm.userName;
+      await setCookie({ key: "ip", value: this.ruleForm.ip });
+      await setCookie({ key: "mode", value: this.ruleForm.mode });
+      await setCookie({ key: "passWord", value: this.ruleForm.passWord });
+      post(
+        JSON.stringify({
+          userName: this.ruleForm.userName,
+          passWord: this.$md5(this.ruleForm.passWord + "@seu"),
+        }),
+        "/page/userLogin"
+      )
+        .then(({ data: { token } }) => {
+          const userName = this.ruleForm.userName;
+          this.$store
+            .dispatch("user/setToken", { userName, token })
+            .then(() => {
+              this.$router.push("/index");
+            });
+        })
+        .catch(({ message }) => {
+          this.$message.error(message);
+        });
     },
   },
 };

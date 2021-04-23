@@ -53,11 +53,17 @@
       </span>
       </div>
     </el-row>
-    <!-- <el-image-viewer
-      v-if="showBig"
-      :on-close="closeViewer"
-      :url-list="showBigImgList"
-    /> -->
+    <el-dialog
+      title="联系作者"
+      :visible.sync="contactDialog"
+      width="550px"
+    >
+    <el-image
+      style="width: 100%; height: 100%"
+      :src="url"
+      :fit="fit"></el-image>
+     
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -155,7 +161,7 @@ export default {
           name: "wechat",
           content: "微信联系作者",
           fileName: "wechat",
-          tip: "微信联系我们",
+          tip: "微信联系作者",
           url: "",
         },
         {
@@ -183,8 +189,9 @@ export default {
       ],
       wechat: chat,
       qq: qq,
-      showBig: false,
-      showBigImgList: [chat],
+      url:'',
+      fit:'fill',
+      contactDialog: false,
       footContents: `Copyright © ${(new Date()).getFullYear()} All Rights Reserved | JustKeepSilence`
     };
   },
@@ -211,18 +218,18 @@ export default {
       } else {
         if (item.url.length === 0) {
           if (item.name === "wechat") {
-            this.showBigImgList = [this.wechat];
+            this.url = this.wechat
+            this.contactDialog = true
+           
           } else {
-            this.showBigImgList = [this.qq];
+            this.url = this.qq
+            this.contactDialog = true
           }
           this.showBig = true;
         } else {
           shell.openExternal(item.url);
         }
       }
-    },
-    closeViewer() {
-      this.showBig = false;
     },
   },
 };

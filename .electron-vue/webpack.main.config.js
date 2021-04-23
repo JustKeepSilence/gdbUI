@@ -7,8 +7,9 @@ const { dependencies } = require('../package.json')
 const webpack = require('webpack')
 
 const MinifyPlugin = require("babel-minify-webpack-plugin")
-
+//  devtool: "source-map",
 let mainConfig = {
+  devtool: "source-map",
   entry: {
     main: path.join(__dirname, '../src/main/index.js')
   },
@@ -44,7 +45,7 @@ let mainConfig = {
     extensions: ['.js', '.json', '.node']
   },
   target: 'electron-main',
-  devtool: "source-map",
+
   stats: {
     children: false
   }

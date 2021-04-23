@@ -119,7 +119,7 @@ import MultiMenu from "./components/multimenu";
 import gi from '@/images/github.png'
 import av from '@/images/go.gif'
 import 'element-ui/lib/theme-chalk/display.css';
-import {userLogOut} from "@/api/login"
+import {get} from "@/api"
 const { shell } = require("electron");
 
 export default {
@@ -151,7 +151,7 @@ export default {
     // 退出登陆的函数
     async logout() {
       const userName = await getCookie('userName')
-      userLogOut(userName).then(async ()=>{
+      get('/page/userLogout/' + userName).then(async ()=>{
       const { code } = await this.$store.dispatch("user/clearUserInfo"); // 清空用户信息
       if (code === 200) {
         this.$message.success('成功退出登陆!')

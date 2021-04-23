@@ -1,34 +1,42 @@
-import request from '@/utils/request'
+import {r} from '@/utils/request'
 import { getCookie } from '@/utils/cookie'
 
 
-const addCalulationItems = (data)=>{
+const addCalulationItems = async (data)=>{
+    const ip = await getCookie('ip')
+    const request = await r()
     return request({
-        url: "http://" + getCookie('ip') +'/calculation/addCalcItem',
+        url: "http://" + ip +'/calculation/addCalcItem',
         method: 'post',
         data
     })
 }
 
-const getCalculationItems = (data)=>{
+const getCalculationItems = async (data)=>{
+    const ip = await getCookie('ip')
+    const request = await r()
     return request({
-        url: "http://" + getCookie('ip') +'/calculation/getCalcItem',
+        url: "http://" + ip +'/calculation/getCalcItem',
         method:'post',
         data
     })
 }
 
-const updateCalculationItems = (data)=>{
+const updateCalculationItems = async (data)=>{
+    const ip = await getCookie('ip')
+    const request = await r()
     return request({
-        url : "http://" + getCookie('ip') +'/calculation/updateCalcItem',
+        url : "http://" + ip +'/calculation/updateCalcItem',
         method: 'post',
         data
     })
 }
 
-const getReCalc = (data)=>{
+const getReCalc = async (data)=>{
+    const ip = await getCookie('ip')
+    const request = await r()
     return request({
-        url: "http://" + getCookie('ip') +'/calculation/getReCalc',
+        url: "http://" + ip +'/calculation/getReCalc',
         method: "post",
         data
     })

@@ -91,7 +91,7 @@
   </div>
 </template>
 <script>
-import { getDbInfo, getInfoHistory} from "@/api";
+import {post} from '@/api'
 const { shell } = require('electron');
 import "element-ui/lib/theme-chalk/display.css";
 import Highcharts from "highcharts/highstock";
@@ -193,7 +193,7 @@ export default {
         value: 'speed',
         label: {'speed': '写入耗时ms', 'ram': '内存使用M'},
         st: [
-        new Date(new Date().setTime(new Date() - 60 * 1000)),
+        new Date(new Date().setTime(new Date() - 10 * 60 * 1000)),
         new Date(),
       ], // 时间选择器的时间
       pickerOptions: {
@@ -259,7 +259,7 @@ export default {
     // 更新info
     setInterval(function () {
       if (_this.$route.path === "/index") {
-        getDbInfo().then(({ data: { info } }) => {
+        post('', '/data/getDbInfo').then(({ data: { info } }) => {
           for (let i = 0; i < _this.itemValues.length; i++) {
             const item = _this.itemValues[i];
             switch (item.name) {
@@ -310,7 +310,7 @@ export default {
       }`;
     },
     getSHistory() {
-        getInfoHistory(
+        post(
           JSON.stringify({
             itemName: this.value,
             startTimes: [
@@ -318,7 +318,7 @@ export default {
             ], // 10 min ago
             endTimes: [parseInt(this.st[1].getTime() / 1000 + 8 * 3600)],
             interval: 1,
-          })
+          }), '/data/getDbInfoHistory'
         ).then(({ data }) => {
           this.xData = []
           if (data[this.value][0] !== null) {
@@ -385,7 +385,7 @@ export default {
       };
     },
     render() {
-      getDbInfo().then(({ data: { info } }) => {
+      post('', '/data/getDbInfo').then(({ data: { info } }) => {
         for (let item of this.itemValues) {
           if (item.name === "ram") {
             if (info[item.name] === null) {

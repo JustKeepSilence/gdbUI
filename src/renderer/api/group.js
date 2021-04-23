@@ -2,11 +2,12 @@
  * 和group相关的请求
  */
 
-import request from '@/utils/request'
+import {r} from '@/utils/request'
 import { getCookie } from '@/utils/cookie'
 
 const getGroups = async ()=>{
     const ip = await getCookie('ip')
+    const request = await r()
     return request({
         url: "http://" + ip +"/group/getGroups",
         method: "post",
@@ -15,6 +16,7 @@ const getGroups = async ()=>{
 
 const addGroups = async (data)=>{
     const ip = await getCookie('ip')
+    const request = await r()
     return request({
         url: "http://" + ip +'/group/addGroups',
         method: 'post',
@@ -24,6 +26,7 @@ const addGroups = async (data)=>{
 
 const getGroupColumns = async (data)=>{
     const ip = await getCookie('ip')
+    const request = await r()
     return request({
         url: "http://" + ip +'/group/getGroupProperty',
         method: 'post',
@@ -33,6 +36,7 @@ const getGroupColumns = async (data)=>{
 
 const addItem = async (data)=>{
     const ip = await getCookie('ip')
+    const request = await r()
     return request({
         url: "http://" + ip +'/item/addItems',
         method: 'post',
@@ -42,6 +46,7 @@ const addItem = async (data)=>{
 
 const deleteGroup = async (data)=>{
     const ip = await getCookie('ip')
+    const request = await r()
     return request({
         url: "http://" + ip +'/group/deleteGroups',
         method: 'post',
@@ -51,6 +56,7 @@ const deleteGroup = async (data)=>{
 
 const getItems = async (data)=>{
     const ip = await getCookie('ip')
+    const request = await r()
     return request({
         url : "http://" + ip +"/item/getItemsWithCount",
         method: 'post',
@@ -60,6 +66,7 @@ const getItems = async (data)=>{
 
 const getRealTimeData = async (data)=>{
     const ip = await getCookie('ip')
+    const request = await r()
     return request({
         url: "http://" + ip +'/data/getRealTimeData',
         method: 'post',
@@ -69,6 +76,7 @@ const getRealTimeData = async (data)=>{
 
 const addItemsByExcel = async (data)=>{
     const ip = await getCookie('ip')
+    const request = await r()
     return request({
         url: "http://" + ip +'/page/addItemsByExcel',
         method:'post',
@@ -78,6 +86,7 @@ const addItemsByExcel = async (data)=>{
 
 const getHistoryData = async (data)=>{
     const ip = await getCookie('ip')
+    const request = await r()
     return request({
         url :"http://" + ip +'/data/getHistoricalData',
         method: 'post',
@@ -87,6 +96,7 @@ const getHistoryData = async (data)=>{
 
 const updateColumnNames = async (data)=>{
     const ip = await getCookie('ip')
+    const request = await r()
     return request({
         url: "http://" + ip +'/group/updateGroupColumnNames',
         method: 'post',
@@ -96,6 +106,7 @@ const updateColumnNames = async (data)=>{
 
 const addColumns = async (data)=>{
     const ip = await getCookie('ip')
+    const request = await r()
     return request({
         url: "http://" + ip +'/group/addGroupColumns',
         method: 'post',
@@ -105,6 +116,7 @@ const addColumns = async (data)=>{
 
 const deleteColumns = async (data)=>{
     const ip = await getCookie('ip')
+    const request = await r()
     return request({
         url: "http://" + ip +'/group/deleteGroupColumns',
         method: 'post',
@@ -114,6 +126,7 @@ const deleteColumns = async (data)=>{
 
 const updateItems = async (data)=>{
     const ip = await getCookie('ip')
+    const request = await r()
     return request({
         url: "http://" + ip +'/item/updateItems',
         method: 'post',
@@ -123,6 +136,7 @@ const updateItems = async (data)=>{
 
 const deleteItems = async (data)=>{
     const ip = await getCookie('ip')
+    const request = await r()
     return request({
         url: "http://" + ip +'/item/deleteItems',
         method: 'post',
@@ -132,6 +146,7 @@ const deleteItems = async (data)=>{
 
 const cleanGroupItems = async (data)=>{
     const ip = await getCookie('ip')
+    const request = await r()
     return request({
         url: "http://" + ip +'/group/cleanGroupItems',
         method: 'post',
@@ -141,6 +156,7 @@ const cleanGroupItems = async (data)=>{
 
 const checkItems = async(data)=>{
     const ip = await getCookie('ip')
+    const request = await r()
     return request({
         url: 'http://' + ip + '/item/checkItems',
         method: 'post',
@@ -150,6 +166,7 @@ const checkItems = async(data)=>{
 
 const importHistory = async(data)=>{
     const ip = await getCookie('ip')
+    const request = await r()
     return request({
         url: 'http://' + ip + '/page/importHistoryByExcel',
         method: 'post',

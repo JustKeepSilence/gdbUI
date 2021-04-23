@@ -21,6 +21,7 @@ const { VueLoaderPlugin } = require('vue-loader')
  */
 let whiteListedModules = ['vue', 'element-ui']
 
+//  devtool: 'source-map',
 let rendererConfig = {
   devtool: 'source-map',
   entry: {
