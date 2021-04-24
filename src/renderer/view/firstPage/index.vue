@@ -71,7 +71,7 @@
       </el-card>
     </el-row>
     <el-row>
-      <el-card shadow="hover" style="height: 520px; margin-top: 20px">
+      <el-card shadow="hover" style="height: 520px; margin-top: 20px" v-if="showButton === true">
         <div slot="header">
           <el-row>
             <span style="float: left; font-weight: bold"
@@ -116,6 +116,8 @@ export default {
       fontSize: "40px",
       small: false,
       size: 'mini',
+      role: '',
+      showButton: true,
       sources: [
         {
           name: "Go",
@@ -247,7 +249,11 @@ export default {
       },
     };
   },
+  created(){
+    this.role = this.$store.getters["user/userRole"];
+  },
   mounted() {
+    this.showButton = !(this.role.indexOf("visitor") > -1)  // visitor
     if (document.body.clientWidth < 768) {
       this.fontSize = "10px";
       this.small = true;
@@ -259,42 +265,7 @@ export default {
     // 更新info
     setInterval(function () {
       if (_this.$route.path === "/index") {
-        post('', '/data/getDbInfo').then(({ data: { info } }) => {
-          for (let i = 0; i < _this.itemValues.length; i++) {
-            const item = _this.itemValues[i];
-            switch (item.name) {
-              case "ram":
-                if (info.ram === null) {
-                  _this.itemValues[i].content = "0MB";
-                } else {
-                  _this.itemValues[i].content = info.ram + "MB";
-                }
-                break;
-              case "speed":
-                _this.itemValues[i].content = info.speed;
-                try {
-                  _this.rtSpeed = parseInt(
-                    info.speed.split("/")[0].replace("ms", "")
-                  );
-                } catch (e) {
-                  _this.rtSpeed = 0;
-                }
-                break;
-              case "currentTimeStamp":
-                try {
-                  _this.itemValues[i].content = _this.parseTime(
-                    new Date(
-                      (parseInt(info.currentTimeStamp) - 8 * 3600) * 1000
-                    )
-                  );
-                } catch (e) {}
-                break;
-              default:
-                _this.itemValues[i].content = info.writtenItems;
-                break;
-            }
-          }
-        });
+        _this.render()
       }
     }, 1000);
     // 更新历史曲线
@@ -385,18 +356,42 @@ export default {
       };
     },
     render() {
+      const _this = this
       post('', '/data/getDbInfo').then(({ data: { info } }) => {
-        for (let item of this.itemValues) {
-          if (item.name === "ram") {
-            if (info[item.name] === null) {
-              item.content = "0MB";
-            } else {
-              item.content = info[item.name] + "MB";
+        for (let i = 0; i < _this.itemValues.length; i++) {
+            const item = _this.itemValues[i];
+            switch (item.name) {
+              case "ram":
+                if (info.ram === null) {
+                  _this.itemValues[i].content = "0MB";
+                } else {
+                  _this.itemValues[i].content = info.ram + "MB";
+                }
+                break;
+              case "speed":
+                _this.itemValues[i].content = info.speed;
+                try {
+                  _this.rtSpeed = parseInt(
+                    info.speed.split("/")[0].replace("ms", "")
+                  );
+                } catch (e) {
+                  _this.rtSpeed = 0;
+                }
+                break;
+              case "currentTimeStamp":
+                try {
+                  _this.itemValues[i].content = _this.parseTime(
+                    new Date(
+                      (parseInt(info.currentTimeStamp) - 8 * 3600) * 1000
+                    )
+                  );
+                } catch (e) {}
+                break;
+              default:
+                _this.itemValues[i].content = info.writtenItems;
+                break;
             }
-          } else {
-            item.content = info[item.name];
           }
-        }
       });
     },
     parseTime(t) {

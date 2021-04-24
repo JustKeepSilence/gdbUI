@@ -46,7 +46,9 @@ const r = () => {
                         if (error.response) {
                             return Promise.reject(error.response.data)
                         } else if (error.request) {
-                            return Promise.reject(error.request)
+                            // mode error
+                            const message = '请选择正确的客户端连接模式'
+                            return Promise.reject({message})
                         } else {
                             return Promise.reject(error)
                         }

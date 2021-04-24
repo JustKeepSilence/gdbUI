@@ -18,12 +18,12 @@
         </el-select>
       </el-col>
       <el-col :span="3" >
-        <el-button :size="size" type="success" class="hidden-xs-only" icon="el-icon-plus" @click="openGroupDialog"
+        <el-button :size="size" type="success" class="hidden-xs-only" icon="el-icon-plus" @click="openGroupDialog" v-if="showButton===true"
           >批量加组</el-button
         >
       </el-col>
       <el-col :span="3">
-        <el-button type="success" :size="size" icon="el-icon-plus" @click="openItemDialog"
+        <el-button type="success" :size="size" icon="el-icon-plus" @click="openItemDialog" v-if="showButton===true"
           >单个加点</el-button
         >
       </el-col>
@@ -34,6 +34,7 @@
           icon="el-icon-folder-opened"
           :size="size"
           @click="openItemsDialog"
+          v-if="showButton===true"
           >批量加点</el-button
         >
       </el-col>
@@ -42,38 +43,40 @@
           type="primary"
           icon="el-icon-download"
           @click="handleItemsDownload"
+          v-if="showButton===true"
           :size="size"
           >点表下载</el-button
         >
       </el-col>
       <el-col :span="3">
-        <el-button type="primary" :size="size" class="hidden-xs-only" icon="el-icon-edit" @click="handleEditGroup" >编辑此组</el-button>
+        <el-button type="primary" :size="size" class="hidden-xs-only" icon="el-icon-edit" @click="handleEditGroup" :disabled="disabled" v-if="showButton===true">编辑此组</el-button>
       </el-col>
       <el-col :span="3" >
-        <el-button type="danger" :size="size" class="hidden-xs-only" icon="el-icon-delete" @click="handleGroup" :disabled="handleDeleteGroupButtonState"
+        <el-button type="danger" :size="size" class="hidden-xs-only" icon="el-icon-delete" @click="handleGroup" :disabled="handleDeleteGroupButtonState || disabled === true" v-if="showButton===true"
           >删除此组</el-button
         >
       </el-col>
       <el-col :span="3" >
-        <el-button type="danger" :size="size" class="hidden-xs-only" @click="cleanGroups" icon="el-icon-delete"
+        <el-button type="danger" :size="size" class="hidden-xs-only" @click="cleanGroups" icon="el-icon-delete" :disabled="disabled" v-if="showButton===true"
           >清空此组</el-button
         >
       </el-col>
 
       <el-col :span="3" :offset="3" style="margin-top:10px">
-        <el-button type="primary" :size="size" @click="importHistory" icon="el-icon-upload">历史导入</el-button>
+        <el-button type="primary" :size="size" @click="importHistory" v-if="showButton===true" icon="el-icon-upload">历史导入</el-button>
       </el-col>
       <el-col :span="6" style="margin-top:10px">
         <el-input
           class="hidden-xs-only"
           :size="size"
           prefix-icon="el-icon-search"
+          v-if="showButton===true"
           v-model="searchKeyWord"
           placeholder="输入关键字搜索"
         />
       </el-col>
       <el-col :span="3" style="margin-top:10px">
-        <el-button type="primary" :size="size" class="hidden-xs-only" @click="handleSearch" icon="el-icon-search"
+        <el-button type="primary" :size="size" class="hidden-xs-only" @click="handleSearch" icon="el-icon-search" v-if="showButton===true"
           >表格搜索</el-button
         >
       </el-col>
@@ -432,11 +435,12 @@
         <el-button @click="importHistoryDialog = false">关闭</el-button>
       </div>
     </el-dialog>
-    <!-- 上传历史excel数据的弹窗 -->
+    
+    <!-- 导入历史excel数据 -->
     <el-dialog
-      :title="itemDialogNames"
-      :visible.sync="itemsDialog"
-      v-loading="addItemLoading"
+      :title="itemDialogHistoryName"
+      :visible.sync="itemDialogHistory"
+      v-loading="addItemHistoryLoading"
       element-loading-background="transparent"
       element-loading-text="导入历史中..."
       width="600px"
@@ -463,7 +467,7 @@
       </el-upload>
       <div slot="footer" class="dialog-footer">
         <el-button @click="importHistoryConfirm">确定</el-button>
-        <el-button @click="itemsDialog = false">关闭</el-button>
+        <el-button @click="itemDialogHistory = false">关闭</el-button>
       </div>
     </el-dialog>
   </div>
@@ -622,13 +626,22 @@ export default {
       importHistoryDialog: false,
       historyItemNames: "",
       sheetNames: "",
+      itemDialogHistoryName:'导入历史数据',
+      itemDialogHistory:false,
+      addItemHistoryLoading: false,
+      role: '',  // 用户角色,
+      disabled: true,
+      showButton: true
     };
   },
   mounted() {
+    this.disabled = !(this.role.indexOf("super_user") > -1);
+    this.showButton = !(this.role.indexOf("visitor") > -1)  // visitor
     document.querySelector(".el-main").style.backgroundColor = " #ffffff";
   },
   created() {
     // 页面实例挂载完之后执行
+    this.role = this.$store.getters["user/userRole"];
     if (document.body.clientWidth < 768) {
       this.size = "mini";
       this.width = document.body.clientWidth + "px";
@@ -644,6 +657,7 @@ export default {
     });
   },
   methods: {
+    
     initial(flag = false) {
       post('', '/group/getGroups').then(({ data }) => {
         this.groups = data.groupNames;
@@ -1426,7 +1440,7 @@ export default {
           .then(() => {
             // 所有点都存在
             this.fileList = [];
-            this.itemsDialog = true;
+            this.itemDialogHistory = true;
           })
           .catch(({ message }) => {
             this.$notify.error({
@@ -1441,7 +1455,7 @@ export default {
       const fileName = this.fileContent.name; // 文件名
       const sheetNames = this.sheetNames.split(","); // sheetName
       const itemNames = this.historyItemNames.split(",");
-      this.addItemLoading = true;
+      this.addItemHistoryLoading = true;
       post(
         JSON.stringify({
           fileName,
@@ -1450,14 +1464,14 @@ export default {
         }), '/page/importHistoryByExcel'
       )
         .then(() => {
-          this.addItemLoading = false;
-          this.itemsDialog = false;
+          this.addItemHistoryLoading = false;
+          this.itemDialogHistory = false;
           this.importHistoryDialog = false;
           this.$message.success("历史导入成功");
         })
         .catch(({ message }) => {
-          this.addItemLoading = false;
-          this.itemsDialog = false;
+          this.addItemHistoryLoading = false;
+          this.itemDialogHistory = false;
           this.importHistoryDialog = false;
           this.$notify.error({
             title: "历史导入失败",

@@ -25,6 +25,9 @@ const mutations = {
         const { role, userName } = data  // 获取用户的role信息和userName
         state.userRole = role  // 设置role
         state.userName = userName  // 设置用户名称
+    },
+    clearRole(state){
+        state.userRole = ''
     }
 }
 
@@ -40,7 +43,7 @@ const actions = {
         // cookie当中,每次权限验证的时候都需要根据token去重新获取用户的信息
         return new Promise(async (resolve, reject)=>{
             await setCookie({ key: 'token', value: token })
-            await  setCookie({key: 'userName', value: userName})
+            await setCookie({key: 'userName', value: userName})
             commit('setToken', token)  // 设置token
             resolve()
         })
@@ -70,6 +73,15 @@ const actions = {
             })
         })
 
+    },
+    // 清空用户角色信息
+    clearRole({commit}){
+        return new Promise(async (resolve, reject)=>{
+            commit('clearRole')
+            resolve('')
+        }).catch(error=>{
+            reject(error)
+        })
     }
 }
 

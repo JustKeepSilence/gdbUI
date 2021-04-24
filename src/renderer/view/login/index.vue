@@ -47,15 +47,15 @@
               ></el-input>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="submitForm" style="width: 100%"
+              <el-button type="primary" @click="submitForm" style="width: 100%" v-loading='loginLoading' element-loading-text="登录中..."  element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)"
                 >登录</el-button
               >
             </el-form-item>
             <el-form-item>
-              <el-radio-group v-model="ruleForm.mode">
+              <el-radio-group v-model="ruleForm.mode" @change="modeChange">
                 <el-radio label="http">http模式</el-radio>
                 <el-radio label="https">https模式</el-radio>
-                <el-radio label="gRPC">gRPC模式</el-radio>
+                <el-checkbox label="gRPC" v-model="rpcChecked">gRPC模式</el-checkbox>
               </el-radio-group>
             </el-form-item>
           </el-form>
@@ -95,6 +95,9 @@ export default {
       },
       userName: "",
       imgSrc: require("@/images/bg-1.jpg"),
+      rpcChecked: false,
+      loginLoading: false,
+     
     };
   },
   mounted() {
@@ -105,6 +108,7 @@ export default {
         this.ruleForm.userName = userName;
         this.ruleForm.ip = await getCookie("ip");
         this.ruleForm.passWord = await getCookie("passWord");
+        this.ruleForm.mode = await getCookie('mode')
         this.loading = false;
       })
       .catch(() => {
@@ -112,9 +116,17 @@ export default {
         this.loading = false;
       });
   },
+  watch:{
+    rpcChecked(n, o){
+      if(n){
+        this.$message.info(`您已切换到${this.ruleForm.mode}-gRPC模式`)
+      }
+    }
+  },
   methods: {
     async submitForm() {
       this.userName = this.ruleForm.userName;
+      this.loginLoading = true
       await setCookie({ key: "ip", value: this.ruleForm.ip });
       await setCookie({ key: "mode", value: this.ruleForm.mode });
       await setCookie({ key: "passWord", value: this.ruleForm.passWord });
@@ -126,6 +138,7 @@ export default {
         "/page/userLogin"
       )
         .then(({ data: { token } }) => {
+          this.loginLoading = false
           const userName = this.ruleForm.userName;
           this.$store
             .dispatch("user/setToken", { userName, token })
@@ -133,10 +146,19 @@ export default {
               this.$router.push("/index");
             });
         })
-        .catch(({ message }) => {
+        .catch(({message}) => {  
+          this.loginLoading = false
           this.$message.error(message);
         });
     },
+    modeChange(label){
+      if(this.rpcChecked){
+        this.$message.info(`您已切换到${label}-gRPC模式`)
+      }
+      else{
+        this.$message.info(`您已切换到${label}模式`)
+      }
+    }
   },
 };
 </script>

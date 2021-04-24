@@ -61,25 +61,25 @@ const asyncRoutes = [
     path: '/user',
     component: DownLoad,
     name: 'User',
-    meta: { title: '用户中心', role: ['developer', 'super_user', 'common_user'], icon: 'el-icon-user-solid', hidden: false },
+    meta: { title: '用户中心', role: ['super_user', 'common_user'], icon: 'el-icon-user-solid', hidden: false },
     children: [
       {
         path: '/document',
         name: 'Document',
         component: () => import('@/view/user/document'),
-        meta: { title: '系统手册', role: ['developer', 'super_user', 'common_user'], icon: 'el-icon-document', hidden: false }  // 路由元数据
+        meta: { title: '系统手册', role: [ 'super_user', 'common_user'], icon: 'el-icon-document', hidden: false }  // 路由元数据
       },
       {
         path :'/log',
         name: 'Log',
         component: ()=>import('@/view/log'),
-        meta: { title: '运行日志', role: ['developer', 'super_user', 'common_user'], icon: 'el-icon-document', hidden: false }  // 路由元数据
+        meta: { title: '运行日志', role: ['super_user', 'common_user'], icon: 'el-icon-document', hidden: false }  // 路由元数据
       },
       {
         path: '/userManagement',
         name: 'UserManagement',
         component: () => import('@/view/user/userManagement'),
-        meta: { title: '用户管理', role: ['developer', 'super_user'], icon: 'el-icon-user-solid', hidden: false }  // 路由元数据
+        meta: { title: '用户管理', role: ['super_user', 'common_user'], icon: 'el-icon-user-solid', hidden: false }  // 路由元数据
       }
     ]
   },

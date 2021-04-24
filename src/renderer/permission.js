@@ -27,9 +27,9 @@ router.beforeEach(async (to, from, next) => {
             const token = await getCookie('token') // 获取cookie中的用户token
             if(token){
             // 如果有token则根据token去获取用户信息,否则跳转到登陆也页面
-            const userName = store.getters['user/userRole']  // 获取用户的角色
-            if (!userName) {
-                // 如果用户名为空则重新获取用户的权限信息
+            const userRole = store.getters['user/userRole']  // 获取用户的角色
+            if (!userRole) {
+                // 如果权限为空则重新获取用户的权限信息
                 store.dispatch('user/setRole').then(({ role }) => {
                     store.dispatch('routes/getAsyncRoutes', role[0]).then(async ({ dynamicRoutes }) => {
                         await resetRouter()  // 清空路由

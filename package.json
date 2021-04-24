@@ -1,8 +1,8 @@
 {
-  "name": "gdbui",
-  "version": "0.0.1",
+  "name": "gdb",
+  "version": "1.1.0",
   "author": "JustKeepSilence <hekang0426@gmail.com>",
-  "description": "An electron-vue project",
+  "description": "gdbui",
   "license": null,
   "main": "./dist/electron/main.js",
   "scripts": {
@@ -23,15 +23,15 @@
     "start": "electron --inspect=5858"
   },
   "build": {
-    "productName": "gdbui",
+    "productName": "gdb",
     "appId": "gdbUI",
     "directories": {
       "output": "build"
     },
-    "extraResources":  { 
+    "extraResources": {
       "from": "./src/renderer/ssl/",
       "to": "ssl"
-  },
+    },
     "files": [
       "dist/electron/**/*"
     ],
@@ -59,6 +59,17 @@
     "linux": {
       "icon": "build/icons"
     }
+  },
+  "nsis": {
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true,
+    "perMachine": true,
+    "installerIcon": "./build/icons/db.ico",
+    "uninstallerIcon": "./build/icons/db.ico",
+    "installerHeaderIcon": "./build/icons/db.ico",
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true,
+    "shortcutName": "gdb"
   },
   "dependencies": {
     "axios": "^0.18.0",

@@ -62,7 +62,7 @@
           <template slot="header" slot-scope="scope">
             <el-row>
               <el-col :span="10">
-                <el-button type="text" @click="handleCalcOpen" :size="size"  class="hidden-xs-only"
+                <el-button type="text" @click="handleCalcOpen" :size="size"  class="hidden-xs-only" v-if="showButton===true"
                   >新增计算项</el-button
                 >
               </el-col>
@@ -292,9 +292,12 @@ export default {
       editItems: [],
       size: 'mini',
       owdith:'300',
+      role: '',  // 用户角色,
+      showButton: true
     };
   },
   created() {
+    this.role = this.$store.getters["user/userRole"];
     if (document.body.clientWidth < 768){
        this.size = 'mini'
        this.owdith = '150'
@@ -303,6 +306,7 @@ export default {
     this.render();
   },
   mounted(){
+    this.showButton = !(this.role.indexOf("visitor") > -1)  // visitor
       document.querySelector(".el-main").style.backgroundColor = " #ffffff";
   },
   methods: {

@@ -76,11 +76,11 @@
               <el-dropdown>
                 <el-avatar :src="avatar" :size="avatarSize" style="cursor:pointer"></el-avatar>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item @click.native="userHandler">个人中心</el-dropdown-item>
+                  <el-dropdown-item >{{loginName}}</el-dropdown-item>
                   <el-dropdown-item @click.native="logout">退出登录</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
-              <span style="font-size:1.5em" class="hidden-xs-only">{{userName}}</span>
+              <!-- <span style="font-size:1.5em" class="hidden-xs-only">{{userName}}</span> -->
               </el-col>
               <el-col :span="4" :xs='4'>
                 <el-tooltip class="item" effect="light" content="Fork me on github" placement="top-start">
@@ -132,6 +132,7 @@ export default {
     // }
     // 实例挂载完成之后获取用户路由
     this.routes = this.$store.getters["routes/asyncRoutes"];
+    this.loginName = this.$store.getters['user/userName'].name
     this.initialBread(this.$route.path); // 初始化面包屑
     if (this.$route.path === "/index") {
       // 如果一开始就是首页
@@ -317,7 +318,8 @@ export default {
       img: gi,
       avatar: av,
       avatarSize: 'medium',
-      size:'medium'
+      size:'medium',
+      loginName: ''
     };
   },
   provide(){
