@@ -63,74 +63,74 @@
   </div>
 </template>
 <script>
-import axios from "axios";
-import { getCookie } from "@/utils/cookie";
+import axios from 'axios'
+import { getCookie } from '@/utils/cookie'
 export default {
-  name: "Log",
+  name: 'Log',
   data() {
     return {
       logs: [],
       options: [
-        { label: "All", value: "all" },
-        { label: "Info", value: "info" },
-        { label: "Error", value: "error" },
+        { label: 'All', value: 'all' },
+        { label: 'Info', value: 'info' },
+        { label: 'Error', value: 'error' }
       ],
-      selecteType: "all",
+      selecteType: 'all',
       rev: 1,
       size: 'mini'
-    };
+    }
   },
-  watch:{
-      rev(n,o){
-           this.rev = n
-          this.getLogs()
-      }
+  watch: {
+    rev(n, o) {
+      this.rev = n
+      this.getLogs()
+    }
   },
-  mounted(){
-      document.querySelector(".el-main").style.backgroundColor = " #ffffff";
+  mounted() {
+    document.querySelector('.el-main').style.backgroundColor = ' #ffffff'
   },
   created() {
-    this.getLogs();
+    this.getLogs()
   },
   methods: {
     changeLogs() {
-      this.getLogs();
+      this.getLogs()
     },
     getLogs() {
-      let d = null;
+      let d = null
       axios
-        .get("http://" + getCookie("ip") + "/page/getLogs")
+        .get('http://' + getCookie('ip') + '/page/getLogs')
         .then(({ data: { data } }) => {
-          if (this.selecteType === "all") {
-            d = data;
+          if (this.selecteType === 'all') {
+            d = data
           } else {
             d = data.filter((item) => {
-              return item.level === this.selecteType;
-            });
+              return item.level === this.selecteType
+            })
           }
           if (this.rev == 1) {
             this.logs = d.sort((a, b) => {
               return new Date(a.time).getTime() > new Date(b.time).getTime()
                 ? 1
-                : -1;
-            });
+                : -1
+            })
           } else {
             this.logs = d.sort((a, b) => {
               return new Date(a.time).getTime() > new Date(b.time).getTime()
                 ? -1
-                : 1;
-            });
+                : 1
+            })
           }
         })
         .catch(({ response: { data: message } }) => {
           this.$notify({
-            title: "获取日志失败",
-            message,
-          });
-        });
-    },
-  },
-};
+            title: '获取日志失败',
+            message
+          })
+        })
+    }
+  }
+}
 </script>
 <style scoped>
 </style>

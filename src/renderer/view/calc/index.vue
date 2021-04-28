@@ -213,342 +213,342 @@
   </div>
 </template>
 <script>
-import { getCookie } from "@/utils/cookie";
-import axios from "axios";
-import 'element-ui/lib/theme-chalk/display.css';
+import { getCookie } from '@/utils/cookie'
+import axios from 'axios'
+import 'element-ui/lib/theme-chalk/display.css'
 import {
   addCalulationItems,
   getCalculationItems,
-  updateCalculationItems,
-} from "@/api/calc";
+  updateCalculationItems
+} from '@/api/calc'
 export default {
-  name: "Calc",
+  name: 'Calc',
   data: function () {
     return {
-      calcDialogName: "二次计算",
+      calcDialogName: '二次计算',
       calcDialog: false,
       editorOption: {
         modules: {
           toolbar: {
             container: [
-              ["bold", "italic"], //加粗，斜体，下划线，删除线
-              ["blockquote", "code-block"], //引用，代码块
-              [{ list: "ordered" }, { list: "bullet" }], //列表
-              [{ indent: "-1" }, { indent: "+1" }], // 缩进
-              [{ size: ["small", false, "large", "huge"] }], // 字体大小
+              ['bold', 'italic'], // 加粗，斜体，下划线，删除线
+              ['blockquote', 'code-block'], // 引用，代码块
+              [{ list: 'ordered' }, { list: 'bullet' }], // 列表
+              [{ indent: '-1' }, { indent: '+1' }], // 缩进
+              [{ size: ['small', false, 'large', 'huge'] }], // 字体大小
               [{ color: [] }, { background: [] }], // 字体颜色，字体背景颜色
-              [{ font: [] }], //字体
-              [{ align: [] }], //对齐方式
-              ["codeUpload"],
+              [{ font: [] }], // 字体
+              [{ align: [] }], // 对齐方式
+              ['codeUpload']
             ],
             handlers: {
-              codeUpload: () => {},
-            },
-          },
+              codeUpload: () => {}
+            }
+          }
         },
-        theme: "snow",
+        theme: 'snow'
       }, // 富文本编辑器
       editorOption1: {
         modules: {
           toolbar: {
             container: [
-              ["bold", "italic"], //加粗，斜体，下划线，删除线
-              ["blockquote", "code-block"], //引用，代码块
-              [{ list: "ordered" }, { list: "bullet" }], //列表
-              [{ indent: "-1" }, { indent: "+1" }], // 缩进
-              [{ size: ["small", false, "large", "huge"] }], // 字体大小
+              ['bold', 'italic'], // 加粗，斜体，下划线，删除线
+              ['blockquote', 'code-block'], // 引用，代码块
+              [{ list: 'ordered' }, { list: 'bullet' }], // 列表
+              [{ indent: '-1' }, { indent: '+1' }], // 缩进
+              [{ size: ['small', false, 'large', 'huge'] }], // 字体大小
               [{ color: [] }, { background: [] }], // 字体颜色，字体背景颜色
-              [{ font: [] }], //字体
-              [{ align: [] }], //对齐方式
-              ["editDuration"],
+              [{ font: [] }], // 字体
+              [{ align: [] }], // 对齐方式
+              ['editDuration']
             ],
             handlers: {
-              editDuration: () => {},
-            },
-          },
+              editDuration: () => {}
+            }
+          }
         },
-        theme: "snow",
+        theme: 'snow'
       }, // 富文本编辑器
-      calcContent: "", // 二次计算的输入内容
-      codeUploadDialogNames: "代码上传",
+      calcContent: '', // 二次计算的输入内容
+      codeUploadDialogNames: '代码上传',
       codeUploadDialog: false,
-      jsCodeContent: "", // jscode file info
+      jsCodeContent: '', // jscode file info
       codeFileList: [], // js code file list
       tableData: [],
-      actionUrl: "", // 上传文件的url
-      uploadHeaders: { "Content-Type": "multipart/form-data" }, // 上传的头部
+      actionUrl: '', // 上传文件的url
+      uploadHeaders: { 'Content-Type': 'multipart/form-data' }, // 上传的头部
       limit: 1, // 文件限制
-      descriprionDialogNames: "添加描述",
+      descriprionDialogNames: '添加描述',
       descriprionDialog: false,
-      description: "", // 描述
-      condition: "", // 搜索的条件
-      editDialogName: "编辑二次计算项",
+      description: '', // 描述
+      condition: '', // 搜索的条件
+      editDialogName: '编辑二次计算项',
       editDialog: false,
-      editContent: "", // v-model
-      timeDurationDialogNames: "编辑计算项时间",
+      editContent: '', // v-model
+      timeDurationDialogNames: '编辑计算项时间',
       timeDurationDialog: false,
-      timeDuration: "", // 时间input的v-model
+      timeDuration: '', // 时间input的v-model
       selectedRow: null, // 选中的行
       editItems: [],
       size: 'mini',
-      owdith:'300',
-      role: '',  // 用户角色,
+      owdith: '300',
+      role: '', // 用户角色,
       showButton: true
-    };
+    }
   },
   created() {
-    this.role = this.$store.getters["user/userRole"];
-    if (document.body.clientWidth < 768){
-       this.size = 'mini'
-       this.owdith = '150'
+    this.role = this.$store.getters['user/userRole']
+    if (document.body.clientWidth < 768) {
+      this.size = 'mini'
+      this.owdith = '150'
     }
-    this.actionUrl = "http://" + getCookie("ip") + "/page/uploadFile";
-    this.render();
+    this.actionUrl = 'http://' + getCookie('ip') + '/page/uploadFile'
+    this.render()
   },
-  mounted(){
-    this.showButton = !(this.role.indexOf("visitor") > -1)  // visitor
-      document.querySelector(".el-main").style.backgroundColor = " #ffffff";
+  mounted() {
+    this.showButton = !(this.role.indexOf('visitor') > -1) // visitor
+    document.querySelector('.el-main').style.backgroundColor = ' #ffffff'
   },
   methods: {
     handleCalcOpen() {
-      this.calcContent = "";
-      this.calcDialogName = "新增二次计算项";
-      this.calcDialog = true;
+      this.calcContent = ''
+      this.calcDialogName = '新增二次计算项'
+      this.calcDialog = true
     },
     render() {
       getCalculationItems(
         JSON.stringify({
-          condition: `description like '%${this.condition}%'`,
+          condition: `description like '%${this.condition}%'`
         })
       ).then(({ data }) => {
         this.tableData = data.map((item) => {
-          if (item.updatedTime === "null") {
-            item.updatedTime = "";
-          }       
-          return item;
-        });
-      });
+          if (item.updatedTime === 'null') {
+            item.updatedTime = ''
+          }
+          return item
+        })
+      })
     },
     handleCalcOpened() {
-      const codeUploadButton = document.querySelector(".ql-codeUpload");
-      codeUploadButton.classList = "ql-codeUpload el-button el-button--text";
-      codeUploadButton.innerText = "代码上传";
-      codeUploadButton.addEventListener("click", () => {
-        this.codeUploadDialog = true;
-        this.codeFileList = [];
-      });
-      document.querySelector(".ql-container").style.height = "400px";
+      const codeUploadButton = document.querySelector('.ql-codeUpload')
+      codeUploadButton.classList = 'ql-codeUpload el-button el-button--text'
+      codeUploadButton.innerText = '代码上传'
+      codeUploadButton.addEventListener('click', () => {
+        this.codeUploadDialog = true
+        this.codeFileList = []
+      })
+      document.querySelector('.ql-container').style.height = '400px'
     },
     handleCalcOpened1() {
-      const editDurationButton = document.querySelector(".ql-editDuration");
+      const editDurationButton = document.querySelector('.ql-editDuration')
       editDurationButton.classList =
-        "ql-editDuration el-button el-button--text";
-      editDurationButton.innerText = "编辑Item";
+        'ql-editDuration el-button el-button--text'
+      editDurationButton.innerText = '编辑Item'
       this.editItems = [
-        { label: "编辑描述", value: this.selectedRow.description },
-        { label: "编辑计算时间", value: this.selectedRow.duration },
-      ];
-      editDurationButton.addEventListener("click", () => {
-        this.timeDurationDialog = true;
-      });
-      document.querySelector(".ql-container").style.height = "400px";
+        { label: '编辑描述', value: this.selectedRow.description },
+        { label: '编辑计算时间', value: this.selectedRow.duration }
+      ]
+      editDurationButton.addEventListener('click', () => {
+        this.timeDurationDialog = true
+      })
+      document.querySelector('.ql-container').style.height = '400px'
     },
     calcHandler() {
       if (this.calcContent.length === 0) {
-        this.$message.error("计算代码不能为空");
+        this.$message.error('计算代码不能为空')
       } else {
-        this.descriprionDialog = true;
-        this.description = "";
+        this.descriprionDialog = true
+        this.description = ''
       }
     },
     // 上传js code
     uploadCodeFile() {
-      const data = new FormData();
-      const fileUps = this.jsCodeContent;
-      data.append("file", fileUps);
+      const data = new FormData()
+      const fileUps = this.jsCodeContent
+      data.append('file', fileUps)
       axios({
         headers: {
-          "Content-Type": "multipart/form-data",
+          'Content-Type': 'multipart/form-data'
         },
         url: this.actionUrl,
         data: data,
-        method: "post",
+        method: 'post'
       })
         .then(() => {
-          this.$message.success("上传成功");
+          this.$message.success('上传成功')
         })
         .catch(
           ({
             response: {
-              data: { message: message },
-            },
+              data: { message }
+            }
           }) => {
             this.$notify.error({
-              title: "上传失败",
-              message,
-            });
+              title: '上传失败',
+              message
+            })
           }
-        );
+        )
     },
     beforeCodeUpload(file) {
-      this.jsCodeContent = file;
+      this.jsCodeContent = file
       if (this.isJs(this.jsCodeContent.name)) {
-        return true;
+        return true
       } else {
-        this.$message.error("非法的文件类型或者文件列表已满!");
-        return false; // 返回false取消上传
+        this.$message.error('非法的文件类型或者文件列表已满!')
+        return false // 返回false取消上传
       }
     },
     isJs(name) {
-      return /\.(js)$/.test(name);
+      return /\.(js)$/.test(name)
     },
     showExceed() {
-      this.$message.error("文件列表已满");
+      this.$message.error('文件列表已满')
     },
     showJsCode() {
       axios
         .get(
-          "http://" +
-            getCookie("ip") +
-            "/page/getJsCode/" +
+          'http://' +
+            getCookie('ip') +
+            '/page/getJsCode/' +
             this.jsCodeContent.name
         )
         .catch(
           ({
             response: {
-              data: { message: message },
-            },
+              data: { message }
+            }
           }) => {
             this.$notify.error({
-              title: "加载二次计算js代码失败",
-              message,
-            });
+              title: '加载二次计算js代码失败',
+              message
+            })
           }
         )
         .then(({ data }) => {
-          this.calcContent = data.data;
-          this.codeUploadDialog = false;
-        });
+          this.calcContent = data.data
+          this.codeUploadDialog = false
+        })
     },
     // 添加二次计算代码
     descriptionHandler() {
       if (this.description.length === 0) {
-        this.$message.error("计算项的描述不能为空");
+        this.$message.error('计算项的描述不能为空')
       } else {
         const expression = this.$refs.edit.quill
           .getContents()
           .ops.map((item) => {
-            return item.insert;
+            return item.insert
           })
-          .join("");
+          .join('')
         addCalulationItems(
           JSON.stringify({
             description: this.description,
-            expression,
+            expression
           })
         )
           .then(() => {
-            this.descriprionDialog = false;
-            this.calcDialog = false;
-            this.$message.success("添加成功");
-            this.render();
+            this.descriprionDialog = false
+            this.calcDialog = false
+            this.$message.success('添加成功')
+            this.render()
           })
           .catch(
             ({
               response: {
-                data: { message: message },
-              },
+                data: { message }
+              }
             }) => {
               this.$notify.error({
-                title: "添加失败",
-                message,
-              });
+                title: '添加失败',
+                message
+              })
             }
-          );
+          )
       }
     },
     // 启动计算
     startCalc({ id }) {
       axios
-        .get("http://" + getCookie("ip") + "/calculation/startCalcItem/" + id)
+        .get('http://' + getCookie('ip') + '/calculation/startCalcItem/' + id)
         .then(() => {
-          this.$message.success("启动成功!");
-          this.render();
+          this.$message.success('启动成功!')
+          this.render()
         })
         .catch(
           ({
             response: {
-              data: { message: message },
-            },
+              data: { message }
+            }
           }) => {
             this.$notify.error({
-              title: "启动计算项失败",
-              message,
-            });
+              title: '启动计算项失败',
+              message
+            })
           }
-        );
+        )
     },
     // 终止计算
     stopCalc({ id }) {
       axios
-        .get("http://" + getCookie("ip") + "/calculation/stopCalcItem/" + id)
+        .get('http://' + getCookie('ip') + '/calculation/stopCalcItem/' + id)
         .then(() => {
-          this.$message.success("成功停止计算项");
-          this.render();
+          this.$message.success('成功停止计算项')
+          this.render()
         })
         .catch(
           ({
             response: {
-              data: { message: message },
-            },
+              data: { message }
+            }
           }) => {
             this.$notify.error({
-              title: "启动计算项失败",
-              message,
-            });
+              title: '启动计算项失败',
+              message
+            })
           }
-        );
+        )
     },
     // 删除
     deleteCalc({ id }) {
       axios
-        .get("http://" + getCookie("ip") + "/calculation/deleteCalcItem/" + id)
+        .get('http://' + getCookie('ip') + '/calculation/deleteCalcItem/' + id)
         .then(() => {
-          this.$message.success("删除成功");
-          this.render();
+          this.$message.success('删除成功')
+          this.render()
         })
         .catch(
           ({
             response: {
-              data: { message: message },
-            },
+              data: { message }
+            }
           }) => {
             this.$notify.error({
-              title: "删除失败",
-              message,
-            });
+              title: '删除失败',
+              message
+            })
           }
-        );
+        )
     },
     // 搜索
     searchHandler() {
-      this.render();
+      this.render()
     },
     // 编辑
     edit(row) {
-      this.selectedRow = row;
-      this.editContent = row.expression.replace(/\n/g, "<br />");
-      this.editDialog = true;
+      this.selectedRow = row
+      this.editContent = row.expression.replace(/\n/g, '<br />')
+      this.editDialog = true
     },
     // 编辑时间确定按钮
     timeHandler() {
-      const t = parseFloat(this.editItems[1].value);
+      const t = parseFloat(this.editItems[1].value)
       if (60 % t != 0) {
-        this.$message.error("计算间隔必须能被60整除");
+        this.$message.error('计算间隔必须能被60整除')
       } else if (t < 1) {
-        this.$message.error("时间间隔不能小于1s");
+        this.$message.error('时间间隔不能小于1s')
       } else {
-        this.timeDurationDialog = false;
+        this.timeDurationDialog = false
       }
     },
     // 更新二次计算项
@@ -556,38 +556,38 @@ export default {
       const expression = this.$refs.edit1.quill
         .getContents()
         .ops.map((item) => {
-          return item.insert;
+          return item.insert
         })
-        .join("");
-      const description = this.editItems[0].value;
-      const duration = this.editItems[1].value;
+        .join('')
+      const description = this.editItems[0].value
+      const duration = this.editItems[1].value
       updateCalculationItems(
         JSON.stringify({
           id: this.selectedRow.id,
           description,
           duration,
-          expression,
+          expression
         })
       )
         .then(() => {
-          this.editDialog = false;
-          this.render();
-          this.$message.success("更新成功");
+          this.editDialog = false
+          this.render()
+          this.$message.success('更新成功')
         })
         .catch(
           ({
             response: {
-              data: { message: message },
-            },
+              data: { message }
+            }
           }) => {
             this.$notify.error({
-              title: "更新失败",
-              message,
-            });
+              title: '更新失败',
+              message
+            })
           }
-        );
-    },
-  },
-};
+        )
+    }
+  }
+}
 </script>
 

@@ -113,130 +113,134 @@
   </div>
 </template>
 <script>
-import { post, passWordValidator } from "@/api";
+import { post, passWordValidator } from '@/api'
 export default {
-  name: "UserManagement",
+  name: 'UserManagement',
   data() {
     return {
       tableData: [],
-      size: "mini",
+      size: 'mini',
       userRole: [],
-      loginName: "",
+      loginName: '',
       disabled: true,
       editUsersDialog: false,
       userForm: {
-        userName: "",
-        passWord: "",
-        role: "common_user",
+        userName: '',
+        passWord: '',
+        role: 'common_user'
       },
       editUserForm: {
-        userName: "",
-        role: "common_user",
+        userName: '',
+        role: 'common_user'
       },
       rules: {
         userName: [
-          { required: true, trigger: "blur", message: "用户名不能为空" },
+          { required: true, trigger: 'blur', message: '用户名不能为空' }
         ], // 用户名的验证
         passWord: [
           {
             required: true,
-            tigger: "blur",
+            tigger: 'blur',
             min: 6,
-            validator: passWordValidator, // 自定义验证函数
-          },
-        ],
+            validator: passWordValidator // 自定义验证函数
+          }
+        ]
       },
       addUsersDialog: false,
       options: [
-        { label: "普通用户", value: "common_user" },
-        { label: "游客", value: "visitor" },
+        { label: '普通用户', value: 'common_user' },
+        { label: '游客', value: 'visitor' }
       ],
-      userId: "",
-      oldUserName:''
-    };
+      userId: '',
+      oldUserName: ''
+    }
   },
   created() {
-    this.loginName = this.$store.getters["user/userName"].name;
-    this.userRole = this.$store.getters["user/userRole"];
+    this.loginName = this.$store.getters['user/userName'].name
+    this.userRole = this.$store.getters['user/userRole']
   },
   mounted() {
-    this.disabled = !(this.userRole.indexOf("super_user") > -1);
+    this.disabled = !(this.userRole.indexOf('super_user') > -1)
     if (!this.disabled) {
-      this.options.push({ label: "管理员", value: "super_user" });
+      this.options.push({ label: '管理员', value: 'super_user' })
     }
-    this.getUsers();
+    this.getUsers()
   },
   methods: {
     getUsers() {
-      post("", "/page/getUsers")
-        .then(({ data }) => {
-          this.tableData = data.map((item) => {
+      post({}, '/page/getUsers')
+        .then(({ data: {userInfos} }) => {
+          if (typeof(userInfos) === 'string'){
+            // for gRPC
+            userInfos = JSON.parse(userInfos)
+          }
+          this.tableData = userInfos.map((item) => {
             item.role =
-              item.role === "super_user"
-                ? "管理员"
-                : item.role === "common_user"
-                ? "普通用户"
-                : "游客";
-            return item;
-          });
+              item.role === 'super_user'
+                ? '管理员'
+                : item.role === 'common_user'
+                  ? '普通用户'
+                  : '游客'
+            return item
+          })
         })
         .catch(({ message }) => {
           this.$notify.error({
-            title: "获取用户失败",
-            message,
-          });
-        });
+            title: '获取用户失败',
+            message
+          })
+        })
     },
     addUsers() {
-      this.addUsersDialog = true;
+      this.addUsersDialog = true
     },
     handleAddUser() {
-      if (this.userForm.userName.trim(" ").length === 0) {
-        this.$message.error("用户名不能为空");
+      if (this.userForm.userName.trim(' ').length === 0) {
+        this.$message.error('用户名不能为空')
       } else {
         post(
-          JSON.stringify({
+          {
             name: this.userForm.userName,
             role: this.userForm.role,
-            passWord: this.$md5(this.userForm.passWord + "@seu"), // passWord = passWord + @seu
-          }),
-          "/page/addUsers"
+            passWord: this.$md5(this.userForm.passWord + '@seu') // passWord = passWord + @seu
+          },
+          '/page/addUsers'
         )
           .then(() => {
-            this.$message.success("添加用户成功");
-            this.addUsersDialog = false;
-            this.getUsers();
+            this.$message.success('添加用户成功')
+            this.addUsersDialog = false
+            this.getUsers()
           })
           .catch(({ message }) => {
             this.$notify.error({
-              title: "添加用户失败",
-              message,
-            });
-          });
+              title: '添加用户失败',
+              message
+            })
+          })
       }
     },
     editUser({ id, userName, role }) {
       if (this.disabled) {
         // 非管理员
         if (userName !== this.loginName) {
-          this.$message.error("您的权限只能编辑当前用户");
+          this.$message.error('您的权限只能编辑当前用户')
         } else {
-          this.oldUserName = userName   // 原来的用户名
-          this.editUserForm.userName = userName;
+          this.oldUserName = userName // 原来的用户名
+          this.editUserForm.userName = userName
           this.editUserForm.role = role
-          this.userId = id;
-          this.editUsersDialog = true;
+          this.userId = id
+          this.editUsersDialog = true
         }
       } else {
         // 管理员
-        if (userName === "admin") {
-          this.$message.error("无法编辑admin用户");
+        if (userName === 'admin') {
+          this.$message.error('无法编辑admin用户')
         } else {
-          this.oldUserName = userName   // 原来的用户名
-          this.editUserForm.userName = userName;
+          this.oldUserName = userName // 原来的用户名
+          this.editUserForm.userName = userName
           this.editUserForm.role = role
-          this.userId = id;
-          this.editUsersDialog = true;
+          this.userId = id
+          this.editUsersDialog = true
         }
       }
     },
@@ -246,83 +250,83 @@ export default {
         this.editUserForm.role === this.userRole[0]
       ) {
         // no changed
-        this.editUsersDialog = false;
+        this.editUsersDialog = false
       } else {
-        if (this.editUserForm.userName.trim(" ").length === 0) {
-          this.$message.error("用户名不能为空");
+        if (this.editUserForm.userName.trim(' ').length === 0) {
+          this.$message.error('用户名不能为空')
         } else {
           post(
-            JSON.stringify({
+            {
               id: parseInt(this.userId),
               oldUserName: this.oldUserName,
               newUserName: this.editUserForm.userName,
-              role: this.editUserForm.role,
-            }),
-            "/page/updateUsers"
+              role: this.editUserForm.role
+            },
+            '/page/updateUsers'
           )
             .then(() => {
               if (this.disabled) {
                 this.$store
-                  .dispatch("user/clearRole")
+                  .dispatch('user/clearRole')
                   .then(() => {
-                    this.$message.success("更新用户信息成功,请重新登录");
-                    this.$router.push("/login");
+                    this.$message.success('更新用户信息成功,请重新登录')
+                    this.$router.push('/login')
                   })
                   .catch((err) => {
                     this.$notify.error({
-                      title: "更新用户信息失败",
-                      message: err,
-                    });
-                  });
+                      title: '更新用户信息失败',
+                      message: err
+                    })
+                  })
               } else {
                 // 管理员
-                this.$message.success("更新用户信息成功");
+                this.$message.success('更新用户信息成功')
                 this.getUsers()
-                this.editUsersDialog = false;
+                this.editUsersDialog = false
               }
             })
             .catch(({ message }) => {
               this.$notify.error({
-                title: "更新用户信息失败",
-                message,
-              });
-            });
+                title: '更新用户信息失败',
+                message
+              })
+            })
         }
       }
     },
     deleteUser({ userName }) {
-      if (userName === "admin") {
-        this.$message.error("不能删除admin用户");
+      if (userName === 'admin') {
+        this.$message.error('不能删除admin用户')
       } else {
-        this.$confirm("删除操作不可逆,是否继续?", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning",
+        this.$confirm('删除操作不可逆,是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
         })
           .then(() => {
-            const name = userName;
+            const name = userName
             post(
-              JSON.stringify({
-                name,
-              }),
-              "/page/deleteUsers"
+              {
+                name
+              },
+              '/page/deleteUsers'
             )
               .then(() => {
-                this.$message.success("删除用户成功");
-                this.getUsers();
+                this.$message.success('删除用户成功')
+                this.getUsers()
               })
               .catch(({ message }) => {
                 this.$$notify.error({
-                  title: "删除用户失败",
-                  message,
-                });
-              });
+                  title: '删除用户失败',
+                  message
+                })
+              })
           })
           .catch(() => {
-            this.$message.info("操作取消");
-          });
+            this.$message.info('操作取消')
+          })
       }
-    },
-  },
-};
+    }
+  }
+}
 </script>

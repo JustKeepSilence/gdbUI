@@ -9,15 +9,15 @@
 </template>
 <script>
 export default {
-  name: "Menu",
-  props: ["route"],
-  created: ()=>{
-      this.index = new Date()  // 通过设定key值为当前的时间来个给每个key不同的index
+  name: 'Menu',
+  props: ['route'],
+  created: () => {
+    this.index = new Date() // 通过设定key值为当前的时间来个给每个key不同的index
   },
-  data(){
+  data() {
     return {
-      index: '',
-     
+      index: ''
+
     }
   }
 }

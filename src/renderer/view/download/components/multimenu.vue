@@ -25,10 +25,10 @@
 </template>
 
 <script>
-import Menu from "./menu";
+import Menu from './menu'
 
 export default {
-  name: "MultiMenu",
-  props: ["routes"], // 子路由
-};
+  name: 'MultiMenu',
+  props: ['routes'] // 子路由
+}
 </script>

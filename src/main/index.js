@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, BrowserWindow, screen } from 'electron'
+import { app, BrowserWindow, dialog, screen } from 'electron'
 
 /**
  * Set `__static` path to static files in production
@@ -19,29 +19,33 @@ function createWindow () {
   /**
    * Initial window options
    */
-
   mainWindow = new BrowserWindow({
     height: 650,
     useContentSize: true,
     width: 1100,
-    maximizable:false,
-    resizable: false
+    maximizable: false,
+    resizable: false,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+      enableRemoteModule: true
+  }
   })
-
-  // width 1000 height 600
+  // width 1100 height 650
 
   mainWindow.loadURL(winURL)
-  // mainWindow.webContents.openDevTools()
-  //关闭开发者工具使用
-  mainWindow.webContents.closeDevTools();
+  mainWindow.webContents.openDevTools()
+  // 关闭开发者工具使用
+  // mainWindow.webContents.closeDevTools()
 
   mainWindow.on('closed', () => {
-    
     mainWindow = null
   })
 }
 
 app.on('ready', createWindow)
+
+app.allowRendererProcessReuse = false
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
@@ -51,7 +55,6 @@ app.on('window-all-closed', () => {
 
 app.on('activate', () => {
   if (mainWindow === null) {
-    
     createWindow()
   }
 })

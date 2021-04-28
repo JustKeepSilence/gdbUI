@@ -77,6 +77,7 @@
                 <el-avatar :src="avatar" :size="avatarSize" style="cursor:pointer"></el-avatar>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item >{{loginName}}</el-dropdown-item>
+                  <el-dropdown-item @click.native='changeMode'>切换模式</el-dropdown-item>
                   <el-dropdown-item @click.native="logout">退出登录</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
@@ -113,17 +114,17 @@
 </template>
 
 <script>
-import { getCookie } from "@/utils/cookie";
-import Menu from "./components/menu";
-import MultiMenu from "./components/multimenu";
+import { getCookie } from '@/utils/cookie'
+import Menu from './components/menu'
+import MultiMenu from './components/multimenu'
 import gi from '@/images/github.png'
 import av from '@/images/go.gif'
-import 'element-ui/lib/theme-chalk/display.css';
-import {get} from "@/api"
-const { shell } = require("electron");
+import 'element-ui/lib/theme-chalk/display.css'
+import {post} from '@/api'
+const { shell } = require('electron')
 
 export default {
-  name: "DownLoad",
+  name: 'DownLoad',
   created() {
     const width = document.body.clientWidth
     // if (width < 1000){
@@ -131,19 +132,19 @@ export default {
     //   this.isCollapse = true
     // }
     // 实例挂载完成之后获取用户路由
-    this.routes = this.$store.getters["routes/asyncRoutes"];
+    this.routes = this.$store.getters['routes/asyncRoutes']
     this.loginName = this.$store.getters['user/userName'].name
-    this.initialBread(this.$route.path); // 初始化面包屑
-    if (this.$route.path === "/index") {
+    this.initialBread(this.$route.path) // 初始化面包屑
+    if (this.$route.path === '/index') {
       // 如果一开始就是首页
-      this.tags[0].effect = "dark";
+      this.tags[0].effect = 'dark'
     } else {
       // 如果不是首页则将路由信息加入tags中
       this.tags.push({
         name: this.$route.meta.title,
         path: this.$route.path,
-        effect: "dark",
-      });
+        effect: 'dark'
+      })
     }
   },
   mounted() {},
@@ -151,112 +152,111 @@ export default {
   methods: {
     // 退出登陆的函数
     async logout() {
-      const userName = await getCookie('userName')
-      get('/page/userLogout/' + userName).then(async ()=>{
-      const { code } = await this.$store.dispatch("user/clearUserInfo"); // 清空用户信息
-      if (code === 200) {
-        this.$message.success('成功退出登陆!')
-        this.$router.push("/login"); // 如果清空成功则跳转到登陆页
-      } else {
-        this.$message({
-          type: "danger",
-          message: "退出登陆发生错误!",
-        });
-      }
-      }).catch((err)=>{
+      post({}, '/page/userLogOut').then(async () => {
+        const { code } = await this.$store.dispatch('user/clearUserInfo') // 清空用户信息
+        if (code === 200) {
+          this.$message.success('成功退出登陆!')
+          this.$router.push('/login') // 如果清空成功则跳转到登陆页
+        } else {
+          this.$message({
+            type: 'danger',
+            message: '退出登陆发生错误!'
+          })
+        }
+      }).catch((err) => {
         this.$message.error(err.message)
       })
     },
     // 侧边栏展开或者收缩的函数
     changeCollapse() {
-      this.isCollapse = !this.isCollapse;
+      this.isCollapse = !this.isCollapse
     },
     // 计算指定路由在路由表中的位置
     getRouteIndex(routePath) {
       return this.routes.findIndex((item) => {
         if (item.path === routePath) {
-          return true;
+          return true
         } else if (item.children) {
-          this.checkChildrenRoute(item.children, routePath);
-          return this.flag;
+          this.checkChildrenRoute(item.children, routePath)
+          return this.flag
         } else {
-          return false;
+          return false
         }
-      });
+      })
     },
     // 用于重新生成面包屑
     reInitialBread(routePath, indexPath) {
-      this.breadItems = [{  title: "首页" }]; // 初始化面包屑的数据
+      this.breadItems = [{ title: '首页' }] // 初始化面包屑的数据
       // routePath即为路由的url,indexPath的第一个参数即为父级路由在整个路由表中的位置
       // 如果没有的话则说明父级路由被隐藏，此时的indexPath只有一个元素即routePath,此时直接寻找即可
-      if (routePath !== "/index") {
+      if (routePath !== '/index') {
         // 不是首页
-        const routeIndex = indexPath[0]; // 获取url的下标
-        const reg = /\d+/; // 判断indexPath的第一个值是否是纯数字
+        const routeIndex = indexPath[0] // 获取url的下标
+        const reg = /\d+/ // 判断indexPath的第一个值是否是纯数字
         if (reg.test(routeIndex)) {
           // 如果routeIndex是下标,则一定有>1的子路由
-          const route = this.routes[routeIndex]; // 从路由表中获取该路由
-          this.addBreadItem(route, false); // 将该级路由信息加入到面包屑中,父级不包括path
+          const route = this.routes[routeIndex] // 从路由表中获取该路由
+          this.addBreadItem(route, false) // 将该级路由信息加入到面包屑中,父级不包括path
           // 递归向面包屑中增加路由信息
-          this.addBreadItems(routePath, route.children);
+          this.addBreadItems(routePath, route.children)
         } else {
           // index不是下标,则意味着父级路由被隐藏，只有一级子路由
           const temp = this.routes.filter((item) => {
             if (item.children) {
-              return item.children[0].path === routePath; // 直接搜索找到该级路由
+              return item.children[0].path === routePath // 直接搜索找到该级路由
             }
-          });
-          this.addBreadItem(temp[0].children[0], true); // 添加该级元素,最终的子路由
+          })
+          this.addBreadItem(temp[0].children[0], true) // 添加该级元素,最终的子路由
         }
       }
     },
     // 递归增加面包削中的内容, routePath为待寻找的路由,routes为子路由列表
     addBreadItems(routePath, routes) {
       for (let i = 0; i < routes.length; i++) {
-        const item = routes[i];
+        const item = routes[i]
         if (item.path === routePath) {
           // 找到了该级路由
-          this.addBreadItem(item, true); // 添加该级元素,最终的子路由
-          break; // 结束整个循环
+          this.addBreadItem(item, true) // 添加该级元素,最终的子路由
+          break // 结束整个循环
         } else if (item.children) {
           // 有子路由并且该子路由中含有待寻找的路由则继续递归
           // 如果不做这个逻辑判断就会出现点击图片搜索的时候
           // 面包屑的内容是首页/音乐搜索/图片搜索的bug
-          this.checkChildrenRoute(item.children, routePath);
+          this.checkChildrenRoute(item.children, routePath)
           if (this.flag) {
-            this.addBreadItem(item, false); // 首先添加父级元素,并且不添加path
+            this.addBreadItem(item, false) // 首先添加父级元素,并且不添加path
             // 这样在面包屑永远只能点击首页和最后一级可以点击的路由
-            this.flag = false; // 设置成false
-            this.addBreadItems(routePath, item.children); // 递归调用
+            this.flag = false // 设置成false
+            this.addBreadItems(routePath, item.children) // 递归调用
           }
         } else {
           // 没有子路由或者该级路由不匹配
-          continue; // 结束此次循环
+          continue // 结束此次循环
         }
       }
     },
     // 向breaditem中增加一个元素, includePath: 是都将该级路由添加进去,默认为true
     addBreadItem(item, inclduePath = true) {
       if (inclduePath) {
-        const { path } = item; // 获取该级path
-        const { title } = item.meta; // 获取该级的title
-        this.breadItems.push({ path, title }); // 添加该级的路径
+        const { path } = item // 获取该级path
+        const { title } = item.meta // 获取该级的title
+        this.breadItems.push({ path, title }) // 添加该级的路径
       } else {
-        const { title } = item.meta; // 该级的title
-        this.breadItems.push({ title });
+        const { title } = item.meta // 该级的title
+        this.breadItems.push({ title })
       }
     },
     checkChildrenRoute(routes, routePath) {
       // 检查子路由中是否含有指定的routePath
       for (let i = 0; i < routes.length; i++) {
-        const item = routes[i];
+        const item = routes[i]
         if (item.path === routePath) {
           // 如果有的话将flag的值设置成true
-          this.flag = true;
+          this.flag = true
         } else if (item.children) {
-          this.checkChildrenRoute(item.children, routePath);
+          this.checkChildrenRoute(item.children, routePath)
         } else {
-          continue;
+          continue
         }
       }
     },
@@ -264,125 +264,129 @@ export default {
     initialBread(routePath) {
       // 获取默认展开的路由在路由表中的index,由于每个路由的路径都是唯一的
       // 所以可以使用findIndex来进行查找
-      this.defaultRouteIndex = this.getRouteIndex(routePath);
-      this.flag = false; // 重新设置成false
-      if (!this.routes[this.defaultRouteIndex].children || this.routes[this.defaultRouteIndex].children.length === 1 ) {
+      this.defaultRouteIndex = this.getRouteIndex(routePath)
+      this.flag = false // 重新设置成false
+      if (!this.routes[this.defaultRouteIndex].children || this.routes[this.defaultRouteIndex].children.length === 1) {
         // 只有一级子路由
-        this.reInitialBread(routePath, [routePath]);
+        this.reInitialBread(routePath, [routePath])
       } else {
         // 多级子路由
         this.reInitialBread(routePath, [
           this.defaultRouteIndex.toString(),
-          routePath,
-        ]);
+          routePath
+        ])
       }
     },
     handleTagClose(tag) {
       // 关闭tag标签
-      this.tags.splice(this.tags.indexOf(tag), 1);
-      this.$router.push(this.tags[this.tags.length - 1].path); // 路由跳转
+      this.tags.splice(this.tags.indexOf(tag), 1)
+      this.$router.push(this.tags[this.tags.length - 1].path) // 路由跳转
     },
     // 点击tag标签时进行路由跳转
     handleTagClick({ path }) {
-      this.$router.push(path);
+      this.$router.push(path)
     },
     // 刷新页面
-    refresh(){
-       this.routerAlive = false
-       this.$nextTick(()=>{
-         this.routerAlive = true
-       })
+    refresh() {
+      this.routerAlive = false
+      this.$nextTick(() => {
+        this.routerAlive = true
+      })
     },
-    // 个人中心 
-    userHandler(){
+    // 个人中心
+    userHandler() {
       this.$router.push('/userManagement')
     },
     // href="https://github.com/JustKeepSilence"
-    fork(){
-        shell.openExternal("https://github.com/JustKeepSilence")
+    fork() {
+      shell.openExternal('https://github.com/JustKeepSilence')
+    },
+    // 切换模式
+    changeMode(){
+      this.$router.push('/login')
     }
   },
   data() {
     return {
       routes: [], // 用户的动态路由
-      userName: this.$store.getters["user/userName"], // 用户的姓名
+      userName: this.$store.getters['user/userName'], // 用户的姓名
       isCollapse: false, // 侧边栏是否展开
-      asideWidth: "200px", // 侧边栏的宽度
-      breadItems: [{  title: "首页" }], // 初始化面包屑里面的数据
+      asideWidth: '200px', // 侧边栏的宽度
+      breadItems: [{ title: '首页' }], // 初始化面包屑里面的数据
       defaultRouteIndex: 0, // 一开始进来的时候默认展开的路由在路由表中的index
       flag: false, // 子路由中是否含有this.$route.path,用于一开始面包屑的生成
       tags: [
-        { name: "首页", path: "/index", effect: "plain", closable: false },
+        { name: '首页', path: '/index', effect: 'plain', closable: false }
       ], // tags标签,首页不能关闭
       routerAlive: true,
       img: gi,
       avatar: av,
       avatarSize: 'medium',
-      size:'medium',
+      size: 'medium',
       loginName: ''
-    };
+    }
   },
-  provide(){
-      return {
-        reload: this.reload
-      }
+  provide() {
+    return {
+      reload: this.reload
+    }
   },
   watch: {
     // 监听isCollapse的变化来实现侧边栏的动态响应
     isCollapse(n, o) {
-      this.asideWidth = n ? "60px" : "220px";
+      this.asideWidth = n ? '60px' : '220px'
     },
     // 监听路由的变化
     $route(to, from) {
-      if (to.path === "/index") {
-        this.breadItems = [{ title: "首页" }]; // 初始化面包屑的数据
+      if (to.path === '/index') {
+        this.breadItems = [{ title: '首页' }] // 初始化面包屑的数据
       } else {
-        this.initialBread(to.path); // 初始化面包屑
+        this.initialBread(to.path) // 初始化面包屑
       }
       const res = this.tags.some((item) => {
-        return item.name === to.meta.title;
-      });
+        return item.name === to.meta.title
+      })
       if (res) {
         // 该路由已经添加到tags中
         this.tags.forEach((item) => {
           if (item.name === to.meta.title) {
-            item["effect"] = "dark"; // 现在的路由深色显示
+            item['effect'] = 'dark' // 现在的路由深色显示
           }
-          if (item.name === from.meta.title || item.name === "首页") {
-            item["effect"] = "plain"; //去除原先的路由的深色显示的效果
+          if (item.name === from.meta.title || item.name === '首页') {
+            item['effect'] = 'plain' // 去除原先的路由的深色显示的效果
           }
-        });
+        })
       } else {
-        if (to.meta.title === "GDB") {
+        if (to.meta.title === 'GDB') {
           // 进入首页
           this.tags.forEach((item) => {
-            if (item.name === "首页") {
-              item["effect"] = "dark"; // 首页路由深色显示
+            if (item.name === '首页') {
+              item['effect'] = 'dark' // 首页路由深色显示
             }
             if (item.name === from.meta.title) {
-              item["effect"] = "plain"; //去除原先的路由的深色显示的效果
+              item['effect'] = 'plain' // 去除原先的路由的深色显示的效果
             }
-          });
+          })
         } else {
           this.tags.push({
             name: to.meta.title,
             path: to.path,
-            effect: "dark",
-          });
+            effect: 'dark'
+          })
           this.tags.forEach((item) => {
-            if (item.name === from.meta.title || item.name === "首页") {
-              item["effect"] = "plain"; //去除原先的路由的深色显示的效果
+            if (item.name === from.meta.title || item.name === '首页') {
+              item['effect'] = 'plain' // 去除原先的路由的深色显示的效果
             }
-          });
+          })
         }
       }
-    },
+    }
   },
   components: {
     Menu,
-    MultiMenu,
-  },
-};
+    MultiMenu
+  }
+}
 </script>
 <style>
 /* 设置头部样式 */

@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import DownLoad from '@/view/download'   // DownLoad组件中包含了所有页面公共的侧边栏
+import DownLoad from '@/view/download' // DownLoad组件中包含了所有页面公共的侧边栏
 
 Vue.use(Router)
 
@@ -14,7 +14,7 @@ const constantRoutes = [
     meta: { hidden: true }
   },
   {
-    path: '/login',  // 登陆界面
+    path: '/login', // 登陆界面
     name: 'Login',
     component: () => import('@/view/login'),
     meta: { title: '登陆', hidden: true }
@@ -24,11 +24,11 @@ const constantRoutes = [
     name: 'HomePage',
     component: DownLoad,
     meta: { title: 'GDB', icon: 'el-icon-coin', hidden: false },
-    redirect:'/index',
-    children:[
+    redirect: '/index',
+    children: [
       {
-        path:'/index',
-        component: ()=>import('@/view/firstPage'),
+        path: '/index',
+        component: () => import('@/view/firstPage'),
         meta: { title: 'GDB', icon: 'el-icon-coin', hidden: false }
       }
     ]
@@ -37,13 +37,13 @@ const constantRoutes = [
     path: '/search',
     component: DownLoad,
     name: 'Search',
-    meta: { title: '资源管理', icon: 'el-icon-menu', hidden: false,role: ['developer', 'super_user', 'common_user'] },
+    meta: { title: '资源管理', icon: 'el-icon-menu', hidden: false, role: ['developer', 'super_user', 'common_user'] },
     children: [
       {
         path: '/groups',
         name: 'Group',
         component: () => import('@/view/group'),
-        meta: { title: '分组管理', icon: 'el-icon-film', hidden: false, role: ['developer', 'super_user', 'common_user'] },
+        meta: { title: '分组管理', icon: 'el-icon-film', hidden: false, role: ['developer', 'super_user', 'common_user'] }
       },
       {
         path: '/calc',
@@ -52,8 +52,8 @@ const constantRoutes = [
         meta: { title: '二次计算', icon: 'el-icon-cpu', hidden: false, role: ['developer', 'super_user', 'common_user'] }
       }
     ]
-  },
-  
+  }
+
 ]
 
 const asyncRoutes = [
@@ -67,23 +67,23 @@ const asyncRoutes = [
         path: '/document',
         name: 'Document',
         component: () => import('@/view/user/document'),
-        meta: { title: '系统手册', role: [ 'super_user', 'common_user'], icon: 'el-icon-document', hidden: false }  // 路由元数据
+        meta: { title: '系统手册', role: [ 'super_user', 'common_user'], icon: 'el-icon-document', hidden: false } // 路由元数据
       },
       {
-        path :'/log',
+        path: '/log',
         name: 'Log',
-        component: ()=>import('@/view/log'),
-        meta: { title: '运行日志', role: ['super_user', 'common_user'], icon: 'el-icon-document', hidden: false }  // 路由元数据
+        component: () => import('@/view/log'),
+        meta: { title: '运行日志', role: ['super_user', 'common_user'], icon: 'el-icon-document', hidden: false } // 路由元数据
       },
       {
         path: '/userManagement',
         name: 'UserManagement',
         component: () => import('@/view/user/userManagement'),
-        meta: { title: '用户管理', role: ['super_user', 'common_user'], icon: 'el-icon-user-solid', hidden: false }  // 路由元数据
+        meta: { title: '用户管理', role: ['super_user', 'common_user'], icon: 'el-icon-user-solid', hidden: false } // 路由元数据
       }
     ]
-  },
-  
+  }
+
 ]
 
 // 解决VUE路由跳转出现Redirected when going from "/xxx" to "/yyy" via a navigation guard.报错
@@ -94,12 +94,12 @@ Router.prototype.push = function push(location, onResolve, onReject) {
 }
 
 const router = new Router({
-  routes: constantRoutes,
+  routes: constantRoutes
 })
 
 const createRouter = () => {
   return new Router({
-    routes: constantRoutes,
+    routes: constantRoutes
   })
 }
 
@@ -109,7 +109,6 @@ const resetRouter = async () => {
   const newRouter = createRouter()
   router.matcher = newRouter.matcher // reset router
 }
-
 
 export default router
 export { constantRoutes, asyncRoutes, resetRouter }

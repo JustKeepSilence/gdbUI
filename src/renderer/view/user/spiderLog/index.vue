@@ -5,6 +5,6 @@
 </template>
 <script>
 export default {
-    name: 'SpiderLog'
+  name: 'SpiderLog'
 }
 </script>

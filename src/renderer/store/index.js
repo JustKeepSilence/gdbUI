@@ -7,10 +7,10 @@ import routes from '@/store/modules/routes'
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
-    modules: {
-        user,
-        routes
-    },
+  modules: {
+    user,
+    routes
+  }
 })
 
 export default store

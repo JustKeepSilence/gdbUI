@@ -164,7 +164,7 @@
       :close-on-click-modal="false"
       :close-on-press-escape="false"
     >
-      <el-form ref="groupForm" :model="groupForm" label-width="100px">
+      <el-form ref="groupForm" :model="groupForm" label-width="110px">
         <el-form-item label="GroupName">
           <el-input
             v-model="groupForm.groupName"
@@ -415,7 +415,7 @@
       :close-on-click-modal="false"
       :close-on-press-escape="false"
     >
-      <el-form label-width="160px">
+      <el-form label-width="170px">
         <el-form-item label="要导入历史的itemName">
           <el-input
             v-model="historyItemNames"
@@ -473,15 +473,14 @@
   </div>
 </template>
 <script>
-import {post, uploadFile} from '@/api'
-import axios from "axios";
+import { post, uploadFile } from "@/api";
 import XLSX from "xlsx"; // 导入exceljs
 import { saveAs } from "file-saver";
 import { getCookie } from "@/utils/cookie";
 import "element-ui/lib/theme-chalk/display.css";
-const _ = require("lodash");
 import Base64 from "js-base64";
 import Highcharts from "highcharts/highstock";
+const _ = require("lodash");
 
 export default {
   name: "Group",
@@ -626,17 +625,17 @@ export default {
       importHistoryDialog: false,
       historyItemNames: "",
       sheetNames: "",
-      itemDialogHistoryName:'导入历史数据',
-      itemDialogHistory:false,
+      itemDialogHistoryName: "导入历史数据",
+      itemDialogHistory: false,
       addItemHistoryLoading: false,
-      role: '',  // 用户角色,
+      role: "", // 用户角色,
       disabled: true,
-      showButton: true
+      showButton: true,
     };
   },
   mounted() {
     this.disabled = !(this.role.indexOf("super_user") > -1);
-    this.showButton = !(this.role.indexOf("visitor") > -1)  // visitor
+    this.showButton = !(this.role.indexOf("visitor") > -1); // visitor
     document.querySelector(".el-main").style.backgroundColor = " #ffffff";
   },
   created() {
@@ -657,15 +656,13 @@ export default {
     });
   },
   methods: {
-    
     initial(flag = false) {
-      post('', '/group/getGroups').then(({ data }) => {
+      post({}, "/group/getGroups").then(({ data }) => {
         this.groups = data.groupNames;
         if (flag) {
           this.selectedGroups = this.groups[0];
         }
-        this.handleDeleteGroupButtonState =
-          this.selectedGroups === "calc" ? true : false;
+        this.handleDeleteGroupButtonState = this.selectedGroups === "calc";
         this.render();
       });
     },
@@ -691,11 +688,11 @@ export default {
               d.push({ groupName: g[i], columnNames: c[i].split(",") });
             }
           }
-          post(JSON.stringify({ groupInfos: d }), '/group/addGroups')
-            .then((r) => {
+          post({ groupInfos: d }, "/group/addGroups")
+            .then(() => {
               this.$message.success("添加成功!");
               this.groupDialog = false;
-              post('', '/group/getGroups').then(({ data }) => {
+              post({}, "/group/getGroups").then(({ data }) => {
                 this.groups = data.groupNames;
                 this.selectedGroups = this.groups[0];
               });
@@ -714,15 +711,14 @@ export default {
     // 组切换回调函数
     getSelectedGroupInfos() {
       this.render(); // 重新渲染
-      this.handleDeleteGroupButtonState =
-        this.selectedGroups === "calc" ? true : false;
+      this.handleDeleteGroupButtonState = this.selectedGroups === "calc";
     },
     // 加单个点的弹窗
     openItemDialog() {
       this.itemDialog = true;
     },
     // 加单个点
-    handleAddItem() {
+    async handleAddItem() {
       let values = [];
       let d = {};
       const f = this.$refs.itemForm;
@@ -730,11 +726,14 @@ export default {
         d[this.groupColumns[i]["label"]] = f[i].value;
       }
       values.push(d);
+      const mode = await getCookie("mode");
       post(
-        JSON.stringify({
+        {
           groupName: this.selectedGroups,
-          gdbItems: { itemValues: values },
-        }), '/item/addItems'
+          itemValues:
+            mode.indexOf("gRPC") > -1 ? JSON.stringify(values) : values,
+        },
+        "/item/addItems"
       )
         .then(() => {
           this.itemDialog = false;
@@ -757,11 +756,12 @@ export default {
       })
         .then(() => {
           post(
-            JSON.stringify({
+            {
               groupNames: [this.selectedGroups],
-            }), '/group/deleteGroups'
+            },
+            "/group/deleteGroups"
           ).then(() => {
-            post('', '/group/getGroups')
+            post({}, "/group/getGroups")
               .then(({ data }) => {
                 this.groups = data.groupNames;
                 this.selectedGroups = this.groups[0];
@@ -782,13 +782,14 @@ export default {
     showItems(groupName) {
       this.tableLoading = true;
       post(
-        JSON.stringify({
+        {
           groupName: this.selectedGroups,
           columnNames: "*",
           condition: this.searchCondition,
           startRow: this.startRow,
           rowCount: this.rowCount,
-        }), '/item/getItemsWithCount'
+        },
+        "/item/getItemsWithCount"
       )
         .then(({ data: { itemCount, itemValues } }) => {
           this.itemCount = itemCount;
@@ -796,14 +797,18 @@ export default {
           let itemNames = [];
           if (itemValues !== null) {
             for (let i = 0; i < itemValues.length; i++) {
+              if (itemValues[i].hasOwnProperty("items")) {
+                // for gRPC
+                itemValues[i] = itemValues[i]["items"];
+              }
               itemNames.push(itemValues[i].itemName);
             }
           }
           post(
-            JSON.stringify({
-              groupName,
+            {
               itemNames,
-            }), '/data/getRealTimeData'
+            },
+            "/data/getRealTimeData"
           )
             .then(({ data: { realTimeData } }) => {
               const timeData = realTimeData;
@@ -839,10 +844,11 @@ export default {
     render() {
       // 根据组去获取对应的列名的信息
       post(
-        JSON.stringify({
+        {
           groupName: this.selectedGroups,
           condition: "1=1",
-        }), '/group/getGroupProperty'
+        },
+        "/group/getGroupProperty"
       )
         .then(({ data }) => {
           this.showItems(this.selectedGroups);
@@ -891,17 +897,16 @@ export default {
       const data = new FormData();
       const fileUps = this.fileContent;
       data.append("file", fileUps);
-      const userToken = await getCookie("token");
-      const userName = await getCookie("userName");
-      const token = "Basic " + Base64.encode(`${userName}:${userToken}`);
-      uploadFile(fileUps).then(()=>{
-        this.$message.success("上传成功");
-      }).catch(({message})=>{
-         this.$notify.error({
-           title: '上传失败',
-           message
-         })
-      })
+      uploadFile(fileUps)
+        .then(() => {
+          this.$message.success("上传成功");
+        })
+        .catch(({ message }) => {
+          this.$notify.error({
+            title: "上传失败",
+            message,
+          });
+        });
     },
     // 检查是否是excel
     isExcel(name) {
@@ -911,10 +916,11 @@ export default {
     handleAddItems() {
       this.addItemLoading = true;
       post(
-        JSON.stringify({
+        {
           fileName: this.fileContent.name,
           groupName: this.selectedGroups,
-        }), '/page/addItemsByExcel'
+        },
+        "/page/addItemsByExcel"
       )
         .then(() => {
           this.addItemLoading = false;
@@ -947,9 +953,9 @@ export default {
       this.showItems(this.selectedGroups);
     },
     s2ab(s) {
-      var buf = new ArrayBuffer(s.length); //convert s to arrayBuffer
-      var view = new Uint8Array(buf); //create uint8array as viewer
-      for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xff; //convert to octet
+      var buf = new ArrayBuffer(s.length); // convert s to arrayBuffer
+      var view = new Uint8Array(buf); // create uint8array as viewer
+      for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xff; // convert to octet
       return buf;
     },
     // 点表下载
@@ -963,19 +969,21 @@ export default {
           this.tableLoadingText = "正在下载中...";
           this.tableLoading = true;
           post(
-            JSON.stringify({
+            {
               groupName: this.selectedGroups,
               condition: "1=1",
-            }), '/group/getGroupProperty'
+            },
+            "/group/getGroupProperty"
           ).then(({ data }) => {
             const headers = data.itemColumnNames;
             post(
-              JSON.stringify({
+              {
                 groupName: this.selectedGroups,
                 columnNames: "*",
                 condition: this.searchCondition,
                 startRow: -1,
-              }), '/item/getItemsWithCount'
+              },
+              "/item/getItemsWithCount"
             )
               .then(({ data: { itemValues } }) => {
                 const wb = XLSX.utils.book_new(); // 创建工作簿
@@ -983,6 +991,10 @@ export default {
                 let wd = [headers];
                 if (itemValues != null) {
                   itemValues.forEach((item) => {
+                    if (item.hasOwnProperty("items")) {
+                      // for gRPC
+                      item = item["items"];
+                    }
                     let row = [];
                     headers.forEach((key) => {
                       row.push(item[key]);
@@ -1026,13 +1038,13 @@ export default {
       const e =
         new Date(this.parseTime(this.st[1])).getTime() / 1000 + 8 * 3600;
       post(
-        JSON.stringify({
-          groupName: this.selectedGroups,
+        {
           itemNames: [this.selectedItem],
           startTimes: [s],
           endTimes: [e],
           intervals: [parseInt(this.interval)],
-        }), '/data/getHistoricalData'
+        },
+        "/data/getHistoricalData"
       )
         .catch(({ message }) => {
           this.$notify.error({
@@ -1041,6 +1053,9 @@ export default {
           });
         })
         .then(({ data: { historicalData } }) => {
+          if (typeof historicalData === "string") {
+            historicalData = JSON.parse(historicalData);
+          }
           this.chartItemValues = historicalData[this.selectedItem];
           let tData = [];
           if (historicalData[this.selectedItem][0] === null) {
@@ -1113,10 +1128,10 @@ export default {
     },
     // 下载数据
     handleDownloadData() {
-      this.chartLoading = true;
-      let workBook = XLSX.utils.book_new(); // 创建工作簿
-      let wd = [["Time", "Data"]];
-      if (this.chartItemValues !== null) {
+      if (this.chartItemValues[0] !== null) {
+        this.chartLoading = true;
+        let workBook = XLSX.utils.book_new(); // 创建工作簿
+        let wd = [["Time", "Data"]];
         for (let i = 0; i < this.chartItemValues[0].length; i++) {
           let row = [];
           row.push(
@@ -1127,22 +1142,24 @@ export default {
           row.push(this.chartItemValues[1][i]);
           wd.push(row); // 将数据写入工作表
         }
+        const ws = XLSX.utils.aoa_to_sheet(wd);
+        XLSX.utils.book_append_sheet(workBook, ws, "Sheet1");
+        const buf = this.s2ab(
+          XLSX.write(workBook, { bookType: "xlsx", type: "binary" })
+        );
+        saveAs(
+          new Blob([buf]),
+          this.selectedGroups +
+            "_" +
+            this.selectedItem +
+            "_" +
+            new Date().getTime() +
+            ".xlsx"
+        ); // 将数据写入excel
+        this.$message.success("下载完成");
+      } else {
+        this.$message.warning("所选时间段内无历史数据");
       }
-      const ws = XLSX.utils.aoa_to_sheet(wd);
-      XLSX.utils.book_append_sheet(workBook, ws, "Sheet1");
-      const buf = this.s2ab(
-        XLSX.write(workBook, { bookType: "xlsx", type: "binary" })
-      );
-      saveAs(
-        new Blob([buf]),
-        this.selectedGroups +
-          "_" +
-          this.selectedItem +
-          "_" +
-          new Date().getTime() +
-          ".xlsx"
-      ); // 将数据写入excel
-      this.$message.success("下载完成");
       this.chartLoading = false;
     },
     // 编辑此组
@@ -1173,11 +1190,12 @@ export default {
         })
           .then(() => {
             post(
-              JSON.stringify({
+              {
                 groupName: this.selectedGroups,
                 oldColumnNames: [this.oldColumnName],
                 newColumnNames: [this.editedColumnName],
-              }), '/group/updateGroupColumnNames'
+              },
+              "/group/updateGroupColumnNames"
             )
               .then(({ data }) => {
                 this.groupTableData.map((item) => {
@@ -1216,10 +1234,11 @@ export default {
       })
         .then(() => {
           post(
-            JSON.stringify({
+            {
               groupName: this.selectedGroups,
               columnNames: [columnName],
-            }), '/group/deleteGroupColumns'
+            },
+            "/group/deleteGroupColumns"
           )
             .then(({ data }) => {
               this.groupTableData = this.groupTableData.filter((item) => {
@@ -1255,13 +1274,14 @@ export default {
           this.$$message.warning("列名和默认值不一致");
         } else {
           post(
-            JSON.stringify({
+            {
               groupName: this.selectedGroups,
               columnNames: this.addedColumnName.split(",").map((item) => {
                 return item.trim();
               }),
               defaultValues: this.columnDefaultValues.split(","),
-            }), '/group/addGroupColumns'
+            },
+            "/group/addGroupColumns"
           )
             .then(() => {
               this.$message.success(`增加列${this.addedColumnName}成功`);
@@ -1304,11 +1324,12 @@ export default {
         clause.push(`${this.editItems[i].label}='${this.editItems[i].value}'`);
       }
       post(
-        JSON.stringify({
+        {
           groupName: this.selectedGroups,
           clause: clause.join(","),
           condition,
-        }), '/item/updateItems'
+        },
+        "/item/updateItems"
       )
         .then(() => {
           this.$message.success("更新成功!");
@@ -1331,10 +1352,11 @@ export default {
       })
         .then(() => {
           post(
-            JSON.stringify({
+            {
               groupName: this.selectedGroups,
               condition: "itemName='" + itemName + "'",
-            }), '/item/deleteItems'
+            },
+            "/item/deleteItems"
           )
             .then(() => {
               this.$message.success("删除成功!");
@@ -1401,9 +1423,10 @@ export default {
       })
         .then(() => {
           post(
-            JSON.stringify({
+            {
               groupNames: [this.selectedGroups],
-            }), '/group/cleanGroupItems'
+            },
+            "/group/cleanGroupItems"
           )
             .then(() => {
               this.$message.success(`清空表${this.selectedGroups}成功`);
@@ -1432,10 +1455,11 @@ export default {
         this.$message.warning("itemName个sheetName个数不一致");
       } else {
         post(
-          JSON.stringify({
+          {
             groupName: this.selectedGroups,
             itemNames: this.historyItemNames.split(","),
-          }), '/item/checkItems'
+          },
+          "/item/checkItems"
         )
           .then(() => {
             // 所有点都存在
@@ -1444,7 +1468,7 @@ export default {
           })
           .catch(({ message }) => {
             this.$notify.error({
-              title: "检查itemName",
+              title: "检查itemName失败",
               message,
             });
           });
@@ -1457,11 +1481,12 @@ export default {
       const itemNames = this.historyItemNames.split(",");
       this.addItemHistoryLoading = true;
       post(
-        JSON.stringify({
+        {
           fileName,
           sheetNames,
           itemNames,
-        }), '/page/importHistoryByExcel'
+        },
+        "/page/importHistoryByExcel"
       )
         .then(() => {
           this.addItemHistoryLoading = false;
