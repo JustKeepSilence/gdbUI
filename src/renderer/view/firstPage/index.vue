@@ -71,7 +71,7 @@
       </el-card>
     </el-row>
     <el-row>
-      <el-card shadow="hover" style="height: 520px; margin-top: 20px" v-if="showButton === true">
+      <el-card shadow="hover" style="height: 540px; margin-top: 20px" v-if="showButton === true">
         <div slot="header">
           <el-row>
             <span style="float: left; font-weight: bold"
@@ -296,11 +296,12 @@ export default {
           // for gRCP mode
           data['historicalData'] = JSON.parse(data['historicalData'])
         }
+        console.log(data['historicalData'])
         if (data['historicalData'][this.value][0] !== null) {
-          for (let i = 0; i < data[this.value][0].length; i++) {
+          for (let i = 0; i < data['historicalData'][this.value][0].length; i++) {
             this.xData.push([
-              parseInt(data[this.value][0][i] * 1000),
-              parseFloat(data[this.value][1][i].replace('ms', ''))
+              parseInt(data['historicalData'][this.value][0][i] * 1000),
+              parseFloat(data['historicalData'][this.value][1][i].replace('ms', ''))
             ])
           }
         }
@@ -383,12 +384,15 @@ export default {
               break
             case 'currentTimeStamp':
               try {
-                _this.itemValues[i].content = _this.parseTime(
+                _this.itemValues[i].content = info.currentTimeStamp === null ? '': _this.parseTime(
                   new Date(
                     (parseInt(info.currentTimeStamp) - 8 * 3600) * 1000
                   )
                 )
-              } catch (e) {}
+              } catch (e) {
+                _this.itemValues[i].content = ''
+
+              }
               break
             default:
               _this.itemValues[i].content = info.writtenItems

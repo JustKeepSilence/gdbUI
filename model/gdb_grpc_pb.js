@@ -191,6 +191,17 @@ function deserialize_model_DeletedItemsInfo(buffer_arg) {
   return gdb_pb.DeletedItemsInfo.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
+function serialize_model_DeletedLogInfo(arg) {
+  if (!(arg instanceof gdb_pb.DeletedLogInfo)) {
+    throw new Error('Expected argument of type model.DeletedLogInfo');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_model_DeletedLogInfo(buffer_arg) {
+  return gdb_pb.DeletedLogInfo.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_model_FileContents(arg) {
   if (!(arg instanceof gdb_pb.FileContents)) {
     throw new Error('Expected argument of type model.FileContents');
@@ -916,6 +927,17 @@ var PageService = exports['model.Page'] = {
     requestDeserialize: deserialize_model_QueryLogsInfo,
     responseSerialize: serialize_model_LogsInfo,
     responseDeserialize: deserialize_model_LogsInfo,
+  },
+  deleteLogs: {
+    path: '/model.Page/DeleteLogs',
+    requestStream: false,
+    responseStream: false,
+    requestType: gdb_pb.DeletedLogInfo,
+    responseType: gdb_pb.Rows,
+    requestSerialize: serialize_model_DeletedLogInfo,
+    requestDeserialize: deserialize_model_DeletedLogInfo,
+    responseSerialize: serialize_model_Rows,
+    responseDeserialize: deserialize_model_Rows,
   },
   downloadFile: {
     path: '/model.Page/DownloadFile',

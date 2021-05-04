@@ -129,7 +129,7 @@ export default {
         this.ruleForm.userName = userName
         this.ruleForm.ip = await getCookie('ip')
         this.ruleForm.passWord = await getCookie('passWord')
-        this.ruleForm.mode = (await getCookie('mode')).replace('-gRPC', '')
+        this.ruleForm.mode = (await getCookie('mode')).replace('-gRPC', '')  // cookie中存储的是https,http,https-gRCP,http-grCP,页面是的label是http或者https
         this.rpcChecked = await getCookie('checked') === 'true'
         this.loading = false
       })
@@ -149,7 +149,7 @@ export default {
   },
   methods: {
     async submitForm() {
-      if(this.ruleForm.mode + '-gRPC' === 'https-gRPC'){
+      if(this.ruleForm.mode === 'https' && this.rpcChecked){
         this.sanDialog = true
       }else{
         await this.login()

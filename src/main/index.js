@@ -1,6 +1,7 @@
 'use strict'
 
-import { app, BrowserWindow, dialog, screen } from 'electron'
+import { app, BrowserWindow, Menu } from 'electron'
+import { electron } from 'process'
 
 /**
  * Set `__static` path to static files in production
@@ -37,6 +38,9 @@ function createWindow () {
   mainWindow.webContents.openDevTools()
   // 关闭开发者工具使用
   // mainWindow.webContents.closeDevTools()
+
+  // 隐藏菜单栏
+ Menu.setApplicationMenu(null)
 
   mainWindow.on('closed', () => {
     mainWindow = null

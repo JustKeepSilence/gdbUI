@@ -77,7 +77,7 @@
                 <el-avatar :src="avatar" :size="avatarSize" style="cursor:pointer"></el-avatar>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item >{{loginName}}</el-dropdown-item>
-                  <el-dropdown-item @click.native='changeMode'>切换模式</el-dropdown-item>
+                  <el-dropdown-item @click.native='changeMode' v-if="development">切换模式</el-dropdown-item>
                   <el-dropdown-item @click.native="logout">退出登录</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
@@ -127,6 +127,7 @@ export default {
   name: 'DownLoad',
   created() {
     const width = document.body.clientWidth
+    this.development = process.env.NODE_ENV === 'development'
     // if (width < 1000){
     //   this.size='mini'
     //   this.isCollapse = true
@@ -323,7 +324,8 @@ export default {
       avatar: av,
       avatarSize: 'medium',
       size: 'medium',
-      loginName: ''
+      loginName: '',
+      development: true
     }
   },
   provide() {
