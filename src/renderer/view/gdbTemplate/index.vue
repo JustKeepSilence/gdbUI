@@ -114,7 +114,6 @@
 </template>
 
 <script>
-import { getCookie } from '@/utils/cookie'
 import Menu from './components/menu'
 import MultiMenu from './components/multimenu'
 import gi from '@/images/github.png'
@@ -124,7 +123,7 @@ import {post} from '@/api'
 const { shell } = require('electron')
 
 export default {
-  name: 'DownLoad',
+  name: 'GdbTemplate',
   created() {
     const width = document.body.clientWidth
     this.development = process.env.NODE_ENV === 'development'

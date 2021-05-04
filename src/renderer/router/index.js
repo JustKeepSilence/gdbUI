@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import DownLoad from '@/view/download' // DownLoad组件中包含了所有页面公共的侧边栏
+import GdbTemplate from '@/view/gdbTemplate' // DownLoad组件中包含了所有页面公共的侧边栏
 
 Vue.use(Router)
 
@@ -22,7 +22,7 @@ const constantRoutes = [
   {
     path: '/homePage',
     name: 'HomePage',
-    component: DownLoad,
+    component: GdbTemplate,
     meta: { title: 'GDB', icon: 'el-icon-coin', hidden: false },
     redirect: '/index',
     children: [
@@ -35,7 +35,7 @@ const constantRoutes = [
   },
   {
     path: '/search',
-    component: DownLoad,
+    component: GdbTemplate,
     name: 'Search',
     meta: { title: '资源管理', icon: 'el-icon-menu', hidden: false, role: ['developer', 'super_user', 'common_user'] },
     children: [
@@ -59,7 +59,7 @@ const constantRoutes = [
 const asyncRoutes = [
   {
     path: '/user',
-    component: DownLoad,
+    component: GdbTemplate,
     name: 'User',
     meta: { title: '用户中心', role: ['super_user', 'common_user'], icon: 'el-icon-user-solid', hidden: false },
     children: [
