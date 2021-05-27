@@ -198,7 +198,15 @@
           :label="item.label"
           :key="index"
         >
-          <el-input v-model="item.model" ref="itemForm" :size="size"> </el-input>
+          <el-input v-model="item.model" ref="itemForm" :size="size" v-if="item.label !== 'dataType'"> </el-input>
+          <el-select ref="itemForm" :size="size" v-model="item.model" placeholder="请选择数据类型" v-else>
+              <el-option
+              v-for="item in dataTypeoptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+              </el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -478,7 +486,6 @@ import XLSX from "xlsx"; // 导入exceljs
 import { saveAs } from "file-saver";
 import { getCookie } from "@/utils/cookie";
 import "element-ui/lib/theme-chalk/display.css";
-import Base64 from "js-base64";
 import Highcharts from "highcharts/highstock";
 const _ = require("lodash");
 
@@ -631,6 +638,12 @@ export default {
       role: "", // 用户角色,
       disabled: true,
       showButton: true,
+      dataTypeoptions: [
+        { value: "int64", label: "int64" },
+        { value: "float64", label: "float64" },
+        { value: "bool", label: "bool" },
+        { value: "string", label: "string" },
+      ],
     };
   },
   mounted() {
@@ -715,6 +728,7 @@ export default {
     },
     // 加单个点的弹窗
     openItemDialog() {
+      console.log(this.groupColumns);
       this.itemDialog = true;
     },
     // 加单个点
@@ -795,6 +809,7 @@ export default {
           this.itemCount = itemCount;
           this.itemData = [];
           let itemNames = [];
+          let groupNames = []
           if (itemValues !== null) {
             for (let i = 0; i < itemValues.length; i++) {
               if (itemValues[i].hasOwnProperty("items")) {
@@ -802,22 +817,24 @@ export default {
                 itemValues[i] = itemValues[i]["items"];
               }
               itemNames.push(itemValues[i].itemName);
+              groupNames.push(this.selectedGroups)
             }
           }
           post(
             {
               itemNames,
+              groupNames
             },
             "/data/getRealTimeData"
           )
             .then(({ data: { realTimeData } }) => {
-              const timeData = realTimeData;
+              const timeData = typeof(realTimeData) === 'string'? JSON.parse(realTimeData) : realTimeData;
               if (itemNames.length !== 0) {
                 for (let i = 0; i < itemNames.length; i++) {
                   itemValues[i]["realTimeData"] =
                     timeData[itemNames[i]] === null
                       ? ""
-                      : timeData[itemNames[i]];
+                      : timeData[itemNames[i]].toString();
                   itemValues[i]["index"] = (this.startRow + i).toString();
                 }
               }
@@ -1026,9 +1043,14 @@ export default {
         .catch(() => {});
     },
     // 查看历史曲线
-    handleHisroty({ itemName }) {
-      this.historyDialog = true;
-      this.selectedItem = itemName;
+    handleHisroty({ itemName, dataType }) {
+      if (dataType === 'float64' || dataType === 'int64') {
+          this.historyDialog = true;
+          this.selectedItem = itemName;
+      }else{
+        this.$message.warning('只能查看数据类型为float或者int的item的历史')
+      }
+      
     },
     // 显示历史曲线
     showHistory() {
@@ -1039,6 +1061,7 @@ export default {
         new Date(this.parseTime(this.st[1])).getTime() / 1000 + 8 * 3600;
       post(
         {
+          groupNames: [this.selectedGroups],
           itemNames: [this.selectedItem],
           startTimes: [s],
           endTimes: [e],
@@ -1262,6 +1285,9 @@ export default {
     },
     // 确定增加列
     addColumnHandler() {
+      try{
+
+      
       if (this.addedColumnName.length === 0) {
         this.$message.warning("请输入有效的列名");
       } else if (this.columnDefaultValues.length === 0) {
@@ -1279,7 +1305,13 @@ export default {
               columnNames: this.addedColumnName.split(",").map((item) => {
                 return item.trim();
               }),
-              defaultValues: this.columnDefaultValues.split(","),
+              defaultValues: this.columnDefaultValues.split(",").map((item)=>{
+                try{
+                return JSON.parse(item.trim())
+                }catch(e){
+                  throw Error(`非法的默认值${item}`)
+                }
+              }),
             },
             "/group/addGroupColumns"
           )
@@ -1299,6 +1331,12 @@ export default {
             });
         }
       }
+      }catch({message}){
+        this.$notify.error({
+          title:'增加列失败',
+          message
+        })
+      }
     },
     // 编辑item
     editItem(row) {
@@ -1310,7 +1348,8 @@ export default {
           k != "id" &&
           k != "index" &&
           k != "realTimeData" &&
-          k != "itemName"
+          k != "itemName" && 
+          k != "dataType"
         ) {
           this.editItems.push({ label: k, value: row[k] });
         }
@@ -1426,7 +1465,7 @@ export default {
             {
               groupNames: [this.selectedGroups],
             },
-            "/group/cleanGroupItems"
+            "/item/cleanGroupItems"
           )
             .then(() => {
               this.$message.success(`清空表${this.selectedGroups}成功`);
@@ -1479,9 +1518,11 @@ export default {
       const fileName = this.fileContent.name; // 文件名
       const sheetNames = this.sheetNames.split(","); // sheetName
       const itemNames = this.historyItemNames.split(",");
+      const groupName = this.selectedGroups
       this.addItemHistoryLoading = true;
       post(
         {
+          groupName,
           fileName,
           sheetNames,
           itemNames,

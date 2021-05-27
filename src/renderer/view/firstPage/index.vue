@@ -288,8 +288,8 @@ export default {
             parseInt(this.st[0].getTime() / 1000 - 10 * 60 + 8 * 3600)
           ], // 10 min ago
           endTimes: [parseInt(this.st[1].getTime() / 1000 + 8 * 3600)],
-          interval: 1
-        }, '/data/getDbInfoHistory'
+          intervals: [1]
+        }, '/page/getDbInfoHistory'
       ).then(({ data }) => {
         this.xData = []
         if(typeof(data['historicalData']) === 'string'){
@@ -358,7 +358,7 @@ export default {
     },
     render() {
       const _this = this
-      post({}, '/data/getDbInfo').then(({ data: { info } }) => {
+      post({}, '/page/getDbInfo').then(({ data: { info } }) => {
         if(typeof(info) === 'string'){
           info = JSON.parse(info)
         }

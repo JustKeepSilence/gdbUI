@@ -102,6 +102,12 @@ export default {
           tip: '接口文档下载'
         },
         {
+          name: 'calc',
+          content: '二次计算示例',
+          fileName: 'calcCode.7z',
+          tip: '二次计算示例代码下载',
+        },
+        {
           name: 'zip',
           content: '系统源码下载',
           fileName: 'source.7z',
@@ -114,13 +120,6 @@ export default {
           fileName: 'go.7z',
           tip: 'Go环境下载',
           url: 'https://golang.org/dl/'
-        },
-        {
-          name: 'vscode',
-          content: 'vscode下载',
-          fileName: 'vscode.exe',
-          tip: 'vscode下载',
-          url: 'https://code.visualstudio.com/'
         },
         {
           name: 'nodejs',

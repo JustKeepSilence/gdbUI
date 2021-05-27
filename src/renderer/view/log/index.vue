@@ -235,7 +235,7 @@ export default {
     document.querySelector(".el-main").style.backgroundColor = " #ffffff";
   },
   created() {
-    this.userName = this.$store.getters["user/userName"].name;
+    this.userName = this.$store.getters["user/userName"];
     this.showLabel =
       this.$store.getters["user/userRole"].indexOf("super_user") > -1;
     this.getLogs();
@@ -356,8 +356,8 @@ export default {
         startTime: this.parseTime(this.logSt[0]),
         endTime: this.parseTime(this.logSt[1]),
         userNameCondition: condition
-      }, '/page/deleteLogs').then(({effectedRow})=>{
-        this.$message.success(`成功删除日志${effectedRow}条`)
+      }, '/page/deleteLogs').then(({data:{effectedRows}})=>{
+        this.$message.success(`成功删除日志${effectedRows}条`)
         this.logDialog = false
         this.getLogs()
       }).catch(({message})=>{

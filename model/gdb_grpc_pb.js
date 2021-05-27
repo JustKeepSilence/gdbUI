@@ -367,6 +367,17 @@ function deserialize_model_QueryHistoricalDataString(buffer_arg) {
   return gdb_pb.QueryHistoricalDataString.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
+function serialize_model_QueryHistoricalDataWithConditionString(arg) {
+  if (!(arg instanceof gdb_pb.QueryHistoricalDataWithConditionString)) {
+    throw new Error('Expected argument of type model.QueryHistoricalDataWithConditionString');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_model_QueryHistoricalDataWithConditionString(buffer_arg) {
+  return gdb_pb.QueryHistoricalDataWithConditionString.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_model_QueryHistoricalDataWithTimeStampString(arg) {
   if (!(arg instanceof gdb_pb.QueryHistoricalDataWithTimeStampString)) {
     throw new Error('Expected argument of type model.QueryHistoricalDataWithTimeStampString');
@@ -422,6 +433,28 @@ function deserialize_model_Rows(buffer_arg) {
   return gdb_pb.Rows.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
+function serialize_model_TestCalcItemInfo(arg) {
+  if (!(arg instanceof gdb_pb.TestCalcItemInfo)) {
+    throw new Error('Expected argument of type model.TestCalcItemInfo');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_model_TestCalcItemInfo(buffer_arg) {
+  return gdb_pb.TestCalcItemInfo.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_model_TestResult(arg) {
+  if (!(arg instanceof gdb_pb.TestResult)) {
+    throw new Error('Expected argument of type model.TestResult');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_model_TestResult(buffer_arg) {
+  return gdb_pb.TestResult.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_model_UpdatedCalcInfo(arg) {
   if (!(arg instanceof gdb_pb.UpdatedCalcInfo)) {
     throw new Error('Expected argument of type model.UpdatedCalcInfo');
@@ -453,6 +486,17 @@ function serialize_model_UpdatedGroupNamesInfo(arg) {
 
 function deserialize_model_UpdatedGroupNamesInfo(buffer_arg) {
   return gdb_pb.UpdatedGroupNamesInfo.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_model_UpdatedItemsInfo(arg) {
+  if (!(arg instanceof gdb_pb.UpdatedItemsInfo)) {
+    throw new Error('Expected argument of type model.UpdatedItemsInfo');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_model_UpdatedItemsInfo(buffer_arg) {
+  return gdb_pb.UpdatedItemsInfo.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
 function serialize_model_UpdatedUserInfo(arg) {
@@ -611,17 +655,6 @@ var GroupService = exports['model.Group'] = {
     responseSerialize: serialize_model_Cols,
     responseDeserialize: deserialize_model_Cols,
   },
-  cleanGroupItems: {
-    path: '/model.Group/CleanGroupItems',
-    requestStream: false,
-    responseStream: false,
-    requestType: gdb_pb.GroupNamesInfo,
-    responseType: gdb_pb.Rows,
-    requestSerialize: serialize_model_GroupNamesInfo,
-    requestDeserialize: deserialize_model_GroupNamesInfo,
-    responseSerialize: serialize_model_Rows,
-    responseDeserialize: deserialize_model_Rows,
-  },
 };
 
 var ItemService = exports['model.Item'] = {
@@ -673,10 +706,10 @@ var ItemService = exports['model.Item'] = {
     path: '/model.Item/UpdateItems',
     requestStream: false,
     responseStream: false,
-    requestType: gdb_pb.ItemsInfo,
+    requestType: gdb_pb.UpdatedItemsInfo,
     responseType: gdb_pb.Rows,
-    requestSerialize: serialize_model_ItemsInfo,
-    requestDeserialize: deserialize_model_ItemsInfo,
+    requestSerialize: serialize_model_UpdatedItemsInfo,
+    requestDeserialize: deserialize_model_UpdatedItemsInfo,
     responseSerialize: serialize_model_Rows,
     responseDeserialize: deserialize_model_Rows,
   },
@@ -690,6 +723,17 @@ var ItemService = exports['model.Item'] = {
     requestDeserialize: deserialize_model_CheckItemsInfo,
     responseSerialize: serialize_google_protobuf_Empty,
     responseDeserialize: deserialize_google_protobuf_Empty,
+  },
+  cleanGroupItems: {
+    path: '/model.Item/CleanGroupItems',
+    requestStream: false,
+    responseStream: false,
+    requestType: gdb_pb.GroupNamesInfo,
+    responseType: gdb_pb.Rows,
+    requestSerialize: serialize_model_GroupNamesInfo,
+    requestDeserialize: deserialize_model_GroupNamesInfo,
+    responseSerialize: serialize_model_Rows,
+    responseDeserialize: deserialize_model_Rows,
   },
 };
 
@@ -771,25 +815,25 @@ var DataService = exports['model.Data'] = {
     responseSerialize: serialize_model_GdbHistoricalData,
     responseDeserialize: deserialize_model_GdbHistoricalData,
   },
-  getDbInfo: {
-    path: '/model.Data/GetDbInfo',
+  getHistoricalDataWithCondition: {
+    path: '/model.Data/GetHistoricalDataWithCondition',
     requestStream: false,
     responseStream: false,
-    requestType: google_protobuf_empty_pb.Empty,
-    responseType: gdb_pb.GdbInfoData,
-    requestSerialize: serialize_google_protobuf_Empty,
-    requestDeserialize: deserialize_google_protobuf_Empty,
-    responseSerialize: serialize_model_GdbInfoData,
-    responseDeserialize: deserialize_model_GdbInfoData,
-  },
-  getDbInfoHistory: {
-    path: '/model.Data/GetDbInfoHistory',
-    requestStream: false,
-    responseStream: false,
-    requestType: gdb_pb.QuerySpeedHistoryDataString,
+    requestType: gdb_pb.QueryHistoricalDataWithConditionString,
     responseType: gdb_pb.GdbHistoricalData,
-    requestSerialize: serialize_model_QuerySpeedHistoryDataString,
-    requestDeserialize: deserialize_model_QuerySpeedHistoryDataString,
+    requestSerialize: serialize_model_QueryHistoricalDataWithConditionString,
+    requestDeserialize: deserialize_model_QueryHistoricalDataWithConditionString,
+    responseSerialize: serialize_model_GdbHistoricalData,
+    responseDeserialize: deserialize_model_GdbHistoricalData,
+  },
+  getRawData: {
+    path: '/model.Data/GetRawData',
+    requestStream: false,
+    responseStream: false,
+    requestType: gdb_pb.QueryRealTimeDataString,
+    responseType: gdb_pb.GdbHistoricalData,
+    requestSerialize: serialize_model_QueryRealTimeDataString,
+    requestDeserialize: deserialize_model_QueryRealTimeDataString,
     responseSerialize: serialize_model_GdbHistoricalData,
     responseDeserialize: deserialize_model_GdbHistoricalData,
   },
@@ -950,9 +994,42 @@ var PageService = exports['model.Page'] = {
     responseSerialize: serialize_model_FileContents,
     responseDeserialize: deserialize_model_FileContents,
   },
+  getDbInfo: {
+    path: '/model.Page/GetDbInfo',
+    requestStream: false,
+    responseStream: false,
+    requestType: google_protobuf_empty_pb.Empty,
+    responseType: gdb_pb.GdbInfoData,
+    requestSerialize: serialize_google_protobuf_Empty,
+    requestDeserialize: deserialize_google_protobuf_Empty,
+    responseSerialize: serialize_model_GdbInfoData,
+    responseDeserialize: deserialize_model_GdbInfoData,
+  },
+  getDbInfoHistory: {
+    path: '/model.Page/GetDbInfoHistory',
+    requestStream: false,
+    responseStream: false,
+    requestType: gdb_pb.QuerySpeedHistoryDataString,
+    responseType: gdb_pb.GdbHistoricalData,
+    requestSerialize: serialize_model_QuerySpeedHistoryDataString,
+    requestDeserialize: deserialize_model_QuerySpeedHistoryDataString,
+    responseSerialize: serialize_model_GdbHistoricalData,
+    responseDeserialize: deserialize_model_GdbHistoricalData,
+  },
 };
 
 var CalcService = exports['model.Calc'] = {
+  testCalcItem: {
+    path: '/model.Calc/TestCalcItem',
+    requestStream: false,
+    responseStream: false,
+    requestType: gdb_pb.TestCalcItemInfo,
+    responseType: gdb_pb.TestResult,
+    requestSerialize: serialize_model_TestCalcItemInfo,
+    requestDeserialize: deserialize_model_TestCalcItemInfo,
+    responseSerialize: serialize_model_TestResult,
+    responseDeserialize: deserialize_model_TestResult,
+  },
   addCalcItem: {
     path: '/model.Calc/AddCalcItem',
     requestStream: false,

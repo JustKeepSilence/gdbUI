@@ -25,6 +25,10 @@ import HighchartsDrilldown from 'highcharts/modules/drilldown'
 import Highcharts3D from 'highcharts/highcharts-3d'
 import Highmaps from 'highcharts/modules/map'
 
+import VueCodemirror from 'vue-codemirror'
+
+Vue.use(VueCodemirror)
+
 HighchartsMore(Highcharts)
 HighchartsDrilldown(Highcharts)
 Highcharts3D(Highcharts)

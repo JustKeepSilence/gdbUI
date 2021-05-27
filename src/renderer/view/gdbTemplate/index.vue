@@ -133,7 +133,7 @@ export default {
     // }
     // 实例挂载完成之后获取用户路由
     this.routes = this.$store.getters['routes/asyncRoutes']
-    this.loginName = this.$store.getters['user/userName'].name
+    this.loginName = this.$store.getters['user/userName']
     this.initialBread(this.$route.path) // 初始化面包屑
     if (this.$route.path === '/index') {
       // 如果一开始就是首页
@@ -152,7 +152,7 @@ export default {
   methods: {
     // 退出登陆的函数
     async logout() {
-      post({}, '/page/userLogOut').then(async () => {
+      post({userName: this.loginName}, '/page/userLogOut').then(async () => {
         const { code } = await this.$store.dispatch('user/clearUserInfo') // 清空用户信息
         if (code === 200) {
           this.$message.success('成功退出登陆!')

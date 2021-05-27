@@ -26,4 +26,12 @@
 // 5.项目打包:npm install electron-packager -g npm run pack
 // npm install  --save --ignore-scripts 
 //  npm install electron --verbose --save
-// npm rebuild --target=10.4.1 --runtime=electron --dist-url=https://atom.io/download/electron
+//  npm install electron@10.4.1
+// npm rebuild --target=8.3.1 --runtime=electron --dist-url=https://atom.io/download/electron
+// npm rebuild --target=14.16.1 --target_platform=windows --target_arch=x64 --target_libc=glibc  --ignore-scripts  --update-binary
+
+// 6. 项目的运行
+// npm install  安装依
+// npm install electron@8.3.1 安装electron(10.0以下)
+// npm rebuild --target=8.3.1 --runtime=electron --dist-url=https://atom.io/download/electron
+// npm run dev

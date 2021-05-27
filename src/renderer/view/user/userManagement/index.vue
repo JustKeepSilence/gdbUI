@@ -90,9 +90,12 @@
       :close-on-click-modal="false"
       :close-on-press-escape="false"
     >
-      <el-form ref="editUserForm" :model="userForm" label-width="100px">
+      <el-form ref="editUserForm" :model="editUserForm" label-width="100px" >
         <el-form-item label="输入用户名" prop="userName">
           <el-input v-model="editUserForm.userName"></el-input>
+        </el-form-item>
+        <el-form-item label="输入新密码" prop="passWord">
+          <el-input v-model="editUserForm.passWord" type="password"></el-input>
         </el-form-item>
         <el-form-item label="选择用户角色">
           <el-select v-model="editUserForm.role">
@@ -101,7 +104,7 @@
               :key="index"
               :label="item.label"
               :value="item.value"
-            ></el-option>
+            >{{item.label}}</el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -131,7 +134,8 @@ export default {
       },
       editUserForm: {
         userName: '',
-        role: 'common_user'
+        role: 'common_user',
+        passWord: ''
       },
       rules: {
         userName: [
@@ -156,7 +160,7 @@ export default {
     }
   },
   created() {
-    this.loginName = this.$store.getters['user/userName'].name
+    this.loginName = this.$store.getters['user/userName']
     this.userRole = this.$store.getters['user/userRole']
   },
   mounted() {
@@ -220,6 +224,7 @@ export default {
       }
     },
     editUser({ id, userName, role }) {
+      role = role === '管理员' ? 'super_user' : role === '普通用户' ? 'common_user' : 'visitor'
       if (this.disabled) {
         // 非管理员
         if (userName !== this.loginName) {
@@ -247,7 +252,8 @@ export default {
     handleEditUser() {
       if (
         this.editUserForm.userName === this.loginName &&
-        this.editUserForm.role === this.userRole[0]
+        this.editUserForm.role === this.userRole[0] && 
+        this.editUserForm.passWord.length === 0
       ) {
         // no changed
         this.editUsersDialog = false
@@ -257,10 +263,10 @@ export default {
         } else {
           post(
             {
-              id: parseInt(this.userId),
-              oldUserName: this.oldUserName,
+              userName: this.oldUserName,
               newUserName: this.editUserForm.userName,
-              role: this.editUserForm.role
+              newPassWord: this.editUserForm.passWord.length === 0 ? '': this.$md5(`${this.editUserForm.passWord}@seu`),
+              newRole: this.editUserForm.role
             },
             '/page/updateUsers'
           )

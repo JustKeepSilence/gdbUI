@@ -35,9 +35,9 @@ function createWindow () {
   // width 1100 height 650
 
   mainWindow.loadURL(winURL)
-  mainWindow.webContents.openDevTools()
+  // mainWindow.webContents.openDevTools()
   // 关闭开发者工具使用
-  // mainWindow.webContents.closeDevTools()
+  mainWindow.webContents.closeDevTools()
 
   // 隐藏菜单栏
  Menu.setApplicationMenu(null)
