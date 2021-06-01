@@ -7,7 +7,7 @@
       :size="size"
       max-height="400"
     >
-      <el-table-column prop="id" label="序号" width="80" align="center">
+      <el-table-column type="index" label="序号" width="80" align="center">
       </el-table-column>
       <el-table-column
         prop="userName"
@@ -116,7 +116,7 @@
   </div>
 </template>
 <script>
-import { post, passWordValidator } from '@/api'
+import { post, passWordValidator, userValidator } from '@/api'
 export default {
   name: 'UserManagement',
   data() {
@@ -139,7 +139,7 @@ export default {
       },
       rules: {
         userName: [
-          { required: true, trigger: 'blur', message: '用户名不能为空' }
+          { required: true, trigger: 'blur', message: '用户名不能为空', validator: userValidator }
         ], // 用户名的验证
         passWord: [
           {

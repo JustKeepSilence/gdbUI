@@ -89,6 +89,7 @@
               type="text"
               :size="size"
               @click="edit(scope.row)"
+              :disabled='disabled'
               class="hidden-xs-only"
               >编辑</el-button
             >
@@ -96,6 +97,7 @@
               type="text"
               :size="size"
               v-if="scope.row.status === 'false'"
+              :disabled='disabled'
               @click="startCalc(scope.row)"
               >启动</el-button
             >
@@ -103,10 +105,11 @@
               type="text"
               v-else
               :size="size"
+              :disabled='disabled'
               @click="stopCalc(scope.row)"
               >停止</el-button
             >
-            <el-button type="text" :size="size" @click="deleteCalc(scope.row)"
+            <el-button type="text" :size="size" @click="deleteCalc(scope.row)" :disabled='disabled'
               >删除</el-button
             >
           </template>
@@ -125,11 +128,11 @@
       destroy-on-close
     >
       <el-row>
-        <textarea
+        <div
           id="jsCode"
           name="code"
-          style="min-height: 250px; width: 600px; height: 250px"
-        ></textarea>
+          style="width: 750px"
+        ></div>
       </el-row>
       <div slot="footer" class="dialog-footer">
         <el-button @click="calcHandler">确定</el-button>
@@ -147,10 +150,10 @@
       destroy-on-close
     >
       <el-row>
-        <textarea
+        <div
           id="jsCodeEdit"
-          style="min-height: 250px; width: 600px; height: 250px"
-        ></textarea>
+          style="width: 750px"
+        ></div>
       </el-row>
       <div slot="footer" class="dialog-footer">
         <el-button @click="updateCalcItem">确定</el-button>
@@ -245,8 +248,8 @@ export default {
     return {
       calcDialogName: "二次计算",
       calcDialog: false,
-      calcContent: `//内置函数如下：GDB.getRtData(获取实时值)，GDB.getHData(获取历史值),getHDataWithTs(获取指定时间的历史值),writeRtData(写入实时值),getTimeStamp(获取时间戳),
-//getNowTime(获取当前时间)`, // 二次计算的输入内容
+      calcContent: `//内置函数如下：getRtData(获取实时值)，getHData(获取历史值),getHDataWithTs(获取指定时间的历史值)
+//writeRtData(写入实时值),getTimeStamp(获取时间戳),getNowTime(获取当前时间)`, // 二次计算的输入内容
       codeUploadDialogNames: "代码上传",
       codeUploadDialog: false,
       jsCodeContent: "", // jscode file info
@@ -271,6 +274,7 @@ export default {
       owdith: "300",
       role: "", // 用户角色,
       showButton: true,
+      disabled : false,
       code: "",
       editor: null,
       editorEdit: null,
@@ -293,9 +297,25 @@ export default {
     }
     this.actionUrl = "http://" + getCookie("ip") + "/page/uploadFile";
     this.render();
+    var orig = CodeMirror.hint.javascript;
+    CodeMirror.hint.javascript = function(cm) {
+    var inner = orig(cm) || {from: cm.getCursor(), to: cm.getCursor(), list: []};
+    inner.list.push("getRtData");
+    inner.list.push("getHData");
+    inner.list.push("getHDataWithTs");
+    inner.list.push("writeRtData");
+    inner.list.push("getTimeStamp");
+    inner.list.push("getNowTime");
+    inner.list.push('testItemValue')
+    inner.list.push('groupName')
+    inner.list.push('itemName')
+    inner.list.push('value')
+    return inner;
+};
   },
   mounted() {
     this.showButton = !(this.role.indexOf("visitor") > -1); // visitor
+    this.disabled = this.role.indexOf("visitor") > -1
     document.querySelector(".el-main").style.backgroundColor = " #ffffff";
   },
   methods: {
@@ -322,10 +342,13 @@ export default {
       });
     },
     handleCalcOpened() {
-      this.editor = CodeMirror.fromTextArea(document.getElementById("jsCode"), {
+      // this.editor = CodeMirror.fromTextArea(document.getElementById("jsCode"), {
+      //   lineNumbers: true,
+      //   extraKeys: { Ctrl: "autocomplete" },
+      // });
+      this.editor = CodeMirror(document.getElementById("jsCode"), {
         lineNumbers: true,
-        extraKeys: { Ctrl: "autocomplete" },
-      });
+      })
       this.editor.setValue(this.calcContent);
       const _this = this;
       this.editor.on("inputRead", () => {
@@ -333,7 +356,7 @@ export default {
       });
     },
     handleCalcOpened1() {
-      this.editorEdit = CodeMirror.fromTextArea(
+      this.editorEdit = CodeMirror(
         document.getElementById("jsCodeEdit"),
         {
           lineNumbers: true,
@@ -398,14 +421,14 @@ export default {
             message,
           });
         })
-        .then(({ data }) => {
-          this.editor.setValue(data);
+        .then(({ data:{code} }) => {
+          this.editor.setValue(code);
           this.codeUploadDialog = false;
         });
     },
     // 添加二次计算代码
     descriptionHandler() {
-      if (this.description.length === 0) {
+      if (this.description.trim(' ').length === 0) {
         this.$message.error("计算项的描述不能为空");
       } else {
         const expression = this.editor.getValue();
@@ -588,5 +611,8 @@ export default {
   border: 1px solid #dddddd;
   width: 100%;
 }
+.CodeMirror-hints, .CodeMirror-hint, .CodeMirror-hint-active .default {
+            z-index: 2147483647 !important;
+        }
 </style>
 

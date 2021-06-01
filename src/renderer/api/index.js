@@ -222,12 +222,24 @@ const uploadFile = async (data) => {
 const passWordValidator = (rule, value, callback) => {
   const numberReg = /^[\d|\.]*$/ // 验证字符串是否全为数字
   const stringReg = /[0-9]/ // 验证字符串中是否含有数字
+  if(value.trim(' ').length < 6){
+    callback(new Error('密码长度不能小于6位'))
+  }else{
   if (numberReg.test(value)) {
     callback(new Error('密码不能全为数字'))
   } else if (stringReg.test(value)) {
     callback()
   } else {
     callback(new Error('密码不能全为字母'))
+  }
+}
+}
+
+const userValidator = (rule, value, callback)=>{
+  if (value.trim(' ').length === 0){
+    callback('用户名不能为空')
+  }else{
+    callback()
   }
 }
 
@@ -245,5 +257,6 @@ function sliceArray(start, end, data) {
 export {
   post,
   uploadFile,
-  passWordValidator
+  passWordValidator,
+  userValidator
 }

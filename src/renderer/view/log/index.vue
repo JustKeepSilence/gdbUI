@@ -66,7 +66,7 @@
           </el-form>
         </template>
       </el-table-column>
-      <el-table-column label="ID" type="index"> </el-table-column>
+      <el-table-column label="序号" type="index"> </el-table-column>
       <el-table-column label="请求URL" prop="requestUrl" align="center">
       </el-table-column>
       <el-table-column

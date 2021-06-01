@@ -290,6 +290,23 @@ message DeletedLogInfo {
   string userNameCondition = 4;
 }
 
+message RoutesInfo {
+  string name = 1;
+  repeated string routes = 2;
+}
+
+message Routes {
+  string routes = 1;
+}
+
+message CheckResult{
+  repeated int32 result = 1;
+}
+
+message Code {
+  string code = 1;
+}
+
 service Page {
   rpc UserLogin(AuthInfo) returns (UserToken){}
   rpc UserLogOut(UserName) returns (google.protobuf.Empty){}
@@ -303,10 +320,18 @@ service Page {
   rpc AddItemsByExcel(FileInfo) returns (Rows){}
   rpc ImportHistoryByExcel(HistoryFileInfo) returns (google.protobuf.Empty){}
   rpc GetLogs(QueryLogsInfo) returns (LogsInfo){}
+  rpc GetJsCode(FileInfo) returns (Code){}
   rpc DeleteLogs(DeletedLogInfo) returns (Rows){}
   rpc DownloadFile(FileInfo) returns (FileContents){}
   rpc GetDbInfo(google.protobuf.Empty) returns (GdbInfoData){}
   rpc GetDbInfoHistory(QuerySpeedHistoryDataString) returns (GdbHistoricalData){}
+  rpc GetRoutes(google.protobuf.Empty) returns (Routes){}
+  rpc DeleteRoutes(RoutesInfo) returns (Rows){}
+  rpc AddRoutes(RoutesInfo) returns (Rows){}
+  rpc AddUserRoutes(RoutesInfo) returns (Rows){}
+  rpc DeleteUserRoutes(UserName) returns (Rows){}
+  rpc GetAllRoutes(google.protobuf.Empty) returns (Routes){}
+  rpc CheckRoutes(RoutesInfo) returns (CheckResult){}
 }
 
 // calculation

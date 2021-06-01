@@ -152,7 +152,7 @@ export default {
   methods: {
     // 退出登陆的函数
     async logout() {
-      post({userName: this.loginName}, '/page/userLogOut').then(async () => {
+      post({name: this.loginName}, '/page/userLogOut').then(async () => {
         const { code } = await this.$store.dispatch('user/clearUserInfo') // 清空用户信息
         if (code === 200) {
           this.$message.success('成功退出登陆!')

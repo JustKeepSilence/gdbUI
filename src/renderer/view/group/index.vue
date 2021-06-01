@@ -117,8 +117,8 @@
           <el-button @click="handleHisroty(scope.row)" type="text"
             >查看</el-button
           >
-          <el-button type="text" @click="editItem(scope.row)">编辑</el-button>
-          <el-button type="text" @click="deleteItem(scope.row)">删除</el-button>
+          <el-button type="text" @click="editItem(scope.row)" :disabled='disabled'>编辑</el-button>
+          <el-button type="text" @click="deleteItem(scope.row)" :disabled='disabled'>删除</el-button>
         </template>
       </el-table-column>
       <el-table-column
@@ -779,6 +779,7 @@ export default {
               .then(({ data }) => {
                 this.groups = data.groupNames;
                 this.selectedGroups = this.groups[0];
+                this.handleDeleteGroupButtonState = this.selectedGroups === 'calc'
                 this.render();
                 this.$message.success("删除成功!");
               })

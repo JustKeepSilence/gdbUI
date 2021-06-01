@@ -72,7 +72,6 @@ service Group {
   rpc UpdateGroupColumnNames(UpdatedGroupColumnNamesInfo) returns (Cols){}
   rpc DeleteGroupColumns(DeletedGroupColumnNamesInfo) returns (Cols){}
   rpc AddGroupColumns(AddedGroupColumnsInfo) returns (Cols){}
-  rpc CleanGroupItems(GroupNamesInfo) returns (Rows){}
 }
 
 // item handler
@@ -94,6 +93,12 @@ message ItemsInfo{
   string columnNames = 2;
   int32 startRow = 3;
   int32 rowCount = 4;
+}
+
+message UpdatedItemsInfo{
+  string groupName = 1;
+  string condition = 2;
+  string clause = 3;
 }
 
 message GdbItem{
@@ -119,23 +124,19 @@ service Item {
   rpc DeleteItems(DeletedItemsInfo) returns (Rows){}
   rpc GetItems(ItemsInfo) returns (GdbItems){}
   rpc GetItemsWithCount(ItemsInfo) returns (GdbItemsWithCount){}
-  rpc UpdateItems(ItemsInfo) returns (Rows){}
+  rpc UpdateItems(UpdatedItemsInfo) returns (Rows){}
   rpc CheckItems(CheckItemsInfo) returns (google.protobuf.Empty){}
+  rpc CleanGroupItems(GroupNamesInfo) returns (Rows){}
 }
 
 // data handler
 
-message ItemValue{
-  string itemName = 1;
-  string value = 2;
-  string timeStamp = 3;
-}
-
 message BatchWriteString{
-  repeated ItemValue itemValues = 3;
+  string itemValues = 3;
 }
 
 message QueryRealTimeDataString{
+  repeated string groupNames = 2;
   repeated string itemNames = 1;
 }
 
@@ -146,6 +147,7 @@ message GdbRealTimeData{
 }
 
 message QueryHistoricalDataString{
+  repeated string groupNames = 5;
   repeated string itemNames = 1;
   repeated int32 startTimes = 2;
   repeated int32 endTimes = 3;
@@ -161,6 +163,7 @@ message TimeStamp {
 }
 
 message QueryHistoricalDataWithTimeStampString{
+  repeated string groupNames = 3;
   repeated string itemNames = 1;
   repeated TimeStamp timeStamps = 2;
 }
@@ -171,6 +174,7 @@ message DeadZone {
 }
 
 message QueryHistoricalDataWithConditionString{
+  repeated string groupNames = 8;
   repeated string itemNames = 1;
   repeated TimeStamp timeStamps = 2;
   repeated int32 startTimes = 3;
@@ -184,23 +188,16 @@ message GdbInfoData{
   string info = 1;
 }
 
-message HistoricalItemValue{
-  string itemName = 1;
-  repeated string values = 2;
-  repeated string timeStamps = 3;
-}
-
 message BatchWriteHistoricalString {
-  repeated HistoricalItemValue historicalItemValues = 1;
+  string historicalItemValues = 1;
 }
 
 message QuerySpeedHistoryDataString{
   string itemName = 1;
   repeated int32 startTimes = 2;
   repeated int32 endTimes = 3;
-  int32 interval = 4;
+  repeated int32 intervals = 4;
 }
-
 
 service Data {
   rpc BatchWrite(BatchWriteString) returns (Rows){}
@@ -210,8 +207,8 @@ service Data {
   rpc GetRealTimeData(QueryRealTimeDataString) returns (GdbRealTimeData){}
   rpc GetHistoricalData(QueryHistoricalDataString) returns (GdbHistoricalData){}
   rpc GetHistoricalDataWithStamp(QueryHistoricalDataWithTimeStampString) returns (GdbHistoricalData){}
-  rpc GetDbInfo(google.protobuf.Empty) returns (GdbInfoData){}
-  rpc GetDbInfoHistory(QuerySpeedHistoryDataString) returns (GdbHistoricalData){}
+  rpc GetHistoricalDataWithCondition(QueryHistoricalDataWithConditionString) returns(GdbHistoricalData){}
+  rpc GetRawData(QueryRealTimeDataString) returns(GdbHistoricalData){}
 }
 
 // page
@@ -230,7 +227,7 @@ message UserName{
 }
 
 message UserInfo{
-  UserName userName = 1;
+  string userName = 1;
   repeated string role = 2;
 }
 
@@ -240,14 +237,12 @@ message QueryLogsInfo{
   string endTime = 3;
   int32 startRow = 4;
   int32 rowCount = 5;
-}
-
-message LogInfo {
-  map<string, string> info = 1;
+  string name = 6;
 }
 
 message LogsInfo {
-  repeated LogInfo infos = 2;
+  string infos = 1;
+  int32 count = 2;
 }
 
 message FileInfo{
@@ -261,6 +256,7 @@ message UploadedFileInfo{
 }
 
 message HistoryFileInfo {
+  string groupName = 4;
   string fileName = 1;
   repeated string itemNames = 2;
   repeated string sheetNames = 3;
@@ -281,10 +277,10 @@ message AddUserInfo{
 }
 
 message UpdatedUserInfo{
-  int32 id = 1;
-  string oldUserName = 2;
-  string newUserName = 3;
-  string role = 4;
+  string userName = 1;
+  string newUserName = 2;
+  string newPassWord = 3;
+  string newRole = 4;
 }
 
 message DeletedLogInfo {
@@ -292,6 +288,23 @@ message DeletedLogInfo {
   string startTime = 2;
   string endTime = 3;
   string userNameCondition = 4;
+}
+
+message RoutesInfo {
+  string name = 1;
+  repeated string routes = 2;
+}
+
+message Routes {
+  string routes = 1;
+}
+
+message CheckResult{
+  repeated int32 result = 1;
+}
+
+message Code {
+  string code = 1;
 }
 
 service Page {
@@ -307,8 +320,18 @@ service Page {
   rpc AddItemsByExcel(FileInfo) returns (Rows){}
   rpc ImportHistoryByExcel(HistoryFileInfo) returns (google.protobuf.Empty){}
   rpc GetLogs(QueryLogsInfo) returns (LogsInfo){}
+  rpc GetJsCode(FileInfo) returns (Code){}
   rpc DeleteLogs(DeletedLogInfo) returns (Rows){}
   rpc DownloadFile(FileInfo) returns (FileContents){}
+  rpc GetDbInfo(google.protobuf.Empty) returns (GdbInfoData){}
+  rpc GetDbInfoHistory(QuerySpeedHistoryDataString) returns (GdbHistoricalData){}
+  rpc GetRoutes(google.protobuf.Empty) returns (Routes){}
+  rpc DeleteRoutes(RoutesInfo) returns (Rows){}
+  rpc AddRoutes(RoutesInfo) returns (Rows){}
+  rpc AddUserRoutes(RoutesInfo) returns (Rows){}
+  rpc DeleteUserRoutes(UserName) returns (Rows){}
+  rpc GetAllRoutes(google.protobuf.Empty) returns (Routes){}
+  rpc CheckRoutes(RoutesInfo) returns (CheckResult){}
 }
 
 // calculation
@@ -332,12 +355,8 @@ message QueryCalcItemsInfo{
   string condition = 1;
 }
 
-message CalcItemInfo{
-  map<string, string> info = 1;
-}
-
 message CalcItemsInfo{
-  repeated CalcItemInfo infos = 2;
+  string infos = 1;
 }
 
 message UpdatedCalcInfo{
@@ -351,7 +370,16 @@ message CalcId {
   repeated string id = 1;
 }
 
+message TestCalcItemInfo {
+  string expression = 1;
+}
+
+message TestResult {
+  string result = 1;
+}
+
 service Calc {
+  rpc TestCalcItem(TestCalcItemInfo) returns (TestResult){}
   rpc AddCalcItem(AddedCalcItemInfo) returns (CalculationResult){}
   rpc AddCalcItemWithStream(stream AddedCalcItemInfo) returns (CalculationResults){}
   rpc GetCalcItems(QueryCalcItemsInfo) returns (CalcItemsInfo){}

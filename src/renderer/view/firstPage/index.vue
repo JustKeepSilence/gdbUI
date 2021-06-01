@@ -296,7 +296,6 @@ export default {
           // for gRCP mode
           data['historicalData'] = JSON.parse(data['historicalData'])
         }
-        console.log(data['historicalData'])
         if (data['historicalData'][this.value][0] !== null) {
           for (let i = 0; i < data['historicalData'][this.value][0].length; i++) {
             this.xData.push([

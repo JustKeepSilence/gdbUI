@@ -67,7 +67,7 @@ const asyncRoutes = [
         path: '/document',
         name: 'Document',
         component: () => import('@/view/user/document'),
-        meta: { title: '系统手册', role: [ 'super_user', 'common_user'], icon: 'el-icon-document', hidden: false } // 路由元数据
+        meta: { title: '用户手册', role: [ 'super_user', 'common_user'], icon: 'el-icon-document', hidden: false } // 路由元数据
       },
       {
         path: '/log',
@@ -80,7 +80,14 @@ const asyncRoutes = [
         name: 'UserManagement',
         component: () => import('@/view/user/userManagement'),
         meta: { title: '用户管理', role: ['super_user', 'common_user'], icon: 'el-icon-user-solid', hidden: false } // 路由元数据
-      }
+      },
+      {
+        path: '/routeManagement',
+        name: 'RouteManagement',
+        component: () => import('@/view/user/routeManagement'),
+        meta: { title: '路由管理', role: ['super_user', 'common_user'], icon: 'el-icon-position', hidden: false } // 路由元数据
+      },
+
     ]
   }
 

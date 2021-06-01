@@ -158,6 +158,28 @@ function deserialize_model_CheckItemsInfo(buffer_arg) {
   return gdb_pb.CheckItemsInfo.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
+function serialize_model_CheckResult(arg) {
+  if (!(arg instanceof gdb_pb.CheckResult)) {
+    throw new Error('Expected argument of type model.CheckResult');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_model_CheckResult(buffer_arg) {
+  return gdb_pb.CheckResult.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_model_Code(arg) {
+  if (!(arg instanceof gdb_pb.Code)) {
+    throw new Error('Expected argument of type model.Code');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_model_Code(buffer_arg) {
+  return gdb_pb.Code.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_model_Cols(arg) {
   if (!(arg instanceof gdb_pb.Cols)) {
     throw new Error('Expected argument of type model.Cols');
@@ -420,6 +442,28 @@ function serialize_model_QuerySpeedHistoryDataString(arg) {
 
 function deserialize_model_QuerySpeedHistoryDataString(buffer_arg) {
   return gdb_pb.QuerySpeedHistoryDataString.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_model_Routes(arg) {
+  if (!(arg instanceof gdb_pb.Routes)) {
+    throw new Error('Expected argument of type model.Routes');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_model_Routes(buffer_arg) {
+  return gdb_pb.Routes.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_model_RoutesInfo(arg) {
+  if (!(arg instanceof gdb_pb.RoutesInfo)) {
+    throw new Error('Expected argument of type model.RoutesInfo');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_model_RoutesInfo(buffer_arg) {
+  return gdb_pb.RoutesInfo.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
 function serialize_model_Rows(arg) {
@@ -972,6 +1016,17 @@ var PageService = exports['model.Page'] = {
     responseSerialize: serialize_model_LogsInfo,
     responseDeserialize: deserialize_model_LogsInfo,
   },
+  getJsCode: {
+    path: '/model.Page/GetJsCode',
+    requestStream: false,
+    responseStream: false,
+    requestType: gdb_pb.FileInfo,
+    responseType: gdb_pb.Code,
+    requestSerialize: serialize_model_FileInfo,
+    requestDeserialize: deserialize_model_FileInfo,
+    responseSerialize: serialize_model_Code,
+    responseDeserialize: deserialize_model_Code,
+  },
   deleteLogs: {
     path: '/model.Page/DeleteLogs',
     requestStream: false,
@@ -1015,6 +1070,83 @@ var PageService = exports['model.Page'] = {
     requestDeserialize: deserialize_model_QuerySpeedHistoryDataString,
     responseSerialize: serialize_model_GdbHistoricalData,
     responseDeserialize: deserialize_model_GdbHistoricalData,
+  },
+  getRoutes: {
+    path: '/model.Page/GetRoutes',
+    requestStream: false,
+    responseStream: false,
+    requestType: google_protobuf_empty_pb.Empty,
+    responseType: gdb_pb.Routes,
+    requestSerialize: serialize_google_protobuf_Empty,
+    requestDeserialize: deserialize_google_protobuf_Empty,
+    responseSerialize: serialize_model_Routes,
+    responseDeserialize: deserialize_model_Routes,
+  },
+  deleteRoutes: {
+    path: '/model.Page/DeleteRoutes',
+    requestStream: false,
+    responseStream: false,
+    requestType: gdb_pb.RoutesInfo,
+    responseType: gdb_pb.Rows,
+    requestSerialize: serialize_model_RoutesInfo,
+    requestDeserialize: deserialize_model_RoutesInfo,
+    responseSerialize: serialize_model_Rows,
+    responseDeserialize: deserialize_model_Rows,
+  },
+  addRoutes: {
+    path: '/model.Page/AddRoutes',
+    requestStream: false,
+    responseStream: false,
+    requestType: gdb_pb.RoutesInfo,
+    responseType: gdb_pb.Rows,
+    requestSerialize: serialize_model_RoutesInfo,
+    requestDeserialize: deserialize_model_RoutesInfo,
+    responseSerialize: serialize_model_Rows,
+    responseDeserialize: deserialize_model_Rows,
+  },
+  addUserRoutes: {
+    path: '/model.Page/AddUserRoutes',
+    requestStream: false,
+    responseStream: false,
+    requestType: gdb_pb.RoutesInfo,
+    responseType: gdb_pb.Rows,
+    requestSerialize: serialize_model_RoutesInfo,
+    requestDeserialize: deserialize_model_RoutesInfo,
+    responseSerialize: serialize_model_Rows,
+    responseDeserialize: deserialize_model_Rows,
+  },
+  deleteUserRoutes: {
+    path: '/model.Page/DeleteUserRoutes',
+    requestStream: false,
+    responseStream: false,
+    requestType: gdb_pb.UserName,
+    responseType: gdb_pb.Rows,
+    requestSerialize: serialize_model_UserName,
+    requestDeserialize: deserialize_model_UserName,
+    responseSerialize: serialize_model_Rows,
+    responseDeserialize: deserialize_model_Rows,
+  },
+  getAllRoutes: {
+    path: '/model.Page/GetAllRoutes',
+    requestStream: false,
+    responseStream: false,
+    requestType: google_protobuf_empty_pb.Empty,
+    responseType: gdb_pb.Routes,
+    requestSerialize: serialize_google_protobuf_Empty,
+    requestDeserialize: deserialize_google_protobuf_Empty,
+    responseSerialize: serialize_model_Routes,
+    responseDeserialize: deserialize_model_Routes,
+  },
+  checkRoutes: {
+    path: '/model.Page/CheckRoutes',
+    requestStream: false,
+    responseStream: false,
+    requestType: gdb_pb.RoutesInfo,
+    responseType: gdb_pb.CheckResult,
+    requestSerialize: serialize_model_RoutesInfo,
+    requestDeserialize: deserialize_model_RoutesInfo,
+    responseSerialize: serialize_model_CheckResult,
+    responseDeserialize: deserialize_model_CheckResult,
   },
 };
 
