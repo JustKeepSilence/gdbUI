@@ -480,11 +480,11 @@ ul.el-menu--collapse div.el-submenu__title {
 }
 
 /* 设置分割线的样式 */
-.el-divider--horizontal {
+/* .el-divider--horizontal {
   width: 120%;
   margin-top: 5px;
   overflow-x: hidden;
-}
+} */
 
 /* 设置container的样式 */
 .el-container.is-vertical {

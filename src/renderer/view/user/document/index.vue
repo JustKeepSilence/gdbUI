@@ -97,8 +97,8 @@ export default {
         },
         {
           name: 'api',
-          content: '接口文档下载',
-          fileName: 'api.pdf',
+          content: '接口示例下载',
+          fileName: 'apiExamples.7z',
           tip: '接口文档下载'
         },
         {

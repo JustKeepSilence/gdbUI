@@ -263,7 +263,9 @@ export default {
             data.infos === null
               ? []
               : data.infos.map((item) => {
+                  console.log(item.logMessage)
                   let t = JSON.parse(item.logMessage);
+                  console.log(t)
                   t["id"] = item["id"];
                   t["insertTime"] = item["insertTime"];
                   return t;

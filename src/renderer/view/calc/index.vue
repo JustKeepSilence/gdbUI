@@ -248,8 +248,7 @@ export default {
     return {
       calcDialogName: "二次计算",
       calcDialog: false,
-      calcContent: `//内置函数如下：getRtData(获取实时值)，getHData(获取历史值),getHDataWithTs(获取指定时间的历史值)
-//writeRtData(写入实时值),getTimeStamp(获取时间戳),getNowTime(获取当前时间)`, // 二次计算的输入内容
+      calcContent: `//目前只支持es5语法,定义变量请使用var,并且只能使用"",请勿使用''`, // 二次计算的输入内容
       codeUploadDialogNames: "代码上传",
       codeUploadDialog: false,
       jsCodeContent: "", // jscode file info
@@ -301,15 +300,21 @@ export default {
     CodeMirror.hint.javascript = function(cm) {
     var inner = orig(cm) || {from: cm.getCursor(), to: cm.getCursor(), list: []};
     inner.list.push("getRtData");
-    inner.list.push("getHData");
-    inner.list.push("getHDataWithTs");
-    inner.list.push("writeRtData");
-    inner.list.push("getTimeStamp");
-    inner.list.push("getNowTime");
-    inner.list.push('testItemValue')
-    inner.list.push('groupName')
-    inner.list.push('itemName')
-    inner.list.push('value')
+    inner.list.push("getFloatHData");
+    inner.list.push("getIntHData");
+    inner.list.push("getStringHData");
+    inner.list.push("getBoolHData");
+    inner.list.push("getFloatHDataWithTs");
+    inner.list.push('getIntHDataWithTs')
+    inner.list.push('getStringHDataWithTs')
+    inner.list.push('getBoolHDataWithTs')
+    inner.list.push('writeFloatRtData')
+    inner.list.push('writeIntRtData')
+    inner.list.push('writeStringRtData')
+    inner.list.push('writeBoolRtData')
+    inner.list.push('getTimeStamp')
+    inner.list.push('getNowTime')
+    inner.list.push('console')
     return inner;
 };
   },
@@ -333,7 +338,7 @@ export default {
         if (typeof(infos) == 'string'){
           infos = JSON.parse(infos)
         }
-        this.tableData = infos.map((item) => {
+        this.tableData = infos === null ? []: infos.map((item) => {
           if (item.updatedTime === "null") {
             item.updatedTime = "";
           }

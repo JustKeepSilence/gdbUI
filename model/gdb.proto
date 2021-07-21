@@ -4,15 +4,17 @@ option go_package="model";
 
 import "google/protobuf/empty.proto";
 
-message Rows{
+message TimeRows{
   int32 effectedRows = 1;
+  int64 times = 2;
 }
 
-message Cols{
+message TimeCols{
   int32 effectedCols = 1;
+  int64 times = 2;
 }
 
-// group handler
+// group model
 
 message AddedGroupInfo {
   string groupName = 1;
@@ -25,11 +27,6 @@ message AddedGroupInfos {
 
 message GroupNamesInfo {
   repeated string groupNames = 1;
-}
-
-message GroupPropertyInfo{
-  string itemCount = 1;
-  repeated string itemColumnNames = 2;
 }
 
 message QueryGroupPropertyInfo{
@@ -46,10 +43,10 @@ message UpdatedGroupNamesInfo {
   repeated UpdatedGroupNameInfo infos = 1;
 }
 
-message UpdatedGroupColumnNamesInfo {
+message AddedGroupColumnsInfo{
   string groupName = 1;
-  repeated string oldColumnNames = 2;
-  repeated string newColumnNames = 3;
+  repeated string columnNames = 2;
+  repeated string defaultValues = 3;
 }
 
 message DeletedGroupColumnNamesInfo {
@@ -57,24 +54,29 @@ message DeletedGroupColumnNamesInfo {
   repeated string columnNames = 2;
 }
 
-message AddedGroupColumnsInfo{
+message GroupPropertyInfo{
+  string itemCount = 1;
+  repeated string itemColumnNames = 2;
+}
+
+message UpdatedGroupColumnNamesInfo {
   string groupName = 1;
-  repeated string columnNames = 2;
-  repeated string defaultValues = 3;
+  repeated string oldColumnNames = 2;
+  repeated string newColumnNames = 3;
 }
 
 service Group {
-  rpc AddGroups(AddedGroupInfos) returns (Rows){}
-  rpc DeleteGroups(GroupNamesInfo) returns (Rows){}
+  rpc AddGroups(AddedGroupInfos) returns (TimeRows){}
+  rpc DeleteGroups(GroupNamesInfo) returns (TimeRows){}
   rpc GetGroups(google.protobuf.Empty) returns (GroupNamesInfo) {}
   rpc GetGroupProperty(QueryGroupPropertyInfo) returns (GroupPropertyInfo){}
-  rpc UpdateGroupNames(UpdatedGroupNamesInfo) returns (Rows){}
-  rpc UpdateGroupColumnNames(UpdatedGroupColumnNamesInfo) returns (Cols){}
-  rpc DeleteGroupColumns(DeletedGroupColumnNamesInfo) returns (Cols){}
-  rpc AddGroupColumns(AddedGroupColumnsInfo) returns (Cols){}
+  rpc UpdateGroupNames(UpdatedGroupNamesInfo) returns (TimeRows){}
+  rpc UpdateGroupColumnNames(UpdatedGroupColumnNamesInfo) returns (TimeCols){}
+  rpc DeleteGroupColumns(DeletedGroupColumnNamesInfo) returns (TimeCols){}
+  rpc AddGroupColumns(AddedGroupColumnsInfo) returns (TimeCols){}
 }
 
-// item handler
+// item model
 
 message AddedItemsInfo {
   string groupName = 1;
@@ -89,10 +91,23 @@ message DeletedItemsInfo {
 message ItemsInfo{
   string groupName = 1;
   string condition = 5;
-  string clause = 6;
   string columnNames = 2;
   int32 startRow = 3;
   int32 rowCount = 4;
+}
+
+message GdbItemsWithCount {
+  int32 itemCount = 1;
+  repeated GdbItems itemValues = 2;
+}
+
+message GdbItems{
+  map<string, string> items = 1;
+}
+
+message CheckItemsInfo {
+  string groupName = 1;
+  repeated  string itemNames = 2;
 }
 
 message UpdatedItemsInfo{
@@ -101,49 +116,108 @@ message UpdatedItemsInfo{
   string clause = 3;
 }
 
-message GdbItem{
-  map<string, string> items = 1;
-}
-
-message GdbItems {
-  repeated GdbItem itemValues = 2;
-}
-
-message GdbItemsWithCount {
-  int32 itemCount = 1;
-  repeated GdbItem itemValues = 2;
-}
-
-message CheckItemsInfo {
-  string groupName = 1;
-  repeated  string itemNames = 2;
-}
-
 service Item {
-  rpc AddItems(AddedItemsInfo) returns (Rows){}
-  rpc DeleteItems(DeletedItemsInfo) returns (Rows){}
-  rpc GetItems(ItemsInfo) returns (GdbItems){}
+  rpc AddItems(AddedItemsInfo) returns (TimeRows){}
+  rpc DeleteItems(DeletedItemsInfo) returns (TimeRows){}
   rpc GetItemsWithCount(ItemsInfo) returns (GdbItemsWithCount){}
-  rpc UpdateItems(UpdatedItemsInfo) returns (Rows){}
+  rpc UpdateItems(UpdatedItemsInfo) returns (TimeRows){}
   rpc CheckItems(CheckItemsInfo) returns (google.protobuf.Empty){}
-  rpc CleanGroupItems(GroupNamesInfo) returns (Rows){}
+  rpc CleanGroupItems(GroupNamesInfo) returns (TimeRows){}
 }
 
-// data handler
+// data model
 
-message BatchWriteString{
-  string itemValues = 3;
+message ItemName {
+  repeated string itemName = 1;
+}
+
+message FloatItemValue {
+  repeated float itemValue = 1;
+}
+
+message IntItemValue {
+  repeated int32 itemValue = 1;
+}
+
+message StringItemValue {
+  repeated string itemValue = 1;
+}
+
+message BoolItemValue {
+  repeated bool itemValue = 1;
+}
+
+message FloatItemValues {
+  repeated string groupNames = 1;
+  repeated ItemName itemNames = 2;
+  repeated FloatItemValue itemValues = 3;
+}
+
+message IntItemValues {
+  repeated string groupNames = 1;
+  repeated ItemName itemNames = 2;
+  repeated IntItemValue itemValues = 3;
+}
+
+message BoolItemValues {
+  repeated string groupNames = 1;
+  repeated ItemName itemNames = 2;
+  repeated BoolItemValue itemValues = 3;
+}
+
+message StringItemValues {
+  repeated string groupNames = 1;
+  repeated ItemName itemNames = 2;
+  repeated StringItemValue itemValues = 3;
+}
+
+message FloatHItemValues {
+  repeated FloatHItemValue values=3;
+}
+
+message FloatHItemValue{
+  string groupName = 1;
+  repeated string itemName = 2;
+  repeated float itemValues = 3;
+  repeated int32 timeStamps = 4;
+}
+
+message IntHItemValues {
+  repeated IntHItemValue values=3;
+}
+
+message IntHItemValue{
+  string groupName = 1;
+  repeated string itemName = 2;
+  repeated int32 itemValues = 3;
+  repeated int32 timeStamps = 4;
+}
+
+message StringHItemValues {
+  repeated StringHItemValue values=3;
+}
+
+message StringHItemValue{
+  string groupName = 1;
+  repeated string itemName = 2;
+  repeated string itemValues = 3;
+  repeated int32 timeStamps = 4;
+}
+
+message BoolHItemValues {
+  repeated BoolHItemValue values=3;
+}
+
+message BoolHItemValue{
+  string groupName = 1;
+  repeated string itemName = 2;
+  repeated bool itemValues = 3;
+  repeated int32 timeStamps = 4;
 }
 
 message QueryRealTimeDataString{
   repeated string groupNames = 2;
   repeated string itemNames = 1;
-}
-
-// Notes: because in rpc proto we can't define Current map type,so use string to replace
-// current map, that is we use json.Marshal to convert current map to string
-message GdbRealTimeData{
-  string realTimeData = 1;
 }
 
 message QueryHistoricalDataString{
@@ -154,18 +228,19 @@ message QueryHistoricalDataString{
   repeated int32 intervals = 4;
 }
 
-message GdbHistoricalData{
-  string historicalData = 1;
+message QueryRawHistoricalDataString{
+  repeated string groupNames = 1;
+  repeated string itemNames = 2;
 }
 
-message TimeStamp {
-  repeated int32 timeStamp = 1;
+message QueryHistoricalDataWithStamp {
+  string groupName = 1;
+  string itemName = 2;
+  repeated int32 timeStamps = 3;
 }
 
-message QueryHistoricalDataWithTimeStampString{
-  repeated string groupNames = 3;
-  repeated string itemNames = 1;
-  repeated TimeStamp timeStamps = 2;
+message QueryHistoricalDataWithStampString{
+ repeated QueryHistoricalDataWithStamp queryString = 1;
 }
 
 message DeadZone {
@@ -173,10 +248,9 @@ message DeadZone {
   int32 deadZoneCount = 2;
 }
 
-message QueryHistoricalDataWithConditionString{
-  repeated string groupNames = 8;
-  repeated string itemNames = 1;
-  repeated TimeStamp timeStamps = 2;
+message QueryHistoricalDataWithConditionString {
+  string groupName = 1;
+  repeated string itemNames = 2;
   repeated int32 startTimes = 3;
   repeated int32 endTimes = 4;
   repeated int32 intervals = 5;
@@ -184,93 +258,79 @@ message QueryHistoricalDataWithConditionString{
   repeated DeadZone deadZones = 7;
 }
 
-message GdbInfoData{
-  string info = 1;
+message DeleteHistoricalDataString {
+  repeated string groupNames = 1;
+  repeated string itemNames = 2;
+  repeated int32 startTimes = 3;
+  repeated int32 endTimes = 4;
 }
 
-message BatchWriteHistoricalString {
-  string historicalItemValues = 1;
+// Notes: because in rpc proto we can't define Current map type,so use string to replace
+// current map, that is we use json.Marshal to convert current map to string
+message GdbRealTimeData{
+  string realTimeData = 1;
+  int64 times = 2;
 }
 
-message QuerySpeedHistoryDataString{
-  string itemName = 1;
-  repeated int32 startTimes = 2;
-  repeated int32 endTimes = 3;
-  repeated int32 intervals = 4;
+message GdbHistoricalData{
+  string historicalData = 1;
+  int64 times = 2;
 }
 
 service Data {
-  rpc BatchWrite(BatchWriteString) returns (Rows){}
-  rpc BatchWriteWithStream(stream BatchWriteString) returns (Rows){}
-  rpc BatchWriteHistoricalData(BatchWriteHistoricalString) returns (google.protobuf.Empty){}
-  rpc BatchWriteHistoricalDataWithStream(stream BatchWriteHistoricalString) returns (google.protobuf.Empty){}
+  rpc BatchWriteFloatData(FloatItemValues) returns (TimeRows){}
+  rpc BatchWriteFloatDataWithStream(stream FloatItemValues) returns (TimeRows){}
+  rpc BatchWriteIntData(IntItemValues) returns (TimeRows){}
+  rpc BatchWriteIntDataWithStream(stream IntItemValues) returns (TimeRows){}
+  rpc BatchWriteStringData(StringItemValues) returns (TimeRows){}
+  rpc BatchWriteStringDataWithStream(stream StringItemValues) returns (TimeRows){}
+  rpc BatchWriteBoolData(BoolItemValues) returns (TimeRows){}
+  rpc BatchWriteBoolDataWithStream(stream BoolItemValues) returns (TimeRows){}
+  rpc BatchWriteFloatHistoricalData(FloatHItemValues) returns (TimeRows){}
+  rpc BatchWriteFloatHistoricalDataWithStream(stream FloatHItemValues) returns (TimeRows){}
+  rpc BatchWriteIntHistoricalData(IntHItemValues) returns (TimeRows){}
+  rpc BatchWriteIntHistoricalDataWithStream(stream IntHItemValues) returns (TimeRows){}
+  rpc BatchWriteStringHistoricalData(StringHItemValues) returns (TimeRows){}
+  rpc BatchWriteStringHistoricalDataWithStream(stream StringHItemValues) returns (TimeRows){}
+  rpc BatchWriteBoolHistoricalData(BoolHItemValues) returns (TimeRows){}
+  rpc BatchWriteBoolHistoricalDataWithStream(stream BoolHItemValues) returns (TimeRows){}
   rpc GetRealTimeData(QueryRealTimeDataString) returns (GdbRealTimeData){}
-  rpc GetHistoricalData(QueryHistoricalDataString) returns (GdbHistoricalData){}
-  rpc GetHistoricalDataWithStamp(QueryHistoricalDataWithTimeStampString) returns (GdbHistoricalData){}
-  rpc GetHistoricalDataWithCondition(QueryHistoricalDataWithConditionString) returns(GdbHistoricalData){}
-  rpc GetRawData(QueryRealTimeDataString) returns(GdbHistoricalData){}
+  rpc GetFloatHistoricalData(QueryHistoricalDataString) returns (GdbHistoricalData){}
+  rpc GetIntHistoricalData(QueryHistoricalDataString) returns (GdbHistoricalData){}
+  rpc GetStringHistoricalData(QueryHistoricalDataString) returns (GdbHistoricalData){}
+  rpc GetBoolHistoricalData(QueryHistoricalDataString) returns (GdbHistoricalData){}
+  rpc GetFloatRawHistoricalData(QueryRawHistoricalDataString) returns (GdbHistoricalData){}
+  rpc GetIntRawHistoricalData(QueryRawHistoricalDataString) returns (GdbHistoricalData){}
+  rpc GetStringRawHistoricalData(QueryRawHistoricalDataString) returns (GdbHistoricalData){}
+  rpc GetBoolRawHistoricalData(QueryRawHistoricalDataString) returns (GdbHistoricalData){}
+  rpc GetFloatHistoricalDataWithStamp(QueryHistoricalDataWithStampString) returns (GdbHistoricalData){}
+  rpc GetIntHistoricalDataWithStamp(QueryHistoricalDataWithStampString) returns (GdbHistoricalData){}
+  rpc GetStringHistoricalDataWithStamp(QueryHistoricalDataWithStampString) returns (GdbHistoricalData){}
+  rpc GetBoolHistoricalDataWithStamp(QueryHistoricalDataWithStampString) returns (GdbHistoricalData){}
+  rpc GetFloatHistoricalDataWithCondition(QueryHistoricalDataWithConditionString) returns (GdbHistoricalData){}
+  rpc GetIntHistoricalDataWithCondition(QueryHistoricalDataWithConditionString) returns (GdbHistoricalData){}
+  rpc GetStringHistoricalDataWithCondition(QueryHistoricalDataWithConditionString) returns (GdbHistoricalData){}
+  rpc GetBoolHistoricalDataWithCondition(QueryHistoricalDataWithConditionString) returns (GdbHistoricalData){}
+  rpc DeleteFloatHistoricalData(DeleteHistoricalDataString) returns (TimeRows){}
+  rpc DeleteIntHistoricalData(DeleteHistoricalDataString) returns (TimeRows){}
+  rpc DeleteStringHistoricalData(DeleteHistoricalDataString) returns (TimeRows){}
+  rpc DeleteBoolHistoricalData(DeleteHistoricalDataString) returns (TimeRows){}
+  rpc CleanItemData(DeletedItemsInfo) returns (TimeRows){}
+  rpc ReLoadDb(google.protobuf.Empty) returns (TimeRows){}
 }
 
-// page
+// page model
 
 message AuthInfo {
   string userName = 1;
   string passWord = 2;
 }
 
-message UserToken {
-  string token = 1;
-}
-
 message UserName{
   string name = 1;
 }
 
-message UserInfo{
-  string userName = 1;
-  repeated string role = 2;
-}
-
-message QueryLogsInfo{
-  string level = 1;
-  string startTime = 2;
-  string endTime = 3;
-  int32 startRow = 4;
-  int32 rowCount = 5;
-  string name = 6;
-}
-
-message LogsInfo {
-  string infos = 1;
-  int32 count = 2;
-}
-
-message FileInfo{
-  string fileName = 1;
-  string groupName = 2;
-}
-
-message UploadedFileInfo{
-  string fileName = 1;
-  repeated int32 file = 2;
-}
-
-message HistoryFileInfo {
-  string groupName = 4;
-  string fileName = 1;
-  repeated string itemNames = 2;
-  repeated string sheetNames = 3;
-}
-
-message FileContents {
-  repeated int32 contents = 1;
-}
-
-message UserInfos {
-  string userInfos = 1;
-}
-
-message AddUserInfo{
+message AddedUserInfo {
   string name = 1;
   string role = 2;
   string passWord = 3;
@@ -283,6 +343,27 @@ message UpdatedUserInfo{
   string newRole = 4;
 }
 
+message FileInfo{
+  string fileName = 1;
+  string groupName = 2;
+}
+
+message HistoryFileInfo {
+  string groupName = 4;
+  string fileName = 1;
+  repeated string itemNames = 2;
+  repeated string sheetNames = 3;
+}
+
+message QueryLogsInfo{
+  string level = 1;
+  string startTime = 2;
+  string endTime = 3;
+  int32 startRow = 4;
+  int32 rowCount = 5;
+  string name = 6;
+}
+
 message DeletedLogInfo {
   string id = 1;
   string startTime = 2;
@@ -290,9 +371,52 @@ message DeletedLogInfo {
   string userNameCondition = 4;
 }
 
+message QuerySpeedHistoryDataString {
+  string infoType = 5;
+  string itemName = 1;
+  repeated int32 startTimes = 2;
+  repeated int32 endTimes = 3;
+  repeated int32 intervals = 4;
+}
+
 message RoutesInfo {
   string name = 1;
   repeated string routes = 2;
+}
+
+message GdbInfoData{
+  string info = 1;
+}
+
+message UserToken {
+  string token = 1;
+}
+
+message UserInfo{
+  string userName = 1;
+  repeated string role = 2;
+}
+
+message LogsInfo {
+  string infos = 1;
+  int32 count = 2;
+}
+
+message UploadedFileInfo{
+  string fileName = 1;
+  repeated int32 file = 2;
+}
+
+message FileContents {
+  repeated int32 contents = 1;
+}
+
+message FileSize {
+  string fileSize = 1;
+}
+
+message UserInfos {
+  string userInfos = 1;
 }
 
 message Routes {
@@ -312,51 +436,40 @@ service Page {
   rpc UserLogOut(UserName) returns (google.protobuf.Empty){}
   rpc GetUserInfo(UserName) returns (UserInfo){}
   rpc GetUsers(google.protobuf.Empty) returns (UserInfos) {}
-  rpc AddUsers(AddUserInfo) returns (Rows){}
-  rpc DeleteUsers(UserName) returns (Rows){}
-  rpc UpdateUsers(UpdatedUserInfo) returns (Rows){}
+  rpc AddUsers(AddedUserInfo) returns (TimeRows){}
+  rpc DeleteUsers(UserName) returns (TimeRows){}
+  rpc UpdateUsers(UpdatedUserInfo) returns (TimeRows){}
   rpc UploadFile(UploadedFileInfo) returns (google.protobuf.Empty){}
   rpc UploadFileWithStream(stream UploadedFileInfo) returns (google.protobuf.Empty){}  // for file > 4194304, or you can set MaxCallRecvMsgSize
-  rpc AddItemsByExcel(FileInfo) returns (Rows){}
-  rpc ImportHistoryByExcel(HistoryFileInfo) returns (google.protobuf.Empty){}
+  rpc AddItemsByExcel(FileInfo) returns (TimeRows){}
+  rpc ImportHistoryByExcel(HistoryFileInfo) returns (TimeRows){}
   rpc GetLogs(QueryLogsInfo) returns (LogsInfo){}
   rpc GetJsCode(FileInfo) returns (Code){}
-  rpc DeleteLogs(DeletedLogInfo) returns (Rows){}
+  rpc DeleteLogs(DeletedLogInfo) returns (TimeRows){}
   rpc DownloadFile(FileInfo) returns (FileContents){}
+  rpc GetDbSize(google.protobuf.Empty) returns (FileSize){}
   rpc GetDbInfo(google.protobuf.Empty) returns (GdbInfoData){}
   rpc GetDbInfoHistory(QuerySpeedHistoryDataString) returns (GdbHistoricalData){}
   rpc GetRoutes(google.protobuf.Empty) returns (Routes){}
-  rpc DeleteRoutes(RoutesInfo) returns (Rows){}
-  rpc AddRoutes(RoutesInfo) returns (Rows){}
-  rpc AddUserRoutes(RoutesInfo) returns (Rows){}
-  rpc DeleteUserRoutes(UserName) returns (Rows){}
+  rpc DeleteRoutes(RoutesInfo) returns (TimeRows){}
+  rpc AddRoutes(RoutesInfo) returns (TimeRows){}
+  rpc AddUserRoutes(RoutesInfo) returns (TimeRows){}
+  rpc DeleteUserRoutes(UserName) returns (TimeRows){}
   rpc GetAllRoutes(google.protobuf.Empty) returns (Routes){}
   rpc CheckRoutes(RoutesInfo) returns (CheckResult){}
 }
 
-// calculation
+// calc model
 
 message AddedCalcItemInfo{
   string expression = 1;
   string flag = 2;
   string duration = 3;
-  string description = 6;
-}
-
-message CalculationResult{
-  string result = 1;
-}
-
-message CalculationResults{
-  repeated CalculationResult results = 1;
+  string description = 4;
 }
 
 message QueryCalcItemsInfo{
   string condition = 1;
-}
-
-message CalcItemsInfo{
-  string infos = 1;
 }
 
 message UpdatedCalcInfo{
@@ -364,27 +477,57 @@ message UpdatedCalcInfo{
   string description = 2;
   string expression = 3;
   string duration = 4;
+  string updatedTime = 5;
 }
 
 message CalcId {
   repeated string id = 1;
 }
 
+message CalculationResult{
+  string result = 1;
+}
+
+message CalcItemsInfo{
+  string infos = 1;
+}
+
+message CalculationResults{
+  repeated CalculationResult results = 1;
+}
+
 message TestCalcItemInfo {
   string expression = 1;
 }
 
-message TestResult {
-  string result = 1;
-}
-
 service Calc {
-  rpc TestCalcItem(TestCalcItemInfo) returns (TestResult){}
+  rpc TestCalcItem(TestCalcItemInfo) returns (CalculationResult){}
   rpc AddCalcItem(AddedCalcItemInfo) returns (CalculationResult){}
   rpc AddCalcItemWithStream(stream AddedCalcItemInfo) returns (CalculationResults){}
   rpc GetCalcItems(QueryCalcItemsInfo) returns (CalcItemsInfo){}
   rpc UpdateCalcItem(UpdatedCalcInfo) returns (CalculationResult){}
-  rpc StartCalcItem(CalcId) returns (Rows){}
-  rpc StopCalcItem(CalcId) returns (Rows){}
-  rpc DeleteCalcItem(CalcId) returns (Rows){}
+  rpc StartCalcItem(CalcId) returns (TimeRows){}
+  rpc StopCalcItem(CalcId) returns (TimeRows){}
+  rpc DeleteCalcItem(CalcId) returns (TimeRows){}
+}
+
+// for serialization and deserialization in gdb
+message FloatHistoricalData {
+  repeated float values = 1;
+  repeated int32 timeStamps = 2;
+}
+
+message IntHistoricalData {
+  repeated int32 values = 1;
+  repeated int32 timeStamps = 2;
+}
+
+message StringHistoricalData {
+  repeated string values = 1;
+  repeated int32 timeStamps = 2;
+}
+
+message BoolHistoricalData {
+  repeated bool values = 1;
+  repeated int32 timeStamps = 2;
 }

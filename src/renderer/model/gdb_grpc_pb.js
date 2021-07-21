@@ -15,17 +15,6 @@ function deserialize_google_protobuf_Empty(buffer_arg) {
   return google_protobuf_empty_pb.Empty.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
-function serialize_model_AddUserInfo(arg) {
-  if (!(arg instanceof gdb_pb.AddUserInfo)) {
-    throw new Error('Expected argument of type model.AddUserInfo');
-  }
-  return Buffer.from(arg.serializeBinary());
-}
-
-function deserialize_model_AddUserInfo(buffer_arg) {
-  return gdb_pb.AddUserInfo.deserializeBinary(new Uint8Array(buffer_arg));
-}
-
 function serialize_model_AddedCalcItemInfo(arg) {
   if (!(arg instanceof gdb_pb.AddedCalcItemInfo)) {
     throw new Error('Expected argument of type model.AddedCalcItemInfo');
@@ -70,6 +59,17 @@ function deserialize_model_AddedItemsInfo(buffer_arg) {
   return gdb_pb.AddedItemsInfo.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
+function serialize_model_AddedUserInfo(arg) {
+  if (!(arg instanceof gdb_pb.AddedUserInfo)) {
+    throw new Error('Expected argument of type model.AddedUserInfo');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_model_AddedUserInfo(buffer_arg) {
+  return gdb_pb.AddedUserInfo.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_model_AuthInfo(arg) {
   if (!(arg instanceof gdb_pb.AuthInfo)) {
     throw new Error('Expected argument of type model.AuthInfo');
@@ -81,26 +81,26 @@ function deserialize_model_AuthInfo(buffer_arg) {
   return gdb_pb.AuthInfo.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
-function serialize_model_BatchWriteHistoricalString(arg) {
-  if (!(arg instanceof gdb_pb.BatchWriteHistoricalString)) {
-    throw new Error('Expected argument of type model.BatchWriteHistoricalString');
+function serialize_model_BoolHItemValues(arg) {
+  if (!(arg instanceof gdb_pb.BoolHItemValues)) {
+    throw new Error('Expected argument of type model.BoolHItemValues');
   }
   return Buffer.from(arg.serializeBinary());
 }
 
-function deserialize_model_BatchWriteHistoricalString(buffer_arg) {
-  return gdb_pb.BatchWriteHistoricalString.deserializeBinary(new Uint8Array(buffer_arg));
+function deserialize_model_BoolHItemValues(buffer_arg) {
+  return gdb_pb.BoolHItemValues.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
-function serialize_model_BatchWriteString(arg) {
-  if (!(arg instanceof gdb_pb.BatchWriteString)) {
-    throw new Error('Expected argument of type model.BatchWriteString');
+function serialize_model_BoolItemValues(arg) {
+  if (!(arg instanceof gdb_pb.BoolItemValues)) {
+    throw new Error('Expected argument of type model.BoolItemValues');
   }
   return Buffer.from(arg.serializeBinary());
 }
 
-function deserialize_model_BatchWriteString(buffer_arg) {
-  return gdb_pb.BatchWriteString.deserializeBinary(new Uint8Array(buffer_arg));
+function deserialize_model_BoolItemValues(buffer_arg) {
+  return gdb_pb.BoolItemValues.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
 function serialize_model_CalcId(arg) {
@@ -180,15 +180,15 @@ function deserialize_model_Code(buffer_arg) {
   return gdb_pb.Code.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
-function serialize_model_Cols(arg) {
-  if (!(arg instanceof gdb_pb.Cols)) {
-    throw new Error('Expected argument of type model.Cols');
+function serialize_model_DeleteHistoricalDataString(arg) {
+  if (!(arg instanceof gdb_pb.DeleteHistoricalDataString)) {
+    throw new Error('Expected argument of type model.DeleteHistoricalDataString');
   }
   return Buffer.from(arg.serializeBinary());
 }
 
-function deserialize_model_Cols(buffer_arg) {
-  return gdb_pb.Cols.deserializeBinary(new Uint8Array(buffer_arg));
+function deserialize_model_DeleteHistoricalDataString(buffer_arg) {
+  return gdb_pb.DeleteHistoricalDataString.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
 function serialize_model_DeletedGroupColumnNamesInfo(arg) {
@@ -246,6 +246,39 @@ function deserialize_model_FileInfo(buffer_arg) {
   return gdb_pb.FileInfo.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
+function serialize_model_FileSize(arg) {
+  if (!(arg instanceof gdb_pb.FileSize)) {
+    throw new Error('Expected argument of type model.FileSize');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_model_FileSize(buffer_arg) {
+  return gdb_pb.FileSize.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_model_FloatHItemValues(arg) {
+  if (!(arg instanceof gdb_pb.FloatHItemValues)) {
+    throw new Error('Expected argument of type model.FloatHItemValues');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_model_FloatHItemValues(buffer_arg) {
+  return gdb_pb.FloatHItemValues.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_model_FloatItemValues(arg) {
+  if (!(arg instanceof gdb_pb.FloatItemValues)) {
+    throw new Error('Expected argument of type model.FloatItemValues');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_model_FloatItemValues(buffer_arg) {
+  return gdb_pb.FloatItemValues.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_model_GdbHistoricalData(arg) {
   if (!(arg instanceof gdb_pb.GdbHistoricalData)) {
     throw new Error('Expected argument of type model.GdbHistoricalData');
@@ -266,17 +299,6 @@ function serialize_model_GdbInfoData(arg) {
 
 function deserialize_model_GdbInfoData(buffer_arg) {
   return gdb_pb.GdbInfoData.deserializeBinary(new Uint8Array(buffer_arg));
-}
-
-function serialize_model_GdbItems(arg) {
-  if (!(arg instanceof gdb_pb.GdbItems)) {
-    throw new Error('Expected argument of type model.GdbItems');
-  }
-  return Buffer.from(arg.serializeBinary());
-}
-
-function deserialize_model_GdbItems(buffer_arg) {
-  return gdb_pb.GdbItems.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
 function serialize_model_GdbItemsWithCount(arg) {
@@ -332,6 +354,28 @@ function serialize_model_HistoryFileInfo(arg) {
 
 function deserialize_model_HistoryFileInfo(buffer_arg) {
   return gdb_pb.HistoryFileInfo.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_model_IntHItemValues(arg) {
+  if (!(arg instanceof gdb_pb.IntHItemValues)) {
+    throw new Error('Expected argument of type model.IntHItemValues');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_model_IntHItemValues(buffer_arg) {
+  return gdb_pb.IntHItemValues.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_model_IntItemValues(arg) {
+  if (!(arg instanceof gdb_pb.IntItemValues)) {
+    throw new Error('Expected argument of type model.IntItemValues');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_model_IntItemValues(buffer_arg) {
+  return gdb_pb.IntItemValues.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
 function serialize_model_ItemsInfo(arg) {
@@ -400,15 +444,15 @@ function deserialize_model_QueryHistoricalDataWithConditionString(buffer_arg) {
   return gdb_pb.QueryHistoricalDataWithConditionString.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
-function serialize_model_QueryHistoricalDataWithTimeStampString(arg) {
-  if (!(arg instanceof gdb_pb.QueryHistoricalDataWithTimeStampString)) {
-    throw new Error('Expected argument of type model.QueryHistoricalDataWithTimeStampString');
+function serialize_model_QueryHistoricalDataWithStampString(arg) {
+  if (!(arg instanceof gdb_pb.QueryHistoricalDataWithStampString)) {
+    throw new Error('Expected argument of type model.QueryHistoricalDataWithStampString');
   }
   return Buffer.from(arg.serializeBinary());
 }
 
-function deserialize_model_QueryHistoricalDataWithTimeStampString(buffer_arg) {
-  return gdb_pb.QueryHistoricalDataWithTimeStampString.deserializeBinary(new Uint8Array(buffer_arg));
+function deserialize_model_QueryHistoricalDataWithStampString(buffer_arg) {
+  return gdb_pb.QueryHistoricalDataWithStampString.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
 function serialize_model_QueryLogsInfo(arg) {
@@ -420,6 +464,17 @@ function serialize_model_QueryLogsInfo(arg) {
 
 function deserialize_model_QueryLogsInfo(buffer_arg) {
   return gdb_pb.QueryLogsInfo.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_model_QueryRawHistoricalDataString(arg) {
+  if (!(arg instanceof gdb_pb.QueryRawHistoricalDataString)) {
+    throw new Error('Expected argument of type model.QueryRawHistoricalDataString');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_model_QueryRawHistoricalDataString(buffer_arg) {
+  return gdb_pb.QueryRawHistoricalDataString.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
 function serialize_model_QueryRealTimeDataString(arg) {
@@ -466,15 +521,26 @@ function deserialize_model_RoutesInfo(buffer_arg) {
   return gdb_pb.RoutesInfo.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
-function serialize_model_Rows(arg) {
-  if (!(arg instanceof gdb_pb.Rows)) {
-    throw new Error('Expected argument of type model.Rows');
+function serialize_model_StringHItemValues(arg) {
+  if (!(arg instanceof gdb_pb.StringHItemValues)) {
+    throw new Error('Expected argument of type model.StringHItemValues');
   }
   return Buffer.from(arg.serializeBinary());
 }
 
-function deserialize_model_Rows(buffer_arg) {
-  return gdb_pb.Rows.deserializeBinary(new Uint8Array(buffer_arg));
+function deserialize_model_StringHItemValues(buffer_arg) {
+  return gdb_pb.StringHItemValues.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_model_StringItemValues(arg) {
+  if (!(arg instanceof gdb_pb.StringItemValues)) {
+    throw new Error('Expected argument of type model.StringItemValues');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_model_StringItemValues(buffer_arg) {
+  return gdb_pb.StringItemValues.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
 function serialize_model_TestCalcItemInfo(arg) {
@@ -488,15 +554,26 @@ function deserialize_model_TestCalcItemInfo(buffer_arg) {
   return gdb_pb.TestCalcItemInfo.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
-function serialize_model_TestResult(arg) {
-  if (!(arg instanceof gdb_pb.TestResult)) {
-    throw new Error('Expected argument of type model.TestResult');
+function serialize_model_TimeCols(arg) {
+  if (!(arg instanceof gdb_pb.TimeCols)) {
+    throw new Error('Expected argument of type model.TimeCols');
   }
   return Buffer.from(arg.serializeBinary());
 }
 
-function deserialize_model_TestResult(buffer_arg) {
-  return gdb_pb.TestResult.deserializeBinary(new Uint8Array(buffer_arg));
+function deserialize_model_TimeCols(buffer_arg) {
+  return gdb_pb.TimeCols.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_model_TimeRows(arg) {
+  if (!(arg instanceof gdb_pb.TimeRows)) {
+    throw new Error('Expected argument of type model.TimeRows');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_model_TimeRows(buffer_arg) {
+  return gdb_pb.TimeRows.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
 function serialize_model_UpdatedCalcInfo(arg) {
@@ -616,22 +693,22 @@ var GroupService = exports['model.Group'] = {
     requestStream: false,
     responseStream: false,
     requestType: gdb_pb.AddedGroupInfos,
-    responseType: gdb_pb.Rows,
+    responseType: gdb_pb.TimeRows,
     requestSerialize: serialize_model_AddedGroupInfos,
     requestDeserialize: deserialize_model_AddedGroupInfos,
-    responseSerialize: serialize_model_Rows,
-    responseDeserialize: deserialize_model_Rows,
+    responseSerialize: serialize_model_TimeRows,
+    responseDeserialize: deserialize_model_TimeRows,
   },
   deleteGroups: {
     path: '/model.Group/DeleteGroups',
     requestStream: false,
     responseStream: false,
     requestType: gdb_pb.GroupNamesInfo,
-    responseType: gdb_pb.Rows,
+    responseType: gdb_pb.TimeRows,
     requestSerialize: serialize_model_GroupNamesInfo,
     requestDeserialize: deserialize_model_GroupNamesInfo,
-    responseSerialize: serialize_model_Rows,
-    responseDeserialize: deserialize_model_Rows,
+    responseSerialize: serialize_model_TimeRows,
+    responseDeserialize: deserialize_model_TimeRows,
   },
   getGroups: {
     path: '/model.Group/GetGroups',
@@ -660,44 +737,44 @@ var GroupService = exports['model.Group'] = {
     requestStream: false,
     responseStream: false,
     requestType: gdb_pb.UpdatedGroupNamesInfo,
-    responseType: gdb_pb.Rows,
+    responseType: gdb_pb.TimeRows,
     requestSerialize: serialize_model_UpdatedGroupNamesInfo,
     requestDeserialize: deserialize_model_UpdatedGroupNamesInfo,
-    responseSerialize: serialize_model_Rows,
-    responseDeserialize: deserialize_model_Rows,
+    responseSerialize: serialize_model_TimeRows,
+    responseDeserialize: deserialize_model_TimeRows,
   },
   updateGroupColumnNames: {
     path: '/model.Group/UpdateGroupColumnNames',
     requestStream: false,
     responseStream: false,
     requestType: gdb_pb.UpdatedGroupColumnNamesInfo,
-    responseType: gdb_pb.Cols,
+    responseType: gdb_pb.TimeCols,
     requestSerialize: serialize_model_UpdatedGroupColumnNamesInfo,
     requestDeserialize: deserialize_model_UpdatedGroupColumnNamesInfo,
-    responseSerialize: serialize_model_Cols,
-    responseDeserialize: deserialize_model_Cols,
+    responseSerialize: serialize_model_TimeCols,
+    responseDeserialize: deserialize_model_TimeCols,
   },
   deleteGroupColumns: {
     path: '/model.Group/DeleteGroupColumns',
     requestStream: false,
     responseStream: false,
     requestType: gdb_pb.DeletedGroupColumnNamesInfo,
-    responseType: gdb_pb.Cols,
+    responseType: gdb_pb.TimeCols,
     requestSerialize: serialize_model_DeletedGroupColumnNamesInfo,
     requestDeserialize: deserialize_model_DeletedGroupColumnNamesInfo,
-    responseSerialize: serialize_model_Cols,
-    responseDeserialize: deserialize_model_Cols,
+    responseSerialize: serialize_model_TimeCols,
+    responseDeserialize: deserialize_model_TimeCols,
   },
   addGroupColumns: {
     path: '/model.Group/AddGroupColumns',
     requestStream: false,
     responseStream: false,
     requestType: gdb_pb.AddedGroupColumnsInfo,
-    responseType: gdb_pb.Cols,
+    responseType: gdb_pb.TimeCols,
     requestSerialize: serialize_model_AddedGroupColumnsInfo,
     requestDeserialize: deserialize_model_AddedGroupColumnsInfo,
-    responseSerialize: serialize_model_Cols,
-    responseDeserialize: deserialize_model_Cols,
+    responseSerialize: serialize_model_TimeCols,
+    responseDeserialize: deserialize_model_TimeCols,
   },
 };
 
@@ -707,33 +784,22 @@ var ItemService = exports['model.Item'] = {
     requestStream: false,
     responseStream: false,
     requestType: gdb_pb.AddedItemsInfo,
-    responseType: gdb_pb.Rows,
+    responseType: gdb_pb.TimeRows,
     requestSerialize: serialize_model_AddedItemsInfo,
     requestDeserialize: deserialize_model_AddedItemsInfo,
-    responseSerialize: serialize_model_Rows,
-    responseDeserialize: deserialize_model_Rows,
+    responseSerialize: serialize_model_TimeRows,
+    responseDeserialize: deserialize_model_TimeRows,
   },
   deleteItems: {
     path: '/model.Item/DeleteItems',
     requestStream: false,
     responseStream: false,
     requestType: gdb_pb.DeletedItemsInfo,
-    responseType: gdb_pb.Rows,
+    responseType: gdb_pb.TimeRows,
     requestSerialize: serialize_model_DeletedItemsInfo,
     requestDeserialize: deserialize_model_DeletedItemsInfo,
-    responseSerialize: serialize_model_Rows,
-    responseDeserialize: deserialize_model_Rows,
-  },
-  getItems: {
-    path: '/model.Item/GetItems',
-    requestStream: false,
-    responseStream: false,
-    requestType: gdb_pb.ItemsInfo,
-    responseType: gdb_pb.GdbItems,
-    requestSerialize: serialize_model_ItemsInfo,
-    requestDeserialize: deserialize_model_ItemsInfo,
-    responseSerialize: serialize_model_GdbItems,
-    responseDeserialize: deserialize_model_GdbItems,
+    responseSerialize: serialize_model_TimeRows,
+    responseDeserialize: deserialize_model_TimeRows,
   },
   getItemsWithCount: {
     path: '/model.Item/GetItemsWithCount',
@@ -751,11 +817,11 @@ var ItemService = exports['model.Item'] = {
     requestStream: false,
     responseStream: false,
     requestType: gdb_pb.UpdatedItemsInfo,
-    responseType: gdb_pb.Rows,
+    responseType: gdb_pb.TimeRows,
     requestSerialize: serialize_model_UpdatedItemsInfo,
     requestDeserialize: deserialize_model_UpdatedItemsInfo,
-    responseSerialize: serialize_model_Rows,
-    responseDeserialize: deserialize_model_Rows,
+    responseSerialize: serialize_model_TimeRows,
+    responseDeserialize: deserialize_model_TimeRows,
   },
   checkItems: {
     path: '/model.Item/CheckItems',
@@ -773,58 +839,190 @@ var ItemService = exports['model.Item'] = {
     requestStream: false,
     responseStream: false,
     requestType: gdb_pb.GroupNamesInfo,
-    responseType: gdb_pb.Rows,
+    responseType: gdb_pb.TimeRows,
     requestSerialize: serialize_model_GroupNamesInfo,
     requestDeserialize: deserialize_model_GroupNamesInfo,
-    responseSerialize: serialize_model_Rows,
-    responseDeserialize: deserialize_model_Rows,
+    responseSerialize: serialize_model_TimeRows,
+    responseDeserialize: deserialize_model_TimeRows,
   },
 };
 
 var DataService = exports['model.Data'] = {
-  batchWrite: {
-    path: '/model.Data/BatchWrite',
+  batchWriteFloatData: {
+    path: '/model.Data/BatchWriteFloatData',
     requestStream: false,
     responseStream: false,
-    requestType: gdb_pb.BatchWriteString,
-    responseType: gdb_pb.Rows,
-    requestSerialize: serialize_model_BatchWriteString,
-    requestDeserialize: deserialize_model_BatchWriteString,
-    responseSerialize: serialize_model_Rows,
-    responseDeserialize: deserialize_model_Rows,
+    requestType: gdb_pb.FloatItemValues,
+    responseType: gdb_pb.TimeRows,
+    requestSerialize: serialize_model_FloatItemValues,
+    requestDeserialize: deserialize_model_FloatItemValues,
+    responseSerialize: serialize_model_TimeRows,
+    responseDeserialize: deserialize_model_TimeRows,
   },
-  batchWriteWithStream: {
-    path: '/model.Data/BatchWriteWithStream',
+  batchWriteFloatDataWithStream: {
+    path: '/model.Data/BatchWriteFloatDataWithStream',
     requestStream: true,
     responseStream: false,
-    requestType: gdb_pb.BatchWriteString,
-    responseType: gdb_pb.Rows,
-    requestSerialize: serialize_model_BatchWriteString,
-    requestDeserialize: deserialize_model_BatchWriteString,
-    responseSerialize: serialize_model_Rows,
-    responseDeserialize: deserialize_model_Rows,
+    requestType: gdb_pb.FloatItemValues,
+    responseType: gdb_pb.TimeRows,
+    requestSerialize: serialize_model_FloatItemValues,
+    requestDeserialize: deserialize_model_FloatItemValues,
+    responseSerialize: serialize_model_TimeRows,
+    responseDeserialize: deserialize_model_TimeRows,
   },
-  batchWriteHistoricalData: {
-    path: '/model.Data/BatchWriteHistoricalData',
+  batchWriteIntData: {
+    path: '/model.Data/BatchWriteIntData',
     requestStream: false,
     responseStream: false,
-    requestType: gdb_pb.BatchWriteHistoricalString,
-    responseType: google_protobuf_empty_pb.Empty,
-    requestSerialize: serialize_model_BatchWriteHistoricalString,
-    requestDeserialize: deserialize_model_BatchWriteHistoricalString,
-    responseSerialize: serialize_google_protobuf_Empty,
-    responseDeserialize: deserialize_google_protobuf_Empty,
+    requestType: gdb_pb.IntItemValues,
+    responseType: gdb_pb.TimeRows,
+    requestSerialize: serialize_model_IntItemValues,
+    requestDeserialize: deserialize_model_IntItemValues,
+    responseSerialize: serialize_model_TimeRows,
+    responseDeserialize: deserialize_model_TimeRows,
   },
-  batchWriteHistoricalDataWithStream: {
-    path: '/model.Data/BatchWriteHistoricalDataWithStream',
+  batchWriteIntDataWithStream: {
+    path: '/model.Data/BatchWriteIntDataWithStream',
     requestStream: true,
     responseStream: false,
-    requestType: gdb_pb.BatchWriteHistoricalString,
-    responseType: google_protobuf_empty_pb.Empty,
-    requestSerialize: serialize_model_BatchWriteHistoricalString,
-    requestDeserialize: deserialize_model_BatchWriteHistoricalString,
-    responseSerialize: serialize_google_protobuf_Empty,
-    responseDeserialize: deserialize_google_protobuf_Empty,
+    requestType: gdb_pb.IntItemValues,
+    responseType: gdb_pb.TimeRows,
+    requestSerialize: serialize_model_IntItemValues,
+    requestDeserialize: deserialize_model_IntItemValues,
+    responseSerialize: serialize_model_TimeRows,
+    responseDeserialize: deserialize_model_TimeRows,
+  },
+  batchWriteStringData: {
+    path: '/model.Data/BatchWriteStringData',
+    requestStream: false,
+    responseStream: false,
+    requestType: gdb_pb.StringItemValues,
+    responseType: gdb_pb.TimeRows,
+    requestSerialize: serialize_model_StringItemValues,
+    requestDeserialize: deserialize_model_StringItemValues,
+    responseSerialize: serialize_model_TimeRows,
+    responseDeserialize: deserialize_model_TimeRows,
+  },
+  batchWriteStringDataWithStream: {
+    path: '/model.Data/BatchWriteStringDataWithStream',
+    requestStream: true,
+    responseStream: false,
+    requestType: gdb_pb.StringItemValues,
+    responseType: gdb_pb.TimeRows,
+    requestSerialize: serialize_model_StringItemValues,
+    requestDeserialize: deserialize_model_StringItemValues,
+    responseSerialize: serialize_model_TimeRows,
+    responseDeserialize: deserialize_model_TimeRows,
+  },
+  batchWriteBoolData: {
+    path: '/model.Data/BatchWriteBoolData',
+    requestStream: false,
+    responseStream: false,
+    requestType: gdb_pb.BoolItemValues,
+    responseType: gdb_pb.TimeRows,
+    requestSerialize: serialize_model_BoolItemValues,
+    requestDeserialize: deserialize_model_BoolItemValues,
+    responseSerialize: serialize_model_TimeRows,
+    responseDeserialize: deserialize_model_TimeRows,
+  },
+  batchWriteBoolDataWithStream: {
+    path: '/model.Data/BatchWriteBoolDataWithStream',
+    requestStream: true,
+    responseStream: false,
+    requestType: gdb_pb.BoolItemValues,
+    responseType: gdb_pb.TimeRows,
+    requestSerialize: serialize_model_BoolItemValues,
+    requestDeserialize: deserialize_model_BoolItemValues,
+    responseSerialize: serialize_model_TimeRows,
+    responseDeserialize: deserialize_model_TimeRows,
+  },
+  batchWriteFloatHistoricalData: {
+    path: '/model.Data/BatchWriteFloatHistoricalData',
+    requestStream: false,
+    responseStream: false,
+    requestType: gdb_pb.FloatHItemValues,
+    responseType: gdb_pb.TimeRows,
+    requestSerialize: serialize_model_FloatHItemValues,
+    requestDeserialize: deserialize_model_FloatHItemValues,
+    responseSerialize: serialize_model_TimeRows,
+    responseDeserialize: deserialize_model_TimeRows,
+  },
+  batchWriteFloatHistoricalDataWithStream: {
+    path: '/model.Data/BatchWriteFloatHistoricalDataWithStream',
+    requestStream: true,
+    responseStream: false,
+    requestType: gdb_pb.FloatHItemValues,
+    responseType: gdb_pb.TimeRows,
+    requestSerialize: serialize_model_FloatHItemValues,
+    requestDeserialize: deserialize_model_FloatHItemValues,
+    responseSerialize: serialize_model_TimeRows,
+    responseDeserialize: deserialize_model_TimeRows,
+  },
+  batchWriteIntHistoricalData: {
+    path: '/model.Data/BatchWriteIntHistoricalData',
+    requestStream: false,
+    responseStream: false,
+    requestType: gdb_pb.IntHItemValues,
+    responseType: gdb_pb.TimeRows,
+    requestSerialize: serialize_model_IntHItemValues,
+    requestDeserialize: deserialize_model_IntHItemValues,
+    responseSerialize: serialize_model_TimeRows,
+    responseDeserialize: deserialize_model_TimeRows,
+  },
+  batchWriteIntHistoricalDataWithStream: {
+    path: '/model.Data/BatchWriteIntHistoricalDataWithStream',
+    requestStream: true,
+    responseStream: false,
+    requestType: gdb_pb.IntHItemValues,
+    responseType: gdb_pb.TimeRows,
+    requestSerialize: serialize_model_IntHItemValues,
+    requestDeserialize: deserialize_model_IntHItemValues,
+    responseSerialize: serialize_model_TimeRows,
+    responseDeserialize: deserialize_model_TimeRows,
+  },
+  batchWriteStringHistoricalData: {
+    path: '/model.Data/BatchWriteStringHistoricalData',
+    requestStream: false,
+    responseStream: false,
+    requestType: gdb_pb.StringHItemValues,
+    responseType: gdb_pb.TimeRows,
+    requestSerialize: serialize_model_StringHItemValues,
+    requestDeserialize: deserialize_model_StringHItemValues,
+    responseSerialize: serialize_model_TimeRows,
+    responseDeserialize: deserialize_model_TimeRows,
+  },
+  batchWriteStringHistoricalDataWithStream: {
+    path: '/model.Data/BatchWriteStringHistoricalDataWithStream',
+    requestStream: true,
+    responseStream: false,
+    requestType: gdb_pb.StringHItemValues,
+    responseType: gdb_pb.TimeRows,
+    requestSerialize: serialize_model_StringHItemValues,
+    requestDeserialize: deserialize_model_StringHItemValues,
+    responseSerialize: serialize_model_TimeRows,
+    responseDeserialize: deserialize_model_TimeRows,
+  },
+  batchWriteBoolHistoricalData: {
+    path: '/model.Data/BatchWriteBoolHistoricalData',
+    requestStream: false,
+    responseStream: false,
+    requestType: gdb_pb.BoolHItemValues,
+    responseType: gdb_pb.TimeRows,
+    requestSerialize: serialize_model_BoolHItemValues,
+    requestDeserialize: deserialize_model_BoolHItemValues,
+    responseSerialize: serialize_model_TimeRows,
+    responseDeserialize: deserialize_model_TimeRows,
+  },
+  batchWriteBoolHistoricalDataWithStream: {
+    path: '/model.Data/BatchWriteBoolHistoricalDataWithStream',
+    requestStream: true,
+    responseStream: false,
+    requestType: gdb_pb.BoolHItemValues,
+    responseType: gdb_pb.TimeRows,
+    requestSerialize: serialize_model_BoolHItemValues,
+    requestDeserialize: deserialize_model_BoolHItemValues,
+    responseSerialize: serialize_model_TimeRows,
+    responseDeserialize: deserialize_model_TimeRows,
   },
   getRealTimeData: {
     path: '/model.Data/GetRealTimeData',
@@ -837,8 +1035,8 @@ var DataService = exports['model.Data'] = {
     responseSerialize: serialize_model_GdbRealTimeData,
     responseDeserialize: deserialize_model_GdbRealTimeData,
   },
-  getHistoricalData: {
-    path: '/model.Data/GetHistoricalData',
+  getFloatHistoricalData: {
+    path: '/model.Data/GetFloatHistoricalData',
     requestStream: false,
     responseStream: false,
     requestType: gdb_pb.QueryHistoricalDataString,
@@ -848,19 +1046,129 @@ var DataService = exports['model.Data'] = {
     responseSerialize: serialize_model_GdbHistoricalData,
     responseDeserialize: deserialize_model_GdbHistoricalData,
   },
-  getHistoricalDataWithStamp: {
-    path: '/model.Data/GetHistoricalDataWithStamp',
+  getIntHistoricalData: {
+    path: '/model.Data/GetIntHistoricalData',
     requestStream: false,
     responseStream: false,
-    requestType: gdb_pb.QueryHistoricalDataWithTimeStampString,
+    requestType: gdb_pb.QueryHistoricalDataString,
     responseType: gdb_pb.GdbHistoricalData,
-    requestSerialize: serialize_model_QueryHistoricalDataWithTimeStampString,
-    requestDeserialize: deserialize_model_QueryHistoricalDataWithTimeStampString,
+    requestSerialize: serialize_model_QueryHistoricalDataString,
+    requestDeserialize: deserialize_model_QueryHistoricalDataString,
     responseSerialize: serialize_model_GdbHistoricalData,
     responseDeserialize: deserialize_model_GdbHistoricalData,
   },
-  getHistoricalDataWithCondition: {
-    path: '/model.Data/GetHistoricalDataWithCondition',
+  getStringHistoricalData: {
+    path: '/model.Data/GetStringHistoricalData',
+    requestStream: false,
+    responseStream: false,
+    requestType: gdb_pb.QueryHistoricalDataString,
+    responseType: gdb_pb.GdbHistoricalData,
+    requestSerialize: serialize_model_QueryHistoricalDataString,
+    requestDeserialize: deserialize_model_QueryHistoricalDataString,
+    responseSerialize: serialize_model_GdbHistoricalData,
+    responseDeserialize: deserialize_model_GdbHistoricalData,
+  },
+  getBoolHistoricalData: {
+    path: '/model.Data/GetBoolHistoricalData',
+    requestStream: false,
+    responseStream: false,
+    requestType: gdb_pb.QueryHistoricalDataString,
+    responseType: gdb_pb.GdbHistoricalData,
+    requestSerialize: serialize_model_QueryHistoricalDataString,
+    requestDeserialize: deserialize_model_QueryHistoricalDataString,
+    responseSerialize: serialize_model_GdbHistoricalData,
+    responseDeserialize: deserialize_model_GdbHistoricalData,
+  },
+  getFloatRawHistoricalData: {
+    path: '/model.Data/GetFloatRawHistoricalData',
+    requestStream: false,
+    responseStream: false,
+    requestType: gdb_pb.QueryRawHistoricalDataString,
+    responseType: gdb_pb.GdbHistoricalData,
+    requestSerialize: serialize_model_QueryRawHistoricalDataString,
+    requestDeserialize: deserialize_model_QueryRawHistoricalDataString,
+    responseSerialize: serialize_model_GdbHistoricalData,
+    responseDeserialize: deserialize_model_GdbHistoricalData,
+  },
+  getIntRawHistoricalData: {
+    path: '/model.Data/GetIntRawHistoricalData',
+    requestStream: false,
+    responseStream: false,
+    requestType: gdb_pb.QueryRawHistoricalDataString,
+    responseType: gdb_pb.GdbHistoricalData,
+    requestSerialize: serialize_model_QueryRawHistoricalDataString,
+    requestDeserialize: deserialize_model_QueryRawHistoricalDataString,
+    responseSerialize: serialize_model_GdbHistoricalData,
+    responseDeserialize: deserialize_model_GdbHistoricalData,
+  },
+  getStringRawHistoricalData: {
+    path: '/model.Data/GetStringRawHistoricalData',
+    requestStream: false,
+    responseStream: false,
+    requestType: gdb_pb.QueryRawHistoricalDataString,
+    responseType: gdb_pb.GdbHistoricalData,
+    requestSerialize: serialize_model_QueryRawHistoricalDataString,
+    requestDeserialize: deserialize_model_QueryRawHistoricalDataString,
+    responseSerialize: serialize_model_GdbHistoricalData,
+    responseDeserialize: deserialize_model_GdbHistoricalData,
+  },
+  getBoolRawHistoricalData: {
+    path: '/model.Data/GetBoolRawHistoricalData',
+    requestStream: false,
+    responseStream: false,
+    requestType: gdb_pb.QueryRawHistoricalDataString,
+    responseType: gdb_pb.GdbHistoricalData,
+    requestSerialize: serialize_model_QueryRawHistoricalDataString,
+    requestDeserialize: deserialize_model_QueryRawHistoricalDataString,
+    responseSerialize: serialize_model_GdbHistoricalData,
+    responseDeserialize: deserialize_model_GdbHistoricalData,
+  },
+  getFloatHistoricalDataWithStamp: {
+    path: '/model.Data/GetFloatHistoricalDataWithStamp',
+    requestStream: false,
+    responseStream: false,
+    requestType: gdb_pb.QueryHistoricalDataWithStampString,
+    responseType: gdb_pb.GdbHistoricalData,
+    requestSerialize: serialize_model_QueryHistoricalDataWithStampString,
+    requestDeserialize: deserialize_model_QueryHistoricalDataWithStampString,
+    responseSerialize: serialize_model_GdbHistoricalData,
+    responseDeserialize: deserialize_model_GdbHistoricalData,
+  },
+  getIntHistoricalDataWithStamp: {
+    path: '/model.Data/GetIntHistoricalDataWithStamp',
+    requestStream: false,
+    responseStream: false,
+    requestType: gdb_pb.QueryHistoricalDataWithStampString,
+    responseType: gdb_pb.GdbHistoricalData,
+    requestSerialize: serialize_model_QueryHistoricalDataWithStampString,
+    requestDeserialize: deserialize_model_QueryHistoricalDataWithStampString,
+    responseSerialize: serialize_model_GdbHistoricalData,
+    responseDeserialize: deserialize_model_GdbHistoricalData,
+  },
+  getStringHistoricalDataWithStamp: {
+    path: '/model.Data/GetStringHistoricalDataWithStamp',
+    requestStream: false,
+    responseStream: false,
+    requestType: gdb_pb.QueryHistoricalDataWithStampString,
+    responseType: gdb_pb.GdbHistoricalData,
+    requestSerialize: serialize_model_QueryHistoricalDataWithStampString,
+    requestDeserialize: deserialize_model_QueryHistoricalDataWithStampString,
+    responseSerialize: serialize_model_GdbHistoricalData,
+    responseDeserialize: deserialize_model_GdbHistoricalData,
+  },
+  getBoolHistoricalDataWithStamp: {
+    path: '/model.Data/GetBoolHistoricalDataWithStamp',
+    requestStream: false,
+    responseStream: false,
+    requestType: gdb_pb.QueryHistoricalDataWithStampString,
+    responseType: gdb_pb.GdbHistoricalData,
+    requestSerialize: serialize_model_QueryHistoricalDataWithStampString,
+    requestDeserialize: deserialize_model_QueryHistoricalDataWithStampString,
+    responseSerialize: serialize_model_GdbHistoricalData,
+    responseDeserialize: deserialize_model_GdbHistoricalData,
+  },
+  getFloatHistoricalDataWithCondition: {
+    path: '/model.Data/GetFloatHistoricalDataWithCondition',
     requestStream: false,
     responseStream: false,
     requestType: gdb_pb.QueryHistoricalDataWithConditionString,
@@ -870,16 +1178,104 @@ var DataService = exports['model.Data'] = {
     responseSerialize: serialize_model_GdbHistoricalData,
     responseDeserialize: deserialize_model_GdbHistoricalData,
   },
-  getRawData: {
-    path: '/model.Data/GetRawData',
+  getIntHistoricalDataWithCondition: {
+    path: '/model.Data/GetIntHistoricalDataWithCondition',
     requestStream: false,
     responseStream: false,
-    requestType: gdb_pb.QueryRealTimeDataString,
+    requestType: gdb_pb.QueryHistoricalDataWithConditionString,
     responseType: gdb_pb.GdbHistoricalData,
-    requestSerialize: serialize_model_QueryRealTimeDataString,
-    requestDeserialize: deserialize_model_QueryRealTimeDataString,
+    requestSerialize: serialize_model_QueryHistoricalDataWithConditionString,
+    requestDeserialize: deserialize_model_QueryHistoricalDataWithConditionString,
     responseSerialize: serialize_model_GdbHistoricalData,
     responseDeserialize: deserialize_model_GdbHistoricalData,
+  },
+  getStringHistoricalDataWithCondition: {
+    path: '/model.Data/GetStringHistoricalDataWithCondition',
+    requestStream: false,
+    responseStream: false,
+    requestType: gdb_pb.QueryHistoricalDataWithConditionString,
+    responseType: gdb_pb.GdbHistoricalData,
+    requestSerialize: serialize_model_QueryHistoricalDataWithConditionString,
+    requestDeserialize: deserialize_model_QueryHistoricalDataWithConditionString,
+    responseSerialize: serialize_model_GdbHistoricalData,
+    responseDeserialize: deserialize_model_GdbHistoricalData,
+  },
+  getBoolHistoricalDataWithCondition: {
+    path: '/model.Data/GetBoolHistoricalDataWithCondition',
+    requestStream: false,
+    responseStream: false,
+    requestType: gdb_pb.QueryHistoricalDataWithConditionString,
+    responseType: gdb_pb.GdbHistoricalData,
+    requestSerialize: serialize_model_QueryHistoricalDataWithConditionString,
+    requestDeserialize: deserialize_model_QueryHistoricalDataWithConditionString,
+    responseSerialize: serialize_model_GdbHistoricalData,
+    responseDeserialize: deserialize_model_GdbHistoricalData,
+  },
+  deleteFloatHistoricalData: {
+    path: '/model.Data/DeleteFloatHistoricalData',
+    requestStream: false,
+    responseStream: false,
+    requestType: gdb_pb.DeleteHistoricalDataString,
+    responseType: gdb_pb.TimeRows,
+    requestSerialize: serialize_model_DeleteHistoricalDataString,
+    requestDeserialize: deserialize_model_DeleteHistoricalDataString,
+    responseSerialize: serialize_model_TimeRows,
+    responseDeserialize: deserialize_model_TimeRows,
+  },
+  deleteIntHistoricalData: {
+    path: '/model.Data/DeleteIntHistoricalData',
+    requestStream: false,
+    responseStream: false,
+    requestType: gdb_pb.DeleteHistoricalDataString,
+    responseType: gdb_pb.TimeRows,
+    requestSerialize: serialize_model_DeleteHistoricalDataString,
+    requestDeserialize: deserialize_model_DeleteHistoricalDataString,
+    responseSerialize: serialize_model_TimeRows,
+    responseDeserialize: deserialize_model_TimeRows,
+  },
+  deleteStringHistoricalData: {
+    path: '/model.Data/DeleteStringHistoricalData',
+    requestStream: false,
+    responseStream: false,
+    requestType: gdb_pb.DeleteHistoricalDataString,
+    responseType: gdb_pb.TimeRows,
+    requestSerialize: serialize_model_DeleteHistoricalDataString,
+    requestDeserialize: deserialize_model_DeleteHistoricalDataString,
+    responseSerialize: serialize_model_TimeRows,
+    responseDeserialize: deserialize_model_TimeRows,
+  },
+  deleteBoolHistoricalData: {
+    path: '/model.Data/DeleteBoolHistoricalData',
+    requestStream: false,
+    responseStream: false,
+    requestType: gdb_pb.DeleteHistoricalDataString,
+    responseType: gdb_pb.TimeRows,
+    requestSerialize: serialize_model_DeleteHistoricalDataString,
+    requestDeserialize: deserialize_model_DeleteHistoricalDataString,
+    responseSerialize: serialize_model_TimeRows,
+    responseDeserialize: deserialize_model_TimeRows,
+  },
+  cleanItemData: {
+    path: '/model.Data/CleanItemData',
+    requestStream: false,
+    responseStream: false,
+    requestType: gdb_pb.DeletedItemsInfo,
+    responseType: gdb_pb.TimeRows,
+    requestSerialize: serialize_model_DeletedItemsInfo,
+    requestDeserialize: deserialize_model_DeletedItemsInfo,
+    responseSerialize: serialize_model_TimeRows,
+    responseDeserialize: deserialize_model_TimeRows,
+  },
+  reLoadDb: {
+    path: '/model.Data/ReLoadDb',
+    requestStream: false,
+    responseStream: false,
+    requestType: google_protobuf_empty_pb.Empty,
+    responseType: gdb_pb.TimeRows,
+    requestSerialize: serialize_google_protobuf_Empty,
+    requestDeserialize: deserialize_google_protobuf_Empty,
+    responseSerialize: serialize_model_TimeRows,
+    responseDeserialize: deserialize_model_TimeRows,
   },
 };
 
@@ -932,34 +1328,34 @@ var PageService = exports['model.Page'] = {
     path: '/model.Page/AddUsers',
     requestStream: false,
     responseStream: false,
-    requestType: gdb_pb.AddUserInfo,
-    responseType: gdb_pb.Rows,
-    requestSerialize: serialize_model_AddUserInfo,
-    requestDeserialize: deserialize_model_AddUserInfo,
-    responseSerialize: serialize_model_Rows,
-    responseDeserialize: deserialize_model_Rows,
+    requestType: gdb_pb.AddedUserInfo,
+    responseType: gdb_pb.TimeRows,
+    requestSerialize: serialize_model_AddedUserInfo,
+    requestDeserialize: deserialize_model_AddedUserInfo,
+    responseSerialize: serialize_model_TimeRows,
+    responseDeserialize: deserialize_model_TimeRows,
   },
   deleteUsers: {
     path: '/model.Page/DeleteUsers',
     requestStream: false,
     responseStream: false,
     requestType: gdb_pb.UserName,
-    responseType: gdb_pb.Rows,
+    responseType: gdb_pb.TimeRows,
     requestSerialize: serialize_model_UserName,
     requestDeserialize: deserialize_model_UserName,
-    responseSerialize: serialize_model_Rows,
-    responseDeserialize: deserialize_model_Rows,
+    responseSerialize: serialize_model_TimeRows,
+    responseDeserialize: deserialize_model_TimeRows,
   },
   updateUsers: {
     path: '/model.Page/UpdateUsers',
     requestStream: false,
     responseStream: false,
     requestType: gdb_pb.UpdatedUserInfo,
-    responseType: gdb_pb.Rows,
+    responseType: gdb_pb.TimeRows,
     requestSerialize: serialize_model_UpdatedUserInfo,
     requestDeserialize: deserialize_model_UpdatedUserInfo,
-    responseSerialize: serialize_model_Rows,
-    responseDeserialize: deserialize_model_Rows,
+    responseSerialize: serialize_model_TimeRows,
+    responseDeserialize: deserialize_model_TimeRows,
   },
   uploadFile: {
     path: '/model.Page/UploadFile',
@@ -988,22 +1384,22 @@ var PageService = exports['model.Page'] = {
     requestStream: false,
     responseStream: false,
     requestType: gdb_pb.FileInfo,
-    responseType: gdb_pb.Rows,
+    responseType: gdb_pb.TimeRows,
     requestSerialize: serialize_model_FileInfo,
     requestDeserialize: deserialize_model_FileInfo,
-    responseSerialize: serialize_model_Rows,
-    responseDeserialize: deserialize_model_Rows,
+    responseSerialize: serialize_model_TimeRows,
+    responseDeserialize: deserialize_model_TimeRows,
   },
   importHistoryByExcel: {
     path: '/model.Page/ImportHistoryByExcel',
     requestStream: false,
     responseStream: false,
     requestType: gdb_pb.HistoryFileInfo,
-    responseType: google_protobuf_empty_pb.Empty,
+    responseType: gdb_pb.TimeRows,
     requestSerialize: serialize_model_HistoryFileInfo,
     requestDeserialize: deserialize_model_HistoryFileInfo,
-    responseSerialize: serialize_google_protobuf_Empty,
-    responseDeserialize: deserialize_google_protobuf_Empty,
+    responseSerialize: serialize_model_TimeRows,
+    responseDeserialize: deserialize_model_TimeRows,
   },
   getLogs: {
     path: '/model.Page/GetLogs',
@@ -1032,11 +1428,11 @@ var PageService = exports['model.Page'] = {
     requestStream: false,
     responseStream: false,
     requestType: gdb_pb.DeletedLogInfo,
-    responseType: gdb_pb.Rows,
+    responseType: gdb_pb.TimeRows,
     requestSerialize: serialize_model_DeletedLogInfo,
     requestDeserialize: deserialize_model_DeletedLogInfo,
-    responseSerialize: serialize_model_Rows,
-    responseDeserialize: deserialize_model_Rows,
+    responseSerialize: serialize_model_TimeRows,
+    responseDeserialize: deserialize_model_TimeRows,
   },
   downloadFile: {
     path: '/model.Page/DownloadFile',
@@ -1048,6 +1444,17 @@ var PageService = exports['model.Page'] = {
     requestDeserialize: deserialize_model_FileInfo,
     responseSerialize: serialize_model_FileContents,
     responseDeserialize: deserialize_model_FileContents,
+  },
+  getDbSize: {
+    path: '/model.Page/GetDbSize',
+    requestStream: false,
+    responseStream: false,
+    requestType: google_protobuf_empty_pb.Empty,
+    responseType: gdb_pb.FileSize,
+    requestSerialize: serialize_google_protobuf_Empty,
+    requestDeserialize: deserialize_google_protobuf_Empty,
+    responseSerialize: serialize_model_FileSize,
+    responseDeserialize: deserialize_model_FileSize,
   },
   getDbInfo: {
     path: '/model.Page/GetDbInfo',
@@ -1087,44 +1494,44 @@ var PageService = exports['model.Page'] = {
     requestStream: false,
     responseStream: false,
     requestType: gdb_pb.RoutesInfo,
-    responseType: gdb_pb.Rows,
+    responseType: gdb_pb.TimeRows,
     requestSerialize: serialize_model_RoutesInfo,
     requestDeserialize: deserialize_model_RoutesInfo,
-    responseSerialize: serialize_model_Rows,
-    responseDeserialize: deserialize_model_Rows,
+    responseSerialize: serialize_model_TimeRows,
+    responseDeserialize: deserialize_model_TimeRows,
   },
   addRoutes: {
     path: '/model.Page/AddRoutes',
     requestStream: false,
     responseStream: false,
     requestType: gdb_pb.RoutesInfo,
-    responseType: gdb_pb.Rows,
+    responseType: gdb_pb.TimeRows,
     requestSerialize: serialize_model_RoutesInfo,
     requestDeserialize: deserialize_model_RoutesInfo,
-    responseSerialize: serialize_model_Rows,
-    responseDeserialize: deserialize_model_Rows,
+    responseSerialize: serialize_model_TimeRows,
+    responseDeserialize: deserialize_model_TimeRows,
   },
   addUserRoutes: {
     path: '/model.Page/AddUserRoutes',
     requestStream: false,
     responseStream: false,
     requestType: gdb_pb.RoutesInfo,
-    responseType: gdb_pb.Rows,
+    responseType: gdb_pb.TimeRows,
     requestSerialize: serialize_model_RoutesInfo,
     requestDeserialize: deserialize_model_RoutesInfo,
-    responseSerialize: serialize_model_Rows,
-    responseDeserialize: deserialize_model_Rows,
+    responseSerialize: serialize_model_TimeRows,
+    responseDeserialize: deserialize_model_TimeRows,
   },
   deleteUserRoutes: {
     path: '/model.Page/DeleteUserRoutes',
     requestStream: false,
     responseStream: false,
     requestType: gdb_pb.UserName,
-    responseType: gdb_pb.Rows,
+    responseType: gdb_pb.TimeRows,
     requestSerialize: serialize_model_UserName,
     requestDeserialize: deserialize_model_UserName,
-    responseSerialize: serialize_model_Rows,
-    responseDeserialize: deserialize_model_Rows,
+    responseSerialize: serialize_model_TimeRows,
+    responseDeserialize: deserialize_model_TimeRows,
   },
   getAllRoutes: {
     path: '/model.Page/GetAllRoutes',
@@ -1156,11 +1563,11 @@ var CalcService = exports['model.Calc'] = {
     requestStream: false,
     responseStream: false,
     requestType: gdb_pb.TestCalcItemInfo,
-    responseType: gdb_pb.TestResult,
+    responseType: gdb_pb.CalculationResult,
     requestSerialize: serialize_model_TestCalcItemInfo,
     requestDeserialize: deserialize_model_TestCalcItemInfo,
-    responseSerialize: serialize_model_TestResult,
-    responseDeserialize: deserialize_model_TestResult,
+    responseSerialize: serialize_model_CalculationResult,
+    responseDeserialize: deserialize_model_CalculationResult,
   },
   addCalcItem: {
     path: '/model.Calc/AddCalcItem',
@@ -1211,33 +1618,33 @@ var CalcService = exports['model.Calc'] = {
     requestStream: false,
     responseStream: false,
     requestType: gdb_pb.CalcId,
-    responseType: gdb_pb.Rows,
+    responseType: gdb_pb.TimeRows,
     requestSerialize: serialize_model_CalcId,
     requestDeserialize: deserialize_model_CalcId,
-    responseSerialize: serialize_model_Rows,
-    responseDeserialize: deserialize_model_Rows,
+    responseSerialize: serialize_model_TimeRows,
+    responseDeserialize: deserialize_model_TimeRows,
   },
   stopCalcItem: {
     path: '/model.Calc/StopCalcItem',
     requestStream: false,
     responseStream: false,
     requestType: gdb_pb.CalcId,
-    responseType: gdb_pb.Rows,
+    responseType: gdb_pb.TimeRows,
     requestSerialize: serialize_model_CalcId,
     requestDeserialize: deserialize_model_CalcId,
-    responseSerialize: serialize_model_Rows,
-    responseDeserialize: deserialize_model_Rows,
+    responseSerialize: serialize_model_TimeRows,
+    responseDeserialize: deserialize_model_TimeRows,
   },
   deleteCalcItem: {
     path: '/model.Calc/DeleteCalcItem',
     requestStream: false,
     responseStream: false,
     requestType: gdb_pb.CalcId,
-    responseType: gdb_pb.Rows,
+    responseType: gdb_pb.TimeRows,
     requestSerialize: serialize_model_CalcId,
     requestDeserialize: deserialize_model_CalcId,
-    responseSerialize: serialize_model_Rows,
-    responseDeserialize: deserialize_model_Rows,
+    responseSerialize: serialize_model_TimeRows,
+    responseDeserialize: deserialize_model_TimeRows,
   },
 };
 

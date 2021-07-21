@@ -307,8 +307,8 @@
     <el-dialog
       :title="editGroupDialogNames"
       :visible.sync="editGroupDialog"
+      :before-close="editGroupDialogCloseHandler"
       width="550px"
-      :showClose="false"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
     >
@@ -345,7 +345,7 @@
   </el-table>
       <div slot="footer" class="dialog-footer">
         <el-button @click="addColumns">增加列</el-button>
-        <el-button @click="editGroupDialogCloseHandler">关闭</el-button>
+        <el-button @click="editGroupNameHandler">编辑组名</el-button>
       </div>
     </el-dialog>
     <!-- 编辑列名弹窗 -->
@@ -360,7 +360,22 @@
       <el-input v-model="editedColumnName"></el-input>
       <div slot="footer" class="dialog-footer">
         <el-button @click="editColumnHandler">确定</el-button>
-        <el-button @click="editColumnDialog = false">关闭</el-button>
+        <el-button @click="editColumnDialog=false">关闭</el-button>
+      </div>
+    </el-dialog>
+    <!-- 编辑组名 -->
+    <el-dialog
+      title="编辑组名"
+      :visible.sync="editGroupNameDialog"
+      width="550px"
+      :showClose="false"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-input v-model="editedGroupName"></el-input>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="confirmEditGroupNameHandler">确定</el-button>
+        <el-button @click="editGroupNameDialog=false">关闭</el-button>
       </div>
     </el-dialog>
     <!-- 增加列的弹窗 -->
@@ -526,6 +541,8 @@ export default {
       tableLoadingText: "表格数据加载中...",
       historyDialogName: "历史曲线查看",
       historyDialog: false,
+      editGroupNameDialog: false,
+      editedGroupName: "",
       myChart: null,
       st: [
         new Date(new Date().setTime(new Date() - 3600 * 1000 * 24)),
@@ -586,7 +603,7 @@ export default {
         { label: "30s", value: "30" },
         { label: "60s", value: "60" },
         { label: "120s", value: "120" },
-        { label: "360s", value: "360" },
+        { label: "300s", value: "300" },
       ], // 取数间隔选择
       interval: "60", // 取数间隔
       selectedItem: "", // 选择的item
@@ -639,11 +656,12 @@ export default {
       disabled: true,
       showButton: true,
       dataTypeoptions: [
-        { value: "int64", label: "int64" },
-        { value: "float64", label: "float64" },
+        { value: "int32", label: "int32" },
+        { value: "float32", label: "float32" },
         { value: "bool", label: "bool" },
         { value: "string", label: "string" },
       ],
+      dataUrl: "",
     };
   },
   mounted() {
@@ -779,7 +797,8 @@ export default {
               .then(({ data }) => {
                 this.groups = data.groupNames;
                 this.selectedGroups = this.groups[0];
-                this.handleDeleteGroupButtonState = this.selectedGroups === 'calc'
+                this.handleDeleteGroupButtonState =
+                  this.selectedGroups === "calc";
                 this.render();
                 this.$message.success("删除成功!");
               })
@@ -810,7 +829,7 @@ export default {
           this.itemCount = itemCount;
           this.itemData = [];
           let itemNames = [];
-          let groupNames = []
+          let groupNames = [];
           if (itemValues !== null) {
             for (let i = 0; i < itemValues.length; i++) {
               if (itemValues[i].hasOwnProperty("items")) {
@@ -818,18 +837,21 @@ export default {
                 itemValues[i] = itemValues[i]["items"];
               }
               itemNames.push(itemValues[i].itemName);
-              groupNames.push(this.selectedGroups)
+              groupNames.push(this.selectedGroups);
             }
           }
           post(
             {
               itemNames,
-              groupNames
+              groupNames,
             },
             "/data/getRealTimeData"
           )
             .then(({ data: { realTimeData } }) => {
-              const timeData = typeof(realTimeData) === 'string'? JSON.parse(realTimeData) : realTimeData;
+              const timeData =
+                typeof realTimeData === "string"
+                  ? JSON.parse(realTimeData)
+                  : realTimeData;
               if (itemNames.length !== 0) {
                 for (let i = 0; i < itemNames.length; i++) {
                   itemValues[i]["realTimeData"] =
@@ -1045,13 +1067,17 @@ export default {
     },
     // 查看历史曲线
     handleHisroty({ itemName, dataType }) {
-      if (dataType === 'float64' || dataType === 'int64') {
-          this.historyDialog = true;
-          this.selectedItem = itemName;
-      }else{
-        this.$message.warning('只能查看数据类型为float或者int的item的历史')
+      if (dataType === "float32" || dataType === "int32") {
+        this.historyDialog = true;
+        if (dataType === "float32") {
+          this.dataUrl = "/data/getFloatHistoricalData";
+        } else {
+          this.dataUrl = "/data/getIntHistoricalData";
+        }
+        this.selectedItem = itemName;
+      } else {
+        this.$message.warning("只能查看数据类型为float或者int的item的历史");
       }
-      
     },
     // 显示历史曲线
     showHistory() {
@@ -1068,7 +1094,7 @@ export default {
           endTimes: [e],
           intervals: [parseInt(this.interval)],
         },
-        "/data/getHistoricalData"
+        this.dataUrl
       )
         .catch(({ message }) => {
           this.$notify.error({
@@ -1076,7 +1102,7 @@ export default {
             message,
           });
         })
-        .then(({ data: { historicalData } }) => {
+        .then(({ data: { historicalData, times } }) => {
           if (typeof historicalData === "string") {
             historicalData = JSON.parse(historicalData);
           }
@@ -1135,6 +1161,7 @@ export default {
             ],
           });
           this.chartLoading = false;
+          this.$message.success(`操作耗时:${times}ms`);
         });
     },
     handleOpen() {
@@ -1280,63 +1307,64 @@ export default {
         .catch(() => {});
     },
     // 关闭增加此组的弹窗
-    editGroupDialogCloseHandler() {
+    editGroupDialogCloseHandler(done) {
       this.initial();
       this.editGroupDialog = false;
+      done();
     },
     // 确定增加列
     addColumnHandler() {
-      try{
-
-      
-      if (this.addedColumnName.length === 0) {
-        this.$message.warning("请输入有效的列名");
-      } else if (this.columnDefaultValues.length === 0) {
-        this.$message.warning("请输入有效的默认值");
-      } else {
-        if (
-          this.addedColumnName.split(",").length !==
-          this.columnDefaultValues.split(",").length
-        ) {
-          this.$$message.warning("列名和默认值不一致");
+      try {
+        if (this.addedColumnName.length === 0) {
+          this.$message.warning("请输入有效的列名");
+        } else if (this.columnDefaultValues.length === 0) {
+          this.$message.warning("请输入有效的默认值");
         } else {
-          post(
-            {
-              groupName: this.selectedGroups,
-              columnNames: this.addedColumnName.split(",").map((item) => {
-                return item.trim();
-              }),
-              defaultValues: this.columnDefaultValues.split(",").map((item)=>{
-                try{
-                return JSON.parse(item.trim())
-                }catch(e){
-                  throw Error(`非法的默认值${item}`)
+          if (
+            this.addedColumnName.split(",").length !==
+            this.columnDefaultValues.split(",").length
+          ) {
+            this.$$message.warning("列名和默认值不一致");
+          } else {
+            post(
+              {
+                groupName: this.selectedGroups,
+                columnNames: this.addedColumnName.split(",").map((item) => {
+                  return item.trim();
+                }),
+                defaultValues: this.columnDefaultValues
+                  .split(",")
+                  .map((item) => {
+                    try {
+                      return JSON.parse(item.trim());
+                    } catch (e) {
+                      throw Error(`非法的默认值${item}`);
+                    }
+                  }),
+              },
+              "/group/addGroupColumns"
+            )
+              .then(() => {
+                this.$message.success(`增加列${this.addedColumnName}成功`);
+                for (let item of this.addedColumnName.split(",")) {
+                  this.groupTableData.push({ columnName: item.trim() });
                 }
-              }),
-            },
-            "/group/addGroupColumns"
-          )
-            .then(() => {
-              this.$message.success(`增加列${this.addedColumnName}成功`);
-              for (let item of this.addedColumnName.split(",")) {
-                this.groupTableData.push({ columnName: item.trim() });
-              }
-              this.addColumnDialog = false;
-            })
-            .catch(({ message }) => {
-              this.$notify.error({
-                title: "增加列失败",
-                message,
+                this.addColumnDialog = false;
+              })
+              .catch(({ message }) => {
+                this.$notify.error({
+                  title: "增加列失败",
+                  message,
+                });
+                this.addColumnDialog = false;
               });
-              this.addColumnDialog = false;
-            });
+          }
         }
-      }
-      }catch({message}){
+      } catch ({ message }) {
         this.$notify.error({
-          title:'增加列失败',
-          message
-        })
+          title: "增加列失败",
+          message,
+        });
       }
     },
     // 编辑item
@@ -1349,7 +1377,7 @@ export default {
           k != "id" &&
           k != "index" &&
           k != "realTimeData" &&
-          k != "itemName" && 
+          k != "itemName" &&
           k != "dataType"
         ) {
           this.editItems.push({ label: k, value: row[k] });
@@ -1363,25 +1391,29 @@ export default {
       for (let i = 0; i < this.editItems.length; i++) {
         clause.push(`${this.editItems[i].label}='${this.editItems[i].value}'`);
       }
-      post(
-        {
-          groupName: this.selectedGroups,
-          clause: clause.join(","),
-          condition,
-        },
-        "/item/updateItems"
-      )
-        .then(() => {
-          this.$message.success("更新成功!");
-          this.render();
-          this.editItemDialog = false;
-        })
-        .catch(({ message }) => {
-          this.$notify.error({
-            title: "更新失败",
-            message,
+      if (clause.length === 0) {
+        this.editItemDialog = false;
+      } else {
+        post(
+          {
+            groupName: this.selectedGroups,
+            clause: clause.join(","),
+            condition,
+          },
+          "/item/updateItems"
+        )
+          .then(() => {
+            this.$message.success("更新成功!");
+            this.render();
+            this.editItemDialog = false;
+          })
+          .catch(({ message }) => {
+            this.$notify.error({
+              title: "更新失败",
+              message,
+            });
           });
-        });
+      }
     },
     // 删除item
     deleteItem({ itemName }) {
@@ -1519,7 +1551,7 @@ export default {
       const fileName = this.fileContent.name; // 文件名
       const sheetNames = this.sheetNames.split(","); // sheetName
       const itemNames = this.historyItemNames.split(",");
-      const groupName = this.selectedGroups
+      const groupName = this.selectedGroups;
       this.addItemHistoryLoading = true;
       post(
         {
@@ -1530,11 +1562,13 @@ export default {
         },
         "/page/importHistoryByExcel"
       )
-        .then(() => {
+        .then(({ data: { effectedRows, times } }) => {
           this.addItemHistoryLoading = false;
           this.itemDialogHistory = false;
           this.importHistoryDialog = false;
-          this.$message.success("历史导入成功");
+          this.$message.success(
+            `成功导入历史数据${effectedRows}条,耗时${times}ms`
+          );
         })
         .catch(({ message }) => {
           this.addItemHistoryLoading = false;
@@ -1545,6 +1579,52 @@ export default {
             message,
           });
         });
+    },
+    editGroupNameHandler() {
+      // 编辑组名
+      this.editedGroupName = this.selectedGroups;
+      this.editGroupNameDialog = true;
+    },
+    confirmEditGroupNameHandler() {
+      if (this.editedGroupName === this.selectedGroups) {
+        this.$message.info("组名没有更新");
+        this.editGroupNameDialog = false;
+      } else {
+        this.$confirm("更新组名所有的历史都将更新，确实继续?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        })
+          .then(() => {
+            post(
+              {
+                infos: [
+                  {
+                    oldGroupName: this.selectedGroups,
+                    newGroupName: this.editedGroupName,
+                  },
+                ],
+              },
+              "/group/updateGroupNames"
+            )
+              .then(({ data: { times } }) => {
+                this.selectedGroups = this.editedGroupName;
+                this.initial();
+                this.editGroupNameDialog = false;
+                this.editGroupDialog = false;
+                this.$message.success(`组名更新成功,操作耗时:${times}ms`);
+              })
+              .catch(({ message }) => {
+                this.$notify.error({
+                  title: "更新组名失败",
+                  message,
+                });
+              });
+          })
+          .catch(() => {
+            this.$message.warning("操作取消");
+          });
+      }
     },
   },
 };

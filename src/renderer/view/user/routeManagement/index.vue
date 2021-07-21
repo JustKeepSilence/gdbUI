@@ -54,7 +54,7 @@
       ></el-transfer>
       <div slot="footer" class="dialog-footer">
         <el-button @click="confirmAddUserRoutes">确定</el-button>
-        <el-button @click="addUsersDialog = false">关闭</el-button>
+        <el-button @click="addUserRoutesDialogs = false">关闭</el-button>
       </div>
     </el-dialog>
     <el-dialog
@@ -72,7 +72,7 @@
       ></el-transfer>
       <div slot="footer" class="dialog-footer">
         <el-button @click="handleEditUser">确定</el-button>
-        <el-button @click="addUsersDialog = false">关闭</el-button>
+        <el-button @click="editUserRoutesDialog = false">关闭</el-button>
       </div>
     </el-dialog>
     <el-dialog
