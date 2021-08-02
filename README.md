@@ -20,4 +20,4 @@ npm run dev
 ```
 
 ### Download Compiled gdbUI
-download url is [download](https://wws.lanzoui.com/iVoJ7rowxne), passWord is 77ge
+download url is [download](https://wws.lanzoui.com/iC6YNs5b59i), passWord is d7pz

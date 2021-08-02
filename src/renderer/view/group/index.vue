@@ -1106,19 +1106,20 @@ export default {
           if (typeof historicalData === "string") {
             historicalData = JSON.parse(historicalData);
           }
-          this.chartItemValues = historicalData[this.selectedItem];
+          this.chartItemValues = [].concat([historicalData[this.selectedItem]["timeStamps"]], [historicalData[this.selectedItem]["itemValues"]])
+          // this.chartItemValues = historicalData[this.selectedItem];
           let tData = [];
-          if (historicalData[this.selectedItem][0] === null) {
+          if (historicalData[this.selectedItem]["timeStamps"] === null) {
             tData = [[0, 0]];
           } else {
             for (
               let i = 0;
-              i < historicalData[this.selectedItem][0].length;
+              i < historicalData[this.selectedItem]["timeStamps"].length;
               i++
             ) {
               tData.push([
-                historicalData[this.selectedItem][0][i] * 1000,
-                parseFloat(historicalData[this.selectedItem][1][i]),
+                historicalData[this.selectedItem]["timeStamps"][i] * 1000,
+                parseFloat(historicalData[this.selectedItem]["itemValues"][i]),
               ]);
             }
           }
@@ -1187,12 +1188,13 @@ export default {
           let row = [];
           row.push(
             this.parseTime(
-              new Date(parseInt(this.chartItemValues[0][i]) * 1000)
+              new Date(parseInt(this.chartItemValues[0][i] - 8 * 3600) * 1000)
             )
           );
           row.push(this.chartItemValues[1][i]);
           wd.push(row); // 将数据写入工作表
         }
+        console.log(wd)
         const ws = XLSX.utils.aoa_to_sheet(wd);
         XLSX.utils.book_append_sheet(workBook, ws, "Sheet1");
         const buf = this.s2ab(

@@ -117,7 +117,7 @@
 import Menu from './components/menu'
 import MultiMenu from './components/multimenu'
 import gi from '@/images/github.png'
-import av from '@/images/go.gif'
+import av from '@/images/avatar.jpg'
 import 'element-ui/lib/theme-chalk/display.css'
 import {post} from '@/api'
 const { shell } = require('electron')

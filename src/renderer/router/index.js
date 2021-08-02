@@ -49,7 +49,7 @@ const constantRoutes = [
         path: '/calc',
         name: 'Calc',
         component: () => import('@/view/calc'),
-        meta: { title: '二次计算', icon: 'el-icon-cpu', hidden: false, role: ['developer', 'super_user', 'common_user'] }
+        meta: { title: '模拟计算', icon: 'el-icon-cpu', hidden: false, role: ['developer', 'super_user', 'common_user'] }
       }
     ]
   }
